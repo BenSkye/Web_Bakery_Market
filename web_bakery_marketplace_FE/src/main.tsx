@@ -1,0 +1,20 @@
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import App from './App.tsx'
+import { ConfigProvider } from 'antd';
+import './index.css'
+
+const theme = {
+  token: {
+    colorPrimary: '#2D2828',
+    colorText: 'black',
+  },
+};
+
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <ConfigProvider theme={theme}>
+      <App />
+    </ConfigProvider>
+  </React.StrictMode>,
+)
