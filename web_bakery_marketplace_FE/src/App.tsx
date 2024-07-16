@@ -9,7 +9,6 @@ function App() {
   return (
     <MainLayout>
       <div>
-        <h1>Content inside MainLayout</h1>
         <p>Current count: {count}</p>
         <button onClick={() => setCount(count + 1)}>Increase Count</button>
       </div>

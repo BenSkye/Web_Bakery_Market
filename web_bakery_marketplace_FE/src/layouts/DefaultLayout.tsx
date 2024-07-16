@@ -3,12 +3,14 @@ import { Layout } from 'antd';
 import HeaderComponent from './components/Header';
 import FooterComponent from './components/Footer';
 
+
 const { Content } = Layout;
 
 const layoutStyle: React.CSSProperties = {
     display: 'flex',
     flexDirection: 'column',
     minHeight: '100vh',
+
 };
 
 const contentStyle: React.CSSProperties = {
@@ -17,6 +19,7 @@ const contentStyle: React.CSSProperties = {
     color: 'black',
     textAlign: 'center',
     padding: '24px',
+
 };
 
 
@@ -29,7 +32,7 @@ const MainLayout: React.FC<DefaultLayoutProps> = ({ children }) => {
     return (
         <Layout style={layoutStyle}>
             <HeaderComponent />
-            <Content style={contentStyle}>{children}</Content>
+            <Content style={contentStyle}>{children}  </Content>
             <FooterComponent />
         </Layout>
     );
