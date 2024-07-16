@@ -1,7 +1,9 @@
 import React from 'react';
 import { Layout } from 'antd';
+
 import HeaderComponent from './components/Header';
 import FooterComponent from './components/Footer';
+import { Outlet } from 'react-router-dom';
 
 
 const { Content } = Layout;
@@ -23,16 +25,11 @@ const contentStyle: React.CSSProperties = {
 };
 
 
-
-interface DefaultLayoutProps {
-    children: React.ReactNode;
-}
-
-const MainLayout: React.FC<DefaultLayoutProps> = ({ children }) => {
+const MainLayout: React.FC = () => {
     return (
         <Layout style={layoutStyle}>
             <HeaderComponent />
-            <Content style={contentStyle}>{children}  </Content>
+            <Content style={contentStyle}><Outlet /></Content>
             <FooterComponent />
         </Layout>
     );

@@ -6,6 +6,7 @@ import { ShoppingCartOutlined, UserOutlined } from '@ant-design/icons';
 import logo from '../../assets/1.png'; // Đường dẫn đến file logo của bạn
 import { motion } from 'framer-motion';
 import cake from '../../assets/384c76efd36e7480fcb3eb5fa0f8b3e2.jpg';
+import { Link } from 'react-router-dom';
 
 const { Header } = Layout;
 
@@ -47,10 +48,10 @@ const HeaderComponent: React.FC = () => {
 
 
                         <Menu mode="horizontal" defaultSelectedKeys={['home']} style={{ textAlign: 'center', backgroundColor: 'inherit' }}>
-                            <Menu.Item key="home" >Trang chủ</Menu.Item>
-                            <Menu.Item key="about" >Giới Thiệu</Menu.Item>
-                            <Menu.Item key="store" >Cửa Hàng</Menu.Item>
-                            <Menu.Item key="workshop" >Workshop</Menu.Item>
+                            <Menu.Item key="home" ><Link to='/'>Trang chủ</Link></Menu.Item>
+                            <Menu.Item key="about" ><Link to='/about'>Giới Thiệu</Link></Menu.Item>
+                            <Menu.Item key="store" ><Link to='/stores'>Cửa Hàng</Link></Menu.Item>
+                            <Menu.Item key="workshop" ><Link to='/workshop'></Link>Workshop</Menu.Item>
                         </Menu>
                         <Row align="middle">
                             <Col style={{ marginRight: '1rem' }}>
@@ -59,7 +60,7 @@ const HeaderComponent: React.FC = () => {
                                 </Badge>
                             </Col>
                             <Col>
-                                <Button type="text" icon={<UserOutlined />} style={{ fontSize: '1.5rem' }} />
+                                <Link to='/login'><Button type="text" icon={<UserOutlined />} style={{ fontSize: '1.5rem' }} /></Link>
                             </Col>
                         </Row>
                     </Row>

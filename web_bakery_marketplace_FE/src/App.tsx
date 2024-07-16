@@ -1,18 +1,9 @@
-import { useState } from 'react'
-import MainLayout from './layouts/DefaultLayout';
 
-
+import AppRoutes from './routes/routers';
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
-    <MainLayout>
-      <div>
-        <p>Current count: {count}</p>
-        <button onClick={() => setCount(count + 1)}>Increase Count</button>
-      </div>
-    </MainLayout>
+    <AppRoutes />
   );
 }
 
