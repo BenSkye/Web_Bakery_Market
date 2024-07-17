@@ -12,6 +12,7 @@
   "dependencies": {
     "@ant-design/icons": "^5.3.7",
     "@mapbox/mapbox-gl-geocoder": "^5.0.2",
+    "@mapbox/mapbox-sdk": "^0.16.0",
     "@reduxjs/toolkit": "^2.2.6",
     "antd": "^5.19.2",
     "framer-motion": "^11.3.2",

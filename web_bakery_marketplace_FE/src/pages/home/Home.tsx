@@ -106,7 +106,7 @@ const HomePage: React.FC = () => {
                 </div>
             </Carousel>
             <Card style={cardStyle}>
-                <Map address="" />
+                <Map address="Hồ Chí Minh" />
             </Card>
             <Row gutter={[16, 16]} justify="center">
                 {bakeries.map((bakery, index) => (

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ReactMapGL, { GeolocateControl, NavigationControl, Marker } from 'react-map-gl';
 import { Input } from 'antd';
 import { FaMapMarkerAlt } from 'react-icons/fa';
@@ -13,6 +13,12 @@ const Map: React.FC<MapProps> = ({ address }) => {
         longitude: 106.7009, // Tọa độ longitude của thành phố Hồ Chí Minh
         zoom: 10
     });
+
+
+    useEffect(() => {
+        console.log(address);
+
+    }, [address]);
 
     const [searchQuery, setSearchQuery] = useState('');
 
