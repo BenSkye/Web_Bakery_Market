@@ -19,7 +19,7 @@ const HeaderComponent: React.FC = () => {
                         </Col>
                         <Col style={{ display: 'flex', alignItems: 'center' }}>
                             <Input.Search placeholder="Tìm kiếm" style={{
-                                width: '100%', borderRadius: '10px',
+                                width: '300px', borderRadius: '10px',
                                 boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
                             }} />
                         </Col>
@@ -27,7 +27,7 @@ const HeaderComponent: React.FC = () => {
                 </Col>
                 <Col span={16}>
                     <Row style={{ gap: '2rem' }} justify="end" align="middle" >
-                        <Menu mode="horizontal" defaultSelectedKeys={['home']} style={{ textAlign: 'center', backgroundColor: 'inherit', fontSize:'20px' }}>
+                        <Menu mode="horizontal" defaultSelectedKeys={['home']} style={{ textAlign: 'center', backgroundColor: 'inherit', fontSize: '20px' }}>
                             <Menu.Item key="home" ><Link to='/'>Trang chủ</Link></Menu.Item>
                             <Menu.Item key="about" ><Link to='/about'>Giới Thiệu</Link></Menu.Item>
                             <Menu.Item key="store" ><Link to='/stores'>Cửa Hàng</Link></Menu.Item>

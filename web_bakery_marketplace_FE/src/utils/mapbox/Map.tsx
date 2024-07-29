@@ -29,7 +29,7 @@ const Map: React.FC<MapProps> = ({ address }) => {
     return (
         <>
             <Input.Search
-                placeholder="Search for a location"
+                placeholder="Tìm kiếm tiệm bánh"
                 onSearch={handleSearch}
                 style={{ marginBottom: '10px', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)', borderRadius: '5px' }}
                 onChange={(e) => setSearchQuery(e.target.value)}
