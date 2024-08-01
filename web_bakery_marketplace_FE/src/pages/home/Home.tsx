@@ -312,7 +312,7 @@ const HomePage: React.FC = () => {
 
             <Col style={{ marginTop: '2rem' }}>
                 <animated.h1 style={{ textAlign: 'start', display: 'flex', alignItems: 'center', marginBottom: '0.5rem', ...springPropsContainer }}>
-                    Giới thiệu về chúng tôi nef
+                    Giới thiệu về chúng tôi
                     <ClockCircleOutlined style={{ marginLeft: '8px' }} />
                 </animated.h1>
                 <div style={introductionContainerStyle}>
