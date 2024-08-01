@@ -1,82 +1,60 @@
 // /pages/Home.tsx
-import React, { useState, useRef } from 'react';
-import { Carousel, Card, Button, Row, Col } from 'antd';
+import React, { useState, useRef, useEffect } from 'react';
+import { Carousel, Card, Button, Row, Col, Rate } from 'antd';
 import { IoStorefrontOutline } from "react-icons/io5";
 import { useSpring, animated } from '@react-spring/web';
 import Map from '../../utils/mapbox/Map';
 import banner1 from '../../assets/pexels-valeriya-827516.jpg';
 import banner2 from '../../assets/pexels-marinautrabo-1729808.jpg';
-import { LeftOutlined, RightOutlined, BulbOutlined, StarOutlined, ClockCircleOutlined } from '@ant-design/icons';
+import { LeftOutlined, RightOutlined, BulbOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import imgIntro from '../../assets/pexels-jill-wellington-1638660-433527.jpg'
-
+import { getBakeries, Bakery } from '../../services/bakeriesService';
+import { getWorkshops, Workshop } from '../../services/workshopsService';
+import SpinLoading from '../../components/loading/SpinLoading';
+import '../../styles/homeStyles/home.css';
 
 
 const HomePage: React.FC = () => {
 
-    const [bakeries] = useState([
-        {
-            name: 'Bakery 1',
-            address: '123 Main St, City, Country',
-            rating: 4.5,
-            image: 'https://cokhiviendong.com/wp-content/uploads/2018/11/kinh-nghi%E1%BB%87m-m%E1%BB%9F-ti%E1%BB%87m-b%C3%A1nh-ng%E1%BB%8Dt-6.jpg',
-        },
-        {
-            name: 'Bakery 2',
-            address: '456 Maple Ave, City, Country',
-            rating: 3.8,
-            image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-fEQhM--ta4q80IHE5tx6YQcGh3-_8PYUOw&s',
-        },
-        {
-            name: 'Bakery 3',
-            address: '789 Oak Dr, City, Country',
-            rating: 5.0,
-            image: 'https://images.squarespace-cdn.com/content/v1/5b8bf301e2ccd13e972a0ab4/1571630216229-HQ565C57VA36KRVX9UAN/dessert-house-12.jpg',
-        },
-        {
-            name: 'Bakery 4',
-            address: '101 Pine Ln, City, Country',
-            rating: 4.2,
-            image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTu3wss3aa1ajyRXhJBe07k8wb__TVzMdJK2A&s',
-        },
-        {
-            name: 'Bakery 5',
-            address: '101 Pine Ln, City, Country',
-            rating: 4.2,
-            image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTu3wss3aa1ajyRXhJBe07k8wb__TVzMdJK2A&s',
-        },
-        {
-            name: 'Bakery 6',
-            address: '101 Pine Ln, City, Country',
-            rating: 4.2,
-            image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTu3wss3aa1ajyRXhJBe07k8wb__TVzMdJK2A&s',
-        },
+    const [bakeries, setBakeries] = useState<Bakery[]>([]);
+    const [workshops, setWorkshops] = useState<Workshop[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
 
-    ]);
+    useEffect(() => {
+        const fetchBakeries = async () => {
+            try {
+                setLoading(true);
+                const data = await getBakeries();
+                setBakeries(data);
+            } catch (error) {
+                console.error('Failed to fetch bakeries:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-    const [workshops] = useState([
-        {
-            title: 'Creative Ideas Workshop',
-            description: 'Join us for a workshop full of creative ideas and innovation!',
-            date: '2024-08-15',
-            image: 'https://ktmt.vnmediacdn.com/images/2023/07/15/30-1689423506-10.jpg',
-        },
-        {
-            title: 'Technical Skills Workshop',
-            description: 'Enhance your technical skills with our expert-led workshop.',
-            date: '2024-09-10',
-            image: 'https://www.phuhunglife.com/media/xfofwvla/img_2168.jpg',
-        },
-        {
-            title: 'Art and Design Workshop',
-            description: 'Explore your artistic side in our art and design workshop.',
-            date: '2024-10-05',
-            image: 'https://amcollege.edu.vn/wp-content/uploads/2022/12/Untitled-design-63-1.png',
-        },
-    ]);
+        fetchBakeries();
+    }, []);
+
+    useEffect(() => {
+        const fetchWorkshops = async () => {
+            try {
+                setLoading(true);
+                const data = await getWorkshops();
+                setWorkshops(data);
+            } catch (error) {
+                console.error('Failed to fetch workshops:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchWorkshops();
+    }, []);
 
     const homeContainerStyle: React.CSSProperties = {
         textAlign: 'center',
-        position: 'relative', // Make the container relative for absolute positioning
+        position: 'relative',
     };
 
     const bannerCarouselStyle: React.CSSProperties = {
@@ -259,26 +237,26 @@ const HomePage: React.FC = () => {
                 </animated.h1>
                 <Row gutter={[16, 16]} justify="center" >
                     <div className="scroll-container" ref={scrollRef}>
-                        {bakeries.map((bakery, index) => (
-                            <div key={index} className="card-wrapper">
-                                <Card
-                                    className="card-hover"
-                                    bordered={false}
-                                    style={{ boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)' }}
-                                    cover={<img alt={bakery.name} src={bakery.image} style={{ height: '200px', objectFit: 'cover' }} />}
-                                >
-                                    <h3 style={{ textAlign: 'start' }}>{bakery.name}</h3>
-                                    <p style={{ textAlign: 'start' }}>{bakery.address}</p>
-                                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-                                        {Array.from({ length: 5 }, (_, i) => (
-                                            <StarOutlined key={i} style={{ color: i < Math.round(bakery.rating) ? 'gold' : 'lightgray' }} />
-                                        ))}
-                                        <span style={{ marginLeft: '8px' }}>{bakery.rating}</span>
-                                    </div>
-                                    <Button type="primary" className="button-hover">Ghé tiệm</Button>
-                                </Card>
-                            </div>
-                        ))}
+                        {loading ? <SpinLoading /> :
+                            (bakeries.map((bakery, index) => (
+                                <div key={index} className="card-wrapper">
+                                    <Card
+                                        className="card-hover"
+                                        bordered={false}
+                                        style={{ boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)' }}
+                                        cover={<img alt={bakery.name} src={bakery.image} style={{ height: '200px', objectFit: 'cover' }} />}
+                                    >
+                                        <h3 style={{ textAlign: 'start' }}>{bakery.name}</h3>
+                                        <p style={{ textAlign: 'start' }}>{bakery.address}</p>
+                                        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                                            <Rate disabled value={bakery.rating} />
+                                            <span style={{ marginLeft: '8px' }}>{bakery.rating}</span>
+                                        </div>
+                                        <Button type="primary" className="button-hover">Ghé tiệm</Button>
+                                    </Card>
+                                </div>
+                            )))
+                        }
                     </div>
                     <Button className="scroll-button left" onClick={scrollLeft}>
                         <LeftOutlined />
@@ -294,19 +272,20 @@ const HomePage: React.FC = () => {
                     <BulbOutlined style={{ marginLeft: '8px' }} />
                 </animated.h1>
                 <Row gutter={[16, 16]} justify="center">
-                    {workshops.map((workshop, index) => (
-                        <Col span={8} key={index}>
-                            <div style={workshopBannerStyle} className="card-hover">
-                                <img src={workshop.image} alt={workshop.title} style={workshopImageStyle} />
-                                <div style={workshopInfoStyle}>
-                                    <h2>{workshop.title}</h2>
-                                    <p>{workshop.description}</p>
-                                    <p><strong>Date:</strong> {new Date(workshop.date).toLocaleDateString()}</p>
-                                    <Button type="primary" className="button-hover">Đăng ký tham gia</Button>
+                    {loading ? <SpinLoading /> :
+                        (workshops.map((workshop, index) => (
+                            <Col span={8} key={index}>
+                                <div style={workshopBannerStyle} className="card-hover">
+                                    <img src={workshop.image} alt={workshop.title} style={workshopImageStyle} />
+                                    <div style={workshopInfoStyle}>
+                                        <h2>{workshop.title}</h2>
+                                        <p>{workshop.description}</p>
+                                        <p><strong>Date:</strong> {new Date(workshop.date).toLocaleDateString()}</p>
+                                        <Button type="primary" className="button-hover">Đăng ký tham gia</Button>
+                                    </div>
                                 </div>
-                            </div>
-                        </Col>
-                    ))}
+                            </Col>
+                        )))}
                 </Row>
             </Col>
 
