@@ -6,13 +6,14 @@ import StoresPage from '../pages/stores/Stores';
 import WorkshopPage from '../pages/workshop/Workshop';
 import LoginPage from '../pages/login/Login';
 import MainLayout from '../layouts/DefaultLayout';
-
+import SignUp from '../pages/signup/signup';
 
 const AppRoutes: React.FC = () => {
     return (
         <Routes>
 
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignUp />} />
             <Route element={<MainLayout />}>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/about" element={<AboutPage />} />

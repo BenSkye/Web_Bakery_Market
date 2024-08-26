@@ -3,7 +3,7 @@ import { Form, Input, Button, Row, Col, Typography } from 'antd';
 
 const { Title } = Typography;
 
-const Login: React.FC = () => {
+const SignUp: React.FC = () => {
     const onFinish = (values: any) => {
         console.log('Received values of form: ', values);
     };
@@ -17,12 +17,20 @@ const Login: React.FC = () => {
                     borderRadius: '8px',
                     boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
                 }}>
-                    <Title level={2} style={{ textAlign: 'center' }}>Login</Title>
+                    <Title level={2} style={{ textAlign: 'center' }}>Sign Up</Title>
                     <Form
-                        name="login"
+                        name="signup"
                         layout="vertical"
                         onFinish={onFinish}
                     >
+                        <Form.Item
+                            name="username"
+                            label="Username"
+                            rules={[{ required: true, message: 'Please input your username!' }]}
+                        >
+                            <Input placeholder="Username" />
+                        </Form.Item>
+
                         <Form.Item
                             name="email"
                             label="Email"
@@ -35,13 +43,34 @@ const Login: React.FC = () => {
                             name="password"
                             label="Password"
                             rules={[{ required: true, message: 'Please input your password!' }]}
+                            hasFeedback
                         >
                             <Input.Password placeholder="Password" />
                         </Form.Item>
 
+                        <Form.Item
+                            name="confirm"
+                            label="Confirm Password"
+                            dependencies={['password']}
+                            hasFeedback
+                            rules={[
+                                { required: true, message: 'Please confirm your password!' },
+                                ({ getFieldValue }) => ({
+                                    validator(_, value) {
+                                        if (!value || getFieldValue('password') === value) {
+                                            return Promise.resolve();
+                                        }
+                                        return Promise.reject(new Error('The two passwords that you entered do not match!'));
+                                    },
+                                }),
+                            ]}
+                        >
+                            <Input.Password placeholder="Confirm Password" />
+                        </Form.Item>
+
                         <Form.Item>
                             <Button type="primary" htmlType="submit" block>
-                                Login
+                                Sign Up
                             </Button>
                         </Form.Item>
                     </Form>
@@ -51,4 +80,4 @@ const Login: React.FC = () => {
     );
 };
 
-export default Login;
+export default SignUp;
