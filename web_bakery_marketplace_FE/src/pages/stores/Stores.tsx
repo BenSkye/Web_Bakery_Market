@@ -44,7 +44,7 @@ const StoresPage: React.FC = () => {
                 transition={{ duration: 0.8, ease: 'easeOut' }}
                 style={{ fontSize: '2.5rem', marginBottom: '40px' }}
             >
-                Our Stores
+                Các Cửa Hàng Của Chúng Tôi
             </motion.h1>
 
             <Row gutter={[16, 16]} justify="center">
@@ -56,20 +56,20 @@ const StoresPage: React.FC = () => {
                     >
                         <StyledCard
                             hoverable
-                            cover={<img alt="Store" src={storeImage} style={{ height: '200px', objectFit: 'cover' }} />}
+                            cover={<img alt="Cửa Hàng" src={storeImage} style={{ height: '200px', objectFit: 'cover' }} />}
                             actions={[
                                 <ViewButton
                                     key="view"
                                     type="primary"
-                                    onClick={() => handleViewStore('Store Name 1')}
+                                    onClick={() => handleViewStore('Cửa Hàng 1')}
                                 >
-                                    View Store
+                                    Xem Cửa Hàng
                                 </ViewButton>
                             ]}
                         >
                             <Meta
-                                title="Store Name 1"
-                                description="This is a description of Store 1. It has a variety of products and services."
+                                title="Cửa Hàng 1"
+                                description="Đây là mô tả về Cửa Hàng 1. Cửa hàng có nhiều sản phẩm và dịch vụ đa dạng."
                             />
                         </StyledCard>
                     </motion.div>
@@ -83,20 +83,20 @@ const StoresPage: React.FC = () => {
                     >
                         <StyledCard
                             hoverable
-                            cover={<img alt="Store" src={storeImage} style={{ height: '200px', objectFit: 'cover' }} />}
+                            cover={<img alt="Cửa Hàng" src={storeImage} style={{ height: '200px', objectFit: 'cover' }} />}
                             actions={[
                                 <ViewButton
                                     key="view"
                                     type="primary"
-                                    onClick={() => handleViewStore('Store Name 2')}
+                                    onClick={() => handleViewStore('Cửa Hàng 2')}
                                 >
-                                    View Store
+                                    Xem Cửa Hàng
                                 </ViewButton>
                             ]}
                         >
                             <Meta
-                                title="Store Name 2"
-                                description="This is a description of Store 2. It specializes in unique items and personalized services."
+                                title="Cửa Hàng 2"
+                                description="Đây là mô tả về Cửa Hàng 2. Cửa hàng chuyên về các sản phẩm độc đáo và dịch vụ cá nhân hóa."
                             />
                         </StyledCard>
                     </motion.div>
@@ -110,20 +110,20 @@ const StoresPage: React.FC = () => {
                     >
                         <StyledCard
                             hoverable
-                            cover={<img alt="Store" src={storeImage} style={{ height: '200px', objectFit: 'cover' }} />}
+                            cover={<img alt="Cửa Hàng" src={storeImage} style={{ height: '200px', objectFit: 'cover' }} />}
                             actions={[
                                 <ViewButton
                                     key="view"
                                     type="primary"
-                                    onClick={() => handleViewStore('Store Name 3')}
+                                    onClick={() => handleViewStore('Cửa Hàng 3')}
                                 >
-                                    View Store
+                                    Xem Cửa Hàng
                                 </ViewButton>
                             ]}
                         >
                             <Meta
-                                title="Store Name 3"
-                                description="This is a description of Store 3. It offers a wide range of products with great deals."
+                                title="Cửa Hàng 3"
+                                description="Đây là mô tả về Cửa Hàng 3. Cửa hàng cung cấp đa dạng các sản phẩm với nhiều ưu đãi hấp dẫn."
                             />
                         </StyledCard>
                     </motion.div>
@@ -136,9 +136,9 @@ const StoresPage: React.FC = () => {
                 transition={{ duration: 0.8, delay: 0.8 }}
                 style={{ marginTop: '40px', padding: '20px', backgroundColor: '#fff', borderRadius: '12px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}
             >
-                <h2 style={{ fontSize: '1.5rem', marginBottom: '10px' }}>More About Our Stores</h2>
+                <h2 style={{ fontSize: '1.5rem', marginBottom: '10px' }}>Tìm Hiểu Thêm Về Các Cửa Hàng Của Chúng Tôi</h2>
                 <p style={{ fontSize: '16px', lineHeight: '1.6', color: '#555' }}>
-                    Our stores are dedicated to providing the best shopping experience. From high-quality products to exceptional customer service, we ensure that every visit is memorable. Explore our stores to find a variety of products tailored to your needs.
+                    Các cửa hàng của chúng tôi cam kết mang đến trải nghiệm mua sắm tốt nhất. Từ những sản phẩm chất lượng cao đến dịch vụ khách hàng tuyệt vời, chúng tôi đảm bảo rằng mỗi lần ghé thăm của bạn sẽ là một kỷ niệm đáng nhớ. Hãy khám phá các cửa hàng của chúng tôi để tìm thấy những sản phẩm phù hợp với nhu cầu của bạn.
                 </p>
             </motion.div>
         </Container>
