@@ -1,11 +1,15 @@
 // src/components/CakeDesigner.js
-import React, { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { Col, Row, Slider } from "antd";
 
 const CakeModel = () => {
   const mountRef = useRef(null);
+  const [rotationX, setRotationX] = useState(0);
+  const [rotationY, setRotationY] = useState(0);
+  const cameraRef = useRef<THREE.Object3D | null>(null);
 
   useEffect(() => {
     const scene = new THREE.Scene();
@@ -52,21 +56,23 @@ const CakeModel = () => {
     loader.load(
       "/public/cake.glb",
       (gltf) => {
-        const car = gltf.scene;
-        car.traverse((child) => {
+        const cake = gltf.scene;
+        cake.traverse((child) => {
           if ((child as THREE.Mesh).isMesh) {
             console.log(child);
           }
         });
-        scene.add(car);
+        scene.add(cake);
       },
       undefined,
       (error) => {
         console.error(error);
       }
     );
-
-    camera.position.z = 10;
+    cameraRef.current = camera;
+    camera.position.z = 1;
+    camera.position.y = 1;
+    camera.position.x = 1;
 
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
@@ -97,8 +103,47 @@ const CakeModel = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+  useEffect(() => {
+    if (cameraRef.current) {
+      console.log(rotationX);
+      cameraRef.current.position.y = rotationX;
+    }
+  }, [rotationX]);
+  useEffect(() => {
+    if (cameraRef.current) {
+      console.log(rotationY);
+      cameraRef.current.position.x = rotationY;
+    }
+  }, [rotationY]);
 
-  return <div ref={mountRef} style={{ width: "100vw", height: "100vh" }} />;
+  return (
+    <div>
+      <Row>
+        <Col span={20}>
+          <div ref={mountRef} style={{ width: "100vw", height: "90vh" }} />
+        </Col>
+        <Col span={4}>
+          <Slider
+            min={0}
+            vertical
+            max={2 * Math.PI}
+            step={0.01}
+            value={rotationY}
+            onChange={(value) => setRotationY(value)}
+            style={{ height: "500px", marginTop: 100 }}
+          />
+        </Col>
+      </Row>
+      <Slider
+        min={0}
+        max={2 * Math.PI}
+        step={0.01}
+        value={rotationX}
+        onChange={(value) => setRotationX(value)}
+        style={{ width: "80vw", margin: "0 auto" }}
+      />
+    </div>
+  );
 };
 
 export default CakeModel;
