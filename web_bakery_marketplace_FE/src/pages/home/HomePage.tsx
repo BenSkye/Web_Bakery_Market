@@ -1,7 +1,7 @@
 // /pages/Home.tsx
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from 'react-router-dom';
-import { Carousel, Card, Button, Row, Col } from "antd";
+import { Carousel, Card, Button, Row, Col, Rate } from "antd";
 import { IoStorefrontOutline } from "react-icons/io5";
 import { useSpring, animated } from "@react-spring/web";
 import Map from "../../utils/mapbox/Map";
@@ -20,6 +20,7 @@ import SpinLoading from "../../components/loading/SpinLoading";
 import StoreCard from '../../components/card/CardStore';
 import About from './AboutUs';
 import "../../styles/homeStyles/home.css";
+
 
 
 const HomePage: React.FC = () => {
@@ -268,7 +269,36 @@ const HomePage: React.FC = () => {
             ) : (
               bakeries.map((bakery, index) => (
                 <div key={index} className="card-wrapper">
-                  <StoreCard key={bakery.id} bakery={bakery} />
+                  <Card
+                    className="card-hover"
+                    bordered={false}
+                    style={{ boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)" }}
+                    cover={
+                      <img
+                        alt={bakery.name}
+                        src={bakery.image}
+                        style={{ height: "200px", objectFit: "cover" }}
+                      />
+                    }
+                  >
+                    <h3 style={{ textAlign: "start" }}>{bakery.name}</h3>
+                    <p style={{ textAlign: "start" }}>{bakery.address}</p>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <Rate disabled value={bakery.rating} />
+                      <span style={{ marginLeft: "8px" }}>{bakery.rating}</span>
+                    </div>
+                    <Button type="primary" className="button-hover">
+                      <Link to={`/detail/${bakery.id}`}>
+                        Ghé tiệm
+                      </Link>
+                    </Button>
+                  </Card>
                 </div>
               ))
             )}
