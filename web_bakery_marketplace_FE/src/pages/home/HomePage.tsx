@@ -17,6 +17,7 @@ import { getBakeries, Bakery } from "../../services/bakeriesService";
 import { getWorkshops, Workshop } from "../../services/workshopsService";
 import SpinLoading from "../../components/loading/SpinLoading";
 import "../../styles/homeStyles/home.css";
+import { Link } from "react-router-dom";
 
 const HomePage: React.FC = () => {
   const [bakeries, setBakeries] = useState<Bakery[]>([]);
@@ -288,7 +289,9 @@ const HomePage: React.FC = () => {
                       <span style={{ marginLeft: "8px" }}>{bakery.rating}</span>
                     </div>
                     <Button type="primary" className="button-hover">
-                      Ghé tiệm
+                      <Link to={`/detail/${bakery.id}`}>
+                        Ghé tiệm
+                      </Link>
                     </Button>
                   </Card>
                 </div>
