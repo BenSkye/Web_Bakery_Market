@@ -1,6 +1,7 @@
 // /pages/Home.tsx
 import React, { useState, useRef, useEffect } from "react";
-import { Carousel, Card, Button, Row, Col, Rate } from "antd";
+import { Link } from 'react-router-dom';
+import { Carousel, Card, Button, Row, Col } from "antd";
 import { IoStorefrontOutline } from "react-icons/io5";
 import { useSpring, animated } from "@react-spring/web";
 import Map from "../../utils/mapbox/Map";
@@ -16,7 +17,10 @@ import imgIntro from "../../assets/pexels-jill-wellington-1638660-433527.jpg";
 import { getBakeries, Bakery } from "../../services/bakeriesService";
 import { getWorkshops, Workshop } from "../../services/workshopsService";
 import SpinLoading from "../../components/loading/SpinLoading";
+import StoreCard from '../../components/card/CardStore';
+import About from './AboutUs';
 import "../../styles/homeStyles/home.css";
+
 
 const HomePage: React.FC = () => {
   const [bakeries, setBakeries] = useState<Bakery[]>([]);
@@ -217,15 +221,16 @@ const HomePage: React.FC = () => {
               Thiết kế chiếc bánh của bạn, chia sẽ yêu thương
             </animated.h4>
           </div>
-
-          <Button
-            type="primary"
-            size="large"
-            className="button-hover"
-            style={buttonStyle}
-          >
-            Thử ngay
-          </Button>
+          <Link to="/listStoreAcceptDesign">
+            <Button
+              type="primary"
+              size="large"
+              className="button-hover"
+              style={buttonStyle}
+            >
+              Thử ngay
+            </Button>
+          </Link>
         </animated.div>
         <Carousel autoplay style={bannerCarouselStyle}>
           <div>
@@ -252,7 +257,7 @@ const HomePage: React.FC = () => {
             ...springPropsContainer,
           }}
         >
-          Cửa hàng tại{" "}
+          Cửa hàng tại
           <span style={{ color: "red", marginLeft: "8px" }}>Hồ Chí Minh</span>
           <IoStorefrontOutline style={{ marginLeft: "8px" }} />
         </animated.h1>
@@ -263,34 +268,7 @@ const HomePage: React.FC = () => {
             ) : (
               bakeries.map((bakery, index) => (
                 <div key={index} className="card-wrapper">
-                  <Card
-                    className="card-hover"
-                    bordered={false}
-                    style={{ boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)" }}
-                    cover={
-                      <img
-                        alt={bakery.name}
-                        src={bakery.image}
-                        style={{ height: "200px", objectFit: "cover" }}
-                      />
-                    }
-                  >
-                    <h3 style={{ textAlign: "start" }}>{bakery.name}</h3>
-                    <p style={{ textAlign: "start" }}>{bakery.address}</p>
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        marginBottom: "10px",
-                      }}
-                    >
-                      <Rate disabled value={bakery.rating} />
-                      <span style={{ marginLeft: "8px" }}>{bakery.rating}</span>
-                    </div>
-                    <Button type="primary" className="button-hover">
-                      Ghé tiệm
-                    </Button>
-                  </Card>
+                  <StoreCard key={bakery.id} bakery={bakery} />
                 </div>
               ))
             )}
@@ -361,17 +339,7 @@ const HomePage: React.FC = () => {
         </animated.h1>
         <div style={introductionContainerStyle}>
           <div style={introductionTextStyle}>
-            <p>
-              Chào mừng bạn đến với trang web của chúng tôi! Được khởi nguồn từ
-              niềm đam mê với nghệ thuật bánh ngọt, chúng tôi tin rằng mỗi chiếc
-              bánh sinh nhật không chỉ là một món ăn mà còn là một tác phẩm nghệ
-              thuật chứa đựng tình cảm và sáng tạo. Tại đây, bạn có thể tự tay
-              thiết kế những chiếc bánh sinh nhật độc đáo, từ việc chọn màu sắc,
-              hương vị đến trang trí, tạo nên những chiếc bánh mang dấu ấn cá
-              nhân. Hợp tác với các tiệm bánh uy tín, chúng tôi mang đến cho bạn
-              sự đa dạng và chất lượng. Hãy cùng chúng tôi biến mỗi chiếc bánh
-              thành một kiệt tác và một kỷ niệm đáng nhớ!
-            </p>
+            <About />
           </div>
           <img src={imgIntro} alt="" style={introductionImageStyle} />
         </div>

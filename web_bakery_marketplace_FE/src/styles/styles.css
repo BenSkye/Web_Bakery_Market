@@ -1,3 +1,10 @@
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 cột */
+  gap: 10px; /* Khoảng cách giữa các card */
+  padding: 16px; /* Khoảng cách bao quanh lưới */
+}
+
 .card-hover {
   transition: transform 0.3s, box-shadow 0.3s;
 }
