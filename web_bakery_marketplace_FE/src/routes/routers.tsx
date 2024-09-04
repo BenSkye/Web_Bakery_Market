@@ -12,11 +12,12 @@ import Detail from '../pages/detail/Detail';
 import Dashboard from '../pages/admin/Dashboard';
 import Cart from '../pages/stores/Cart';
 import StorePage from '../pages/manager/StorePage';
+import ListStoreAcceptDesignPage from '../pages/listStoreAcceptDesign/StoreAcceptDesignPage';
+
 
 const AppRoutes: React.FC = () => {
     return (
         <Routes>
-
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignUp />} />
             <Route element={<MainLayout />}>
@@ -25,10 +26,11 @@ const AppRoutes: React.FC = () => {
                 <Route path="/about" element={<AboutPage />} />
                 <Route path="/stores" element={<StoresPage />} />
                 <Route path="/workshop" element={<WorkshopPage />} />
-                <Route path="/manage-shop" element={<StorePage />} />
+                <Route path="/storepage" element={<StorePage />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/detail/:id" element={<Detail />} />
                 <Route path="/CakeDesigner" element={<CakeDesigner />} />
+                <Route path="/listStoreAcceptDesign" element={<ListStoreAcceptDesignPage />} />
             </Route>
         </Routes>
     );
