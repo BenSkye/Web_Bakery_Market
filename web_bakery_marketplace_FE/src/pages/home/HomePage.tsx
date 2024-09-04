@@ -1,7 +1,7 @@
 // /pages/Home.tsx
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from 'react-router-dom';
-import { Carousel, Card, Button, Row, Col } from "antd";
+import { Carousel, Card, Button, Row, Col, Rate } from "antd";
 import { IoStorefrontOutline } from "react-icons/io5";
 import { useSpring, animated } from "@react-spring/web";
 import Map from "../../utils/mapbox/Map";
@@ -20,6 +20,7 @@ import SpinLoading from "../../components/loading/SpinLoading";
 import StoreCard from '../../components/card/CardStore';
 import About from './AboutUs';
 import "../../styles/homeStyles/home.css";
+
 
 
 const HomePage: React.FC = () => {
@@ -289,7 +290,7 @@ const HomePage: React.FC = () => {
                         marginBottom: "10px",
                       }}
                     >
-
+                      <Rate disabled value={bakery.rating} />
                       <span style={{ marginLeft: "8px" }}>{bakery.rating}</span>
                     </div>
                     <Button type="primary" className="button-hover">
@@ -298,7 +299,6 @@ const HomePage: React.FC = () => {
                       </Link>
                     </Button>
                   </Card>
-                  <StoreCard key={bakery.id} bakery={bakery} />
                 </div>
               ))
             )}
