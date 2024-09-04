@@ -7,6 +7,7 @@ import WorkshopPage from '../pages/workshop/Workshop';
 import LoginPage from '../pages/login/Login';
 import MainLayout from '../layouts/DefaultLayout';
 import SignUp from '../pages/signup/signup';
+import Detail from '../pages/detail/Detail';
 
 const AppRoutes: React.FC = () => {
     return (
@@ -16,6 +17,7 @@ const AppRoutes: React.FC = () => {
             <Route path="/signup" element={<SignUp />} />
             <Route element={<MainLayout />}>
                 <Route path="/" element={<HomePage />} />
+                <Route path="/detail" element={<Detail />} />
                 <Route path="/about" element={<AboutPage />} />
                 <Route path="/stores" element={<StoresPage />} />
                 <Route path="/workshop" element={<WorkshopPage />} />

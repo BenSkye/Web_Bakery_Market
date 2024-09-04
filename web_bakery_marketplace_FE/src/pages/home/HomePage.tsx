@@ -11,6 +11,7 @@ import imgIntro from '../../assets/pexels-jill-wellington-1638660-433527.jpg'
 import { getBakeries, Bakery } from '../../services/bakeriesService';
 import { getWorkshops, Workshop } from '../../services/workshopsService';
 import SpinLoading from '../../components/loading/SpinLoading';
+import { Link } from 'react-router-dom';
 import '../../styles/homeStyles/home.css';
 
 
@@ -41,6 +42,7 @@ const HomePage: React.FC = () => {
             try {
                 setLoading(true);
                 const data = await getWorkshops();
+
                 setWorkshops(data);
             } catch (error) {
                 console.error('Failed to fetch workshops:', error);
@@ -252,7 +254,10 @@ const HomePage: React.FC = () => {
                                             <Rate disabled value={bakery.rating} />
                                             <span style={{ marginLeft: '8px' }}>{bakery.rating}</span>
                                         </div>
-                                        <Button type="primary" className="button-hover">Ghé tiệm</Button>
+
+                                        <Button type="primary" className="button-hover">
+                                            <Link to="/detail" style={{ color: '#fff' }}>Ghé tiệm</Link>
+                                        </Button>
                                     </Card>
                                 </div>
                             )))
