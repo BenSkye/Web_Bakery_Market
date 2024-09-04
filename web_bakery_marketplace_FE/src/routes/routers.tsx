@@ -9,7 +9,8 @@ import MainLayout from '../layouts/DefaultLayout';
 import SignUp from '../pages/signup/signup';
 import CakeDesigner from "../pages/3D/3DHome";
 import Detail from '../pages/detail/Detail';
-
+import Dashboard from '../pages/admin/Dashboard';
+import Cart from '../pages/stores/Cart';
 const AppRoutes: React.FC = () => {
     return (
         <Routes>
@@ -18,10 +19,12 @@ const AppRoutes: React.FC = () => {
             <Route path="/signup" element={<SignUp />} />
             <Route element={<MainLayout />}>
                 <Route path="/" element={<HomePage />} />
-                <Route path="/detail/:id" element={<Detail />} />
+                <Route path="/cart" element={<Cart />} />
                 <Route path="/about" element={<AboutPage />} />
                 <Route path="/stores" element={<StoresPage />} />
                 <Route path="/workshop" element={<WorkshopPage />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/detail/:id" element={<Detail />} />
                 <Route path="/CakeDesigner" element={<CakeDesigner />} />
             </Route>
         </Routes>

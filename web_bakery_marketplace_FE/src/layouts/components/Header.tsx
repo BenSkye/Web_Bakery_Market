@@ -45,7 +45,9 @@ const HeaderComponent: React.FC = () => {
                         <Row align="middle">
                             <Col style={{ marginRight: '1rem' }}>
                                 <Badge count={5} size="small">
-                                    <Button type="text" icon={<ShoppingCartOutlined />} style={{ fontSize: '1.5rem' }} />
+                                    <Link to="/cart">
+                                        <Button type="text" icon={<ShoppingCartOutlined />} style={{ fontSize: '1.5rem' }} />
+                                    </Link>
                                 </Badge>
                             </Col>
                             <Col>
