@@ -7,6 +7,8 @@ import WorkshopPage from '../pages/workshop/Workshop';
 import LoginPage from '../pages/login/Login';
 import MainLayout from '../layouts/DefaultLayout';
 import SignUp from '../pages/signup/signup';
+import CakeDesigner from "../pages/3D/3DHome";
+
 
 const AppRoutes: React.FC = () => {
     return (
@@ -19,6 +21,7 @@ const AppRoutes: React.FC = () => {
                 <Route path="/about" element={<AboutPage />} />
                 <Route path="/stores" element={<StoresPage />} />
                 <Route path="/workshop" element={<WorkshopPage />} />
+                <Route path="/CakeDesigner" element={<CakeDesigner />} />
             </Route>
         </Routes>
     );
