@@ -1,0 +1,81 @@
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 cột */
+  gap: 10px; /* Khoảng cách giữa các card */
+  padding: 16px; /* Khoảng cách bao quanh lưới */
+}
+
+.card-hover {
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card-hover:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.cards-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.scroll-container {
+  display: flex;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 1rem 0;
+}
+
+.card-wrapper {
+  flex: 0 0 380px;
+  margin-right: 16px;
+}
+
+.scroll-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  border: none;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding: 20px;
+  cursor: pointer;
+}
+
+.scroll-button.left {
+  left: 0;
+}
+
+.scroll-button.right {
+  right: 0;
+}
+
+/* Hide scrollbar for Chrome, Safari, and Opera */
+.scroll-container::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge, and Firefox */
+.scroll-container {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.button-hover {
+  transition: box-shadow 0.3s ease;
+}
+
+.button-hover {
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.button-hover {
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.button-hover:hover {
+  transform: rotate(5deg) translateY(-5px); /* Xoay và di chuyển lên trên khi hover */
+  background-color: #ff1493; /* Thay đổi màu nền khi hover */
+}
