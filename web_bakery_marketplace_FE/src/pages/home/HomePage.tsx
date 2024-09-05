@@ -5,7 +5,7 @@ import { Carousel, Card, Button, Row, Col, Rate } from "antd";
 import { IoStorefrontOutline } from "react-icons/io5";
 import { useSpring, animated } from "@react-spring/web";
 import Map from "../../utils/mapbox/Map";
-import banner1 from "../../assets/pexels-valeriya-827516.jpg";
+import banner1 from "../../assets/_99ba4fdc-95a0-4dd8-8bb0-d8942d8ab671.jpg";
 import banner2 from "../../assets/pexels-marinautrabo-1729808.jpg";
 import {
   LeftOutlined,
