@@ -1,7 +1,7 @@
 import { model, Schema } from 'mongoose';
 
-const DOCUMENT_NAME = 'User';
-const COLLECTION_NAME = 'Users';
+const DOCUMENT_NAME = 'Bakery';
+const COLLECTION_NAME = 'Bakeries';
 // Declare the Schema of the Mongo model
 const userSchema = new Schema(
     {

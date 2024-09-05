@@ -2,3 +2,10 @@
 
 ### signup
 POST {{url_dev}}/user/signup
+Content-Type: application/json
+
+{
+  "name": "test6",
+  "email": "test1.email@example.com",
+  "password": "your_password"
+}
