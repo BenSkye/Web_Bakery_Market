@@ -46,11 +46,23 @@ const Scene = ({ onSelect }: { onSelect: (object: Object3D) => void }) => {
 
 const CakeModel = () => {
   const [selectedObject, setSelectedObject] = useState<Object3D | null>(null);
-
+  const [x, setX] = useState<number>(0);
+  const [y, setY] = useState<number>(0);
+  const [z, setZ] = useState<number>(1000);
+  const zoomFactor = 0.05;
   useEffect(() => {
     if (selectedObject) {
       const mesh = selectedObject as Mesh;
       console.log('Selected object:', mesh);
+      // const directionX = mesh.position.x + 0;
+      // const directionY = mesh.position.y + 0;
+      // const directionZ = mesh.position.z + 200;
+      // setX(0)
+      // setY(0)
+      // setZ(1000)
+      // // setX(directionX);
+      // // setY(directionY);
+      // setZ(directionZ);
       if (Array.isArray(mesh.material)) {
         mesh.material.forEach((material) => {
           if (material instanceof MeshBasicMaterial ||
@@ -76,9 +88,14 @@ const CakeModel = () => {
       }
     }
   }, [selectedObject]);
+
+  useEffect(() => {
+    console.log('x:', x, 'y:', y, 'z:', z);
+  }, [x, y, z]);
+
   return (
     <Canvas style={{ height: '80vh' }}>
-      <PerspectiveCamera makeDefault position={[0, 0, 1000]} />
+      <PerspectiveCamera makeDefault position={[x, y, z]} />
       <OrbitControls />
       <ambientLight intensity={0.5} />
       <directionalLight position={[5, 5, 5]} />

@@ -39,5 +39,5 @@ const userSchema = new Schema(
     },
 );
 //Export the model
-const userModel = model(DOCUMENT_NAME, userSchema);
-export { userModel };
+const bakeryModel = model(DOCUMENT_NAME, userSchema);
+export { bakeryModel };

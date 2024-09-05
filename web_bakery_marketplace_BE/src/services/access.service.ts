@@ -1,83 +1,130 @@
 import { userModel } from '../models/user.model';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
-import KeyTokenService from './keyToken.service';
-import { createTokenPair } from '../auth/authUtils';
+import { createTokenPair, verifyJWT } from '../auth/authUtils';
 import { getInfoData } from '../utils';
+import { AuthFailureError, BadRequestError, ForbiddenError } from '../core/error.response';
+import { keyModel } from "../models/keytoken.model"
+import { JwtPayload } from 'jsonwebtoken';
+
+
+//import service
+import KeyTokenService from './keyToken.service';
+import { findByEmail } from './user.service';
 const RoleUser = {
   CUSTOMER: 'customer',
   ADMIN: 'admin',
-  SHOP: 'SHOP',
+  SHOP: 'shop',
 };
 
 class AccessService {
-  static signup = async ({ name, email, password }: { name: string, email: string, password: string }) => {
-    try {
-      //step1: check email exist
-      const holderUser = await userModel.findOne({ email }).lean();
-      if (holderUser) {
-        return {
-          code: 'xxx',
-          message: 'User already exist',
-        };
-      }
-
-      const passwordHash = await bcrypt.hash(password, 10);
-
-      const newUser = await userModel.create({
-        name,
-        email,
-        password: passwordHash,
-        roles: [RoleUser.CUSTOMER],
-      });
-
-      if (newUser) {
-        // create privatekey, publickey
-        // const { privateKey, publicKey } = crypto.generateKeyPairSync('rsa', {
-        //   modulusLength: 4096,
-        //   publicKeyEncoding: {
-        //     type: 'pkcs1',
-        //     format: 'pem',
-        //   },
-        //   privateKeyEncoding: {
-        //     type: 'pkcs1',
-        //     format: 'pem',
-        //   },
-        // });
-        const privateKey = crypto.randomBytes(64).toString('hex');
-        const publicKey = crypto.randomBytes(64).toString('hex');
-        console.log({ privateKey, publicKey }); //save collection KeyStore
-        const keyStore = await KeyTokenService.createKeyToken(newUser._id, publicKey.toString(), privateKey.toString());
-        if (!keyStore) {
-          return {
-            code: 'xxx',
-            message: 'publicKeyString error'
-          }
-        }
-
-
-        //create token pair
-        const tokens = await createTokenPair({ userId: newUser._id, email }, publicKey.toString(), privateKey.toString());
-        console.log('Create Token Success', tokens);
-        return {
-          code: 201,
-          metadata: {
-            user: getInfoData({ fields: ['_id', 'name', 'email', 'roles'], object: newUser }),
-            tokens
-          }
-        }
-      }
-      return {
-        code: 200,
-        metadata: null
-      }
-    } catch (error: any) {
-      return {
-        code: 'xxx',
-        message: error.message,
-        status: 'error',
-      };
+  static handlerRefreshToken = async (user: any, keyStore: any, refreshToken: string) => {
+    const { userId, email } = user;
+    if (keyStore.refreshTokensUsed.includes(refreshToken)) {
+      await KeyTokenService.deleteKeyByUserId(userId)
+      throw new ForbiddenError(' Something wrong happend !! Pls relogin')
     }
+    if (keyStore.refreshToken !== refreshToken) {
+      throw new AuthFailureError(' User not registered')
+    }
+    const foundShop = await findByEmail(email)
+
+    if (!foundShop) throw new AuthFailureError(' User not registeted')
+    // create 1 cap moi
+    const tokens = await createTokenPair({ userId, email }, keyStore.publicKey, keyStore.privateKey) as any
+    //update token
+    await KeyTokenService.updateRefreshTokensUsed(tokens.refreshToken, refreshToken)
+
+    return {
+      user,
+      tokens
+    }
+
+  }
+
+
+  static logout = async (keyStore: any) => {
+    const delKey = await KeyTokenService.removeKeyById(keyStore._id);
+    console.log('delKey', delKey);
+    return delKey;
+  }
+
+  /*
+   1 check email in dbs
+   2- match password
+   3- create AT vs RT and save
+   4 generate tokens
+   5 get data return login
+   */
+  static login = async (email: string, password: string, refreshToken = null) => {
+    //1 check email in dbs
+    const foundUser = await findByEmail(email);
+    if (!foundUser) {
+      throw new BadRequestError('User not Registered');
+    }
+    //2- match password
+    const match = await bcrypt.compare(password, foundUser.password);
+    if (!match) {
+      throw new AuthFailureError('Password not match');
+    }
+    //3- create AT vs RT and save
+    const privateKey = crypto.randomBytes(64).toString('hex');
+    const publicKey = crypto.randomBytes(64).toString('hex');
+    //4 generate tokens
+    const tokens = await createTokenPair({ userId: foundUser._id, email }, publicKey.toString(), privateKey.toString());
+
+    if (!tokens) {
+      throw new BadRequestError('Create Token Fail');
+    }
+
+    await KeyTokenService.createKeyToken(foundUser._id, publicKey.toString(), privateKey.toString(), (tokens as { refreshToken: string }).refreshToken);
+
+    return {
+      user: getInfoData({ fields: ['_id', 'name', 'email'], object: foundUser }),
+      tokens
+    }
+  }
+
+  static signup = async ({ name, email, password }: { name: string, email: string, password: string }) => {
+    //step1: check email exist
+    const holderUser = await userModel.findOne({ email }).lean();
+    console.log('exist', holderUser)
+    if (holderUser) {
+      throw new BadRequestError('Email already exists');
+    }
+
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    const newUser = await userModel.create({
+      name,
+      email,
+      password: passwordHash,
+      roles: [RoleUser.CUSTOMER],
+    });
+
+    if (newUser) {
+      const privateKey = crypto.randomBytes(64).toString('hex');
+      const publicKey = crypto.randomBytes(64).toString('hex');
+      console.log({ privateKey, publicKey }); //save collection KeyStore
+      const keyStore = await KeyTokenService.createKeyToken(newUser._id, publicKey.toString(), privateKey.toString(), '');
+      if (!keyStore) {
+        throw new BadRequestError('keyStore not found');
+      }
+
+
+      //create token pair
+      const tokens = await createTokenPair({ userId: newUser._id, email }, publicKey.toString(), privateKey.toString());
+      console.log('Create Token Success', tokens);
+      return {
+        user: getInfoData({ fields: ['_id', 'name', 'email', 'roles'], object: newUser }),
+        tokens
+      }
+    }
+    return {
+      code: 200,
+      metadata: null
+    }
+
   };
 }
 

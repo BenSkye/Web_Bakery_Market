@@ -24,12 +24,22 @@ app.use(bodyParser.urlencoded({ extended: true }));
 mongoose;
 // Routes
 app.use('/', indexRouter);
-app.use('/users', userRouter);
+
 
 // Error handling middleware
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  console.error(err.stack);
-  res.status(500).send('Something broke!');
+app.use((req, res, next) => {
+  const error: any = new Error('Not Found');
+  error.status = 404;
+  next(error);
+});
+app.use((error: any, req: Request, res: Response, next: NextFunction) => {
+  // console.log(error);
+  const statusCode = error.status || 500;
+  return res.status(statusCode).json({
+    status: 'error',
+    code: statusCode,
+    message: error.message || 'Internal Server Error'
+  });
 });
 
 export default app;
