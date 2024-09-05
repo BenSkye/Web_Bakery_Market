@@ -42,7 +42,7 @@ const StoreCard: React.FC<StoreCardProps> = ({ bakery }) => {
                     <Rate disabled value={bakery.rating} />
                     <span style={{ marginLeft: "8px" }}>{bakery.rating}</span>
                 </div>
-                <Link to="">
+                <Link to={`/detail/${bakery.id}`}>
                     <Button type="primary" className="button-hover"  >
                         Ghé tiệm
                     </Button>
