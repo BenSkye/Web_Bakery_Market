@@ -1,0 +1,32 @@
+.button-hover:hover {
+    background-color: #40a9ff;
+    border-color: #40a9ff;
+    color: #fff;
+}
+
+.card-hover:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.scroll-container {
+    display: flex;
+    overflow-x: scroll;
+}
+
+.scroll-button {
+    background-color: rgba(255, 255, 255, 0.7);
+    border: none;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    cursor: pointer;
+}
+
+.scroll-button.left {
+    left: 10px;
+}
+
+.scroll-button.right {
+    right: 10px;
+}
