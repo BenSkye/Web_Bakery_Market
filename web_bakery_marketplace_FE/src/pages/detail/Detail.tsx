@@ -3,6 +3,8 @@ import { Card, Row, Col, Rate, Typography, Avatar, Button } from 'antd';
 import { ClockCircleOutlined, EnvironmentOutlined } from '@ant-design/icons';
 import { IoStorefrontOutline } from "react-icons/io5";
 import { motion } from 'framer-motion';
+import { Canvas } from '@react-three/fiber';
+import { OrbitControls, useGLTF } from '@react-three/drei';
 
 const { Title } = Typography;
 
@@ -29,6 +31,11 @@ const otherStores = [
 const Detail: React.FC = () => {
     const [selectedFilter, setSelectedFilter] = useState('all');
     const [filteredCakes, setFilteredCakes] = useState(allCakes);
+
+    const { scene } = useGLTF('/public/cake.glb');
+
+    scene.scale.set(10, 10, 10); // Adjust the scale values as needed
+
 
     useEffect(() => {
         if (selectedFilter === 'all') {
@@ -168,6 +175,21 @@ const Detail: React.FC = () => {
                         </p>
                     </Col>
                 </Row>
+
+                <hr style={separatorStyle} />
+
+                <div style={sectionTitleStyle}>Cá nhân hóa chiếc bánh của bạn</div>
+
+                {/* <Card className='card-hover'> */}
+                <Canvas style={{ height: '300px', width: '100%' }}>
+                    <OrbitControls enableZoom={true}
+                        enablePan={false} />
+                    <ambientLight intensity={4} />
+                    <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
+                    <primitive object={scene} />
+                </Canvas>
+                {/* </Card> */}
+                <hr style={separatorStyle} />
 
                 {/* Cake Categories Section */}
                 <div style={sectionTitleStyle}>Top bánh bán chạy</div>
