@@ -3,35 +3,64 @@ import { model, Schema } from 'mongoose';
 const DOCUMENT_NAME = 'Bakery';
 const COLLECTION_NAME = 'Bakeries';
 // Declare the Schema of the Mongo model
-const userSchema = new Schema(
+const bakerySchema = new Schema(
     {
         name: {
             type: String,
             trim: true,
             maxLength: 150,
         },
-        email: {
-            type: String,
-            unique: true,
-            trim: true,
+        user_id: {
+            type: Schema.Types.ObjectId,
+            required: true,
+            ref: 'User'
         },
-        password: {
+        address: {
             type: String,
             required: true,
+        },
+        contact: {
+            type: {
+                phone: {
+                    type: String,
+                    required: true,
+                },
+                facebook: {
+                    type: String,
+                },
+                instagram: {
+                    type: String,
+                },
+            }
         },
         status: {
             type: String,
             enum: ['active', 'inactive'],
             default: 'inactive',
         },
-        verfify: {
-            type: Schema.Types.Boolean,
-            default: false,
+        image: {
+            type: [String]
         },
-        roles: {
-            type: Array,
-            default: [],
+        rating: {
+            type: Number,
+            default: -1,
         },
+        openingHours: {
+            type: {
+                monday: { open: { type: String }, close: { type: String }, },
+                tuesday: { open: { type: String }, close: { type: String } },
+                wednesday: { open: { type: String }, close: { type: String } },
+                thursday: { open: { type: String }, close: { type: String } },
+                friday: { open: { type: String }, close: { type: String } },
+                saturday: { open: { type: String }, close: { type: String } },
+                sunday: { open: { type: String }, close: { type: String } },
+            },
+            required: true,
+        },
+        completedOrders: {
+            type: Number,
+            default: 0,
+        }
     },
     {
         timestamps: true,
@@ -39,5 +68,5 @@ const userSchema = new Schema(
     },
 );
 //Export the model
-const bakeryModel = model(DOCUMENT_NAME, userSchema);
+const bakeryModel = model(DOCUMENT_NAME, bakerySchema);
 export { bakeryModel };

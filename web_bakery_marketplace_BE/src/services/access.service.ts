@@ -11,6 +11,7 @@ import { JwtPayload } from 'jsonwebtoken';
 //import service
 import KeyTokenService from './keyToken.service';
 import { findByEmail } from './user.service';
+import { createKey, findByUserId } from './apiKey.service';
 const RoleUser = {
   CUSTOMER: 'customer',
   ADMIN: 'admin',
@@ -78,14 +79,18 @@ class AccessService {
     }
 
     await KeyTokenService.createKeyToken(foundUser._id, publicKey.toString(), privateKey.toString(), (tokens as { refreshToken: string }).refreshToken);
-
+    const apiKey = await findByUserId(foundUser._id);
+    if (!apiKey) {
+      throw new BadRequestError('API Key not found');
+    }
     return {
       user: getInfoData({ fields: ['_id', 'name', 'email'], object: foundUser }),
-      tokens
+      tokens,
+      apiKey: apiKey.key
     }
   }
 
-  static signup = async ({ name, email, password }: { name: string, email: string, password: string }) => {
+  static signup = async ({ name, email, password, role }: { name: string, email: string, password: string, role: string }) => {
     //step1: check email exist
     const holderUser = await userModel.findOne({ email }).lean();
     console.log('exist', holderUser)
@@ -99,7 +104,7 @@ class AccessService {
       name,
       email,
       password: passwordHash,
-      roles: [RoleUser.CUSTOMER],
+      roles: [role] || [RoleUser.CUSTOMER],
     });
 
     if (newUser) {
@@ -115,9 +120,14 @@ class AccessService {
       //create token pair
       const tokens = await createTokenPair({ userId: newUser._id, email }, publicKey.toString(), privateKey.toString());
       console.log('Create Token Success', tokens);
+      const apiKey = await createKey(newUser.roles, newUser._id);
+      if (!apiKey) {
+        throw new BadRequestError('Create API Key Fail');
+      }
       return {
         user: getInfoData({ fields: ['_id', 'name', 'email', 'roles'], object: newUser }),
-        tokens
+        tokens,
+        apiKey: apiKey.key
       }
     }
     return {
