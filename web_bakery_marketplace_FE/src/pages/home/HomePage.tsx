@@ -269,36 +269,7 @@ const HomePage: React.FC = () => {
             ) : (
               bakeries.map((bakery, index) => (
                 <div key={index} className="card-wrapper">
-                  <Card
-                    className="card-hover"
-                    bordered={false}
-                    style={{ boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)" }}
-                    cover={
-                      <img
-                        alt={bakery.name}
-                        src={bakery.image}
-                        style={{ height: "200px", objectFit: "cover" }}
-                      />
-                    }
-                  >
-                    <h3 style={{ textAlign: "start" }}>{bakery.name}</h3>
-                    <p style={{ textAlign: "start" }}>{bakery.address}</p>
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        marginBottom: "10px",
-                      }}
-                    >
-                      <Rate disabled value={bakery.rating} />
-                      <span style={{ marginLeft: "8px" }}>{bakery.rating}</span>
-                    </div>
-                    <Button type="primary" className="button-hover">
-                      <Link to={`/detail/${bakery.id}`}>
-                        Ghé tiệm
-                      </Link>
-                    </Button>
-                  </Card>
+                  <StoreCard key={index} bakery={bakery} />
                 </div>
               ))
             )}
