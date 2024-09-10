@@ -11,7 +11,7 @@ import TopSellingCakes from './TopSellingCakes';
 import CakeFilter from './CakeFilter';
 import OtherStores from './OtherStores';
 
-const { Title } = Typography;
+
 
 
 const sampleCakeImage = 'path/to/cake-image.jpg'; // Replace with actual cake images
@@ -88,8 +88,8 @@ const Detail: React.FC = () => {
                 {/* Other Stores Section */}
 
                 <OtherStores />
-            </motion.div>
-        </div>
+            </motion.div >
+        </div >
     );
 };
 
