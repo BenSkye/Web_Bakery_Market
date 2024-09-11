@@ -1,221 +1,101 @@
-// /pages/Home.tsx
-import React, { useState, useRef, useEffect } from "react";
-import { Link } from 'react-router-dom';
-import { Carousel, Card, Button, Row, Col, Rate } from "antd";
-import { IoStorefrontOutline } from "react-icons/io5";
-import { useSpring, animated } from "@react-spring/web";
-import Map from "../../utils/mapbox/Map";
-import banner1 from "../../assets/_99ba4fdc-95a0-4dd8-8bb0-d8942d8ab671.jpg";
-import banner2 from "../../assets/pexels-marinautrabo-1729808.jpg";
-import {
-  LeftOutlined,
-  RightOutlined,
-  BulbOutlined,
-  ClockCircleOutlined,
-} from "@ant-design/icons";
-import imgIntro from "../../assets/pexels-jill-wellington-1638660-433527.jpg";
-import { getBakeries, Bakery } from "../../services/bakeriesService";
-import { getWorkshops, Workshop } from "../../services/workshopsService";
-import SpinLoading from "../../components/loading/SpinLoading";
-import StoreCard from '../../components/card/CardStore';
-import About from './AboutUs';
-import "../../styles/homeStyles/home.css";
+import React, { useState } from 'react';
+import { Row, Col, Button } from 'antd';
+import { motion } from 'framer-motion';
+import DashboardCard from './Dashboard';
+import RevenueChart from './RevenueChart';
+import TopProductsTable from './TopProductsTable';
+import UserList from './UserList';
 
-
+const dashboardData = {
+  cards: [
+    { title: 'Total Revenue', value: '$25,000', icon: '💵' },
+    { title: 'Total Orders', value: '1,200', icon: '📦' },
+    { title: 'New Customers', value: '150', icon: '👥' },
+    { title: 'Monthly Growth', value: '12%', icon: '📈' },
+  ],
+  tableData: [
+    { key: '1', product: 'Cake', revenue: '$1,000', orders: '50' },
+    { key: '2', product: 'Donut', revenue: '$500', orders: '30' },
+    { key: '3', product: 'Cookie', revenue: '$750', orders: '40' },
+    { key: '4', product: 'Bread', revenue: '$300', orders: '20' },
+  ],
+  chartData: [
+    { date: '2024-01', value: 3000 },
+    { date: '2024-02', value: 5000 },
+    { date: '2024-03', value: 7000 },
+    { date: '2024-04', value: 6000 },
+    { date: '2024-05', value: 8000 },
+  ],
+  users: [
+    { key: '1', name: 'John Doe', email: 'john@example.com', role: 'Admin' },
+    { key: '2', name: 'Jane Smith', email: 'jane@example.com', role: 'User' },
+    { key: '3', name: 'Michael Brown', email: 'michael@example.com', role: 'Moderator' },
+  ],
+};
 
 const HomePage: React.FC = () => {
-  const [bakeries, setBakeries] = useState<Bakery[]>([]);
-  const [workshops, setWorkshops] = useState<Workshop[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [view, setView] = useState<'dashboard' | 'userList'>('dashboard');
+  const { cards, tableData, chartData, users } = dashboardData;
 
-  useEffect(() => {
-    const fetchBakeries = async () => {
-      try {
-        setLoading(true);
-        const data = await getBakeries();
-        setBakeries(data);
-      } catch (error) {
-        console.error("Failed to fetch bakeries:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchBakeries();
-  }, []);
-
-  useEffect(() => {
-    const fetchWorkshops = async () => {
-      try {
-        setLoading(true);
-        const data = await getWorkshops();
-        setWorkshops(data);
-      } catch (error) {
-        console.error("Failed to fetch workshops:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchWorkshops();
-  }, []);
-
-  const homeContainerStyle: React.CSSProperties = {
-    textAlign: "center",
-    position: "relative",
-  };
-
-  const bannerCarouselStyle: React.CSSProperties = {
-    width: "100%",
-    height: "500px",
-    overflow: "hidden",
-    borderRadius: "10px",
-    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.4)",
-  };
-
-  const bannerImageStyle: React.CSSProperties = {
-    width: "100%",
-    height: "500px",
-    objectFit: "cover",
-  };
-
-  const overlayContainerStyle: React.CSSProperties = {
-    position: "absolute",
-    top: "10%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    color: "white",
-    textAlign: "center",
-    zIndex: 1,
-  };
-
-  const sloganStyle: React.CSSProperties = {
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    padding: "10px 20px",
-    borderRadius: "5px",
-    fontSize: "24px",
-    fontFamily: "monospace",
-    fontWeight: "bold",
-    fontStyle: "italic", // Italicize the text
-  };
-
-  const cardStyle: React.CSSProperties = {
-    position: "absolute",
-    top: "50%",
-    left: "18%",
-    transform: "translate(-50%, -215%)",
-    zIndex: 2,
-    width: "500px",
-    height: "300px",
-    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
-    background:
-      "linear-gradient(to left, rgba(253, 222, 222, 0.5), rgba(253, 222, 222, 0.7))",
-  };
-
-  // Spring animation for the text
-  const springPropsH1 = useSpring({
-    from: { opacity: 0, transform: "translate3d(0,-40px,0)" },
-    to: { opacity: 1, transform: "translate3d(0,0px,0)" },
-    config: { tension: 200, friction: 15 },
-    delay: 200, // Delay for the h1
-  });
-
-  const springPropsH4 = useSpring({
-    from: { opacity: 0, transform: "translate3d(0,-40px,0)" },
-    to: { opacity: 1, transform: "translate3d(0,0px,0)" },
-    config: { tension: 200, friction: 15 },
-    delay: 400, // Delay for the h4
-  });
-
-  const springPropsContainer = useSpring({
-    from: { opacity: 0, transform: "translate3d(0,-40px,0)" },
-    to: { opacity: 1, transform: "translate3d(0,0px,0)" },
-    config: { tension: 200, friction: 15 },
-    delay: 400, // Delay for the container
-  });
-
-  const buttonStyle: React.CSSProperties = {
-    marginTop: "20px",
-  };
-
-  const scrollRef = useRef<HTMLDivElement>(null);
-
-  const scrollLeft = () => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollBy({ left: -250, behavior: "smooth" });
-    }
-  };
-
-  const scrollRight = () => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollBy({ left: 250, behavior: "smooth" });
-    }
-  };
-
-  const workshopBannerStyle: React.CSSProperties = {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    height: "300px",
-    width: "100%",
-    borderRadius: "10px",
-    overflow: "hidden",
-    position: "relative",
-    marginBottom: "20px",
-    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
-  };
-
-  const workshopImageStyle: React.CSSProperties = {
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
-    position: "absolute",
-    top: 0,
-    left: 0,
-    zIndex: 1,
-  };
-
-  const workshopInfoStyle: React.CSSProperties = {
-    position: "relative",
-    zIndex: 2,
-    color: "white",
-    textAlign: "center",
-    padding: "20px",
-    backgroundColor: "rgba(0, 0, 0, 0.6)",
-    borderRadius: "10px",
-  };
-
-  const introductionContainerStyle: React.CSSProperties = {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: "1rem",
-    borderRadius: "10px",
-    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
-    backgroundColor: "#f9f9f9",
-  };
-
-  const introductionTextStyle: React.CSSProperties = {
-    flex: 9,
-    padding: "2rem",
-    textAlign: "justify",
-    fontSize: 18,
-    fontFamily: "revert-layer",
-    lineHeight: 1.8,
-  };
-
-  const introductionImageStyle: React.CSSProperties = {
-    flex: 3,
-    height: 250,
-    borderRadius: "10px",
-  };
+  const columns = [
+    { title: 'Product', dataIndex: 'product', key: 'product' },
+    { title: 'Revenue', dataIndex: 'revenue', key: 'revenue' },
+    { title: 'Orders', dataIndex: 'orders', key: 'orders' },
+  ];
 
   return (
-    <div style={homeContainerStyle}>
-    </div>
+    <motion.div
+      initial={{ opacity: 0, y: -40 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: 'easeOut' }}
+      style={{ padding: '2rem' }}
+    >
+      {/* Buttons to switch between views */}
+      <Row gutter={16} style={{ marginBottom: '2rem' }}>
+        <Col>
+          <Button
+            type={view === 'dashboard' ? 'primary' : 'default'}
+            onClick={() => setView('dashboard')}
+          >
+            Dashboard
+          </Button>
+        </Col>
+        <Col>
+          <Button
+            type={view === 'userList' ? 'primary' : 'default'}
+            onClick={() => setView('userList')}
+          >
+            User List
+          </Button>
+        </Col>
+      </Row>
 
+      {/* Conditionally render based on the current view */}
+      {view === 'dashboard' ? (
+        <>
+          <Row gutter={16}>
+            {cards.map((card, index) => (
+              <DashboardCard key={index} title={card.title} value={card.value} icon={card.icon} />
+            ))}
+          </Row>
+
+          <Row gutter={16} style={{ marginTop: '2rem' }}>
+            <Col span={24}>
+              <RevenueChart chartData={chartData} />
+            </Col>
+            <Col span={24} style={{ marginTop: '2rem' }}>
+              <TopProductsTable tableData={tableData} columns={columns} />
+            </Col>
+          </Row>
+        </>
+      ) : (
+        <Row gutter={16} style={{ marginTop: '2rem' }}>
+          <Col span={24}>
+            <UserList users={users} />
+          </Col>
+        </Row>
+      )}
+    </motion.div>
   );
 };
 

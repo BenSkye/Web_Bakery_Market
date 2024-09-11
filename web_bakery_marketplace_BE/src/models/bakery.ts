@@ -60,6 +60,9 @@ const bakerySchema = new Schema(
         completedOrders: {
             type: Number,
             default: 0,
+        userId: {
+            type: Schema.Types.ObjectId,
+            ref: "User"
         }
     },
     {

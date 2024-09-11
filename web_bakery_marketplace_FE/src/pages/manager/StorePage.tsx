@@ -4,6 +4,8 @@ import { UserOutlined, ShopOutlined, FileDoneOutlined, BarChartOutlined, Setting
 import StoreInfo from './StoreInfo'; // Import StoreInfo component
 import OrderManagement from './OrderManagement'; // Import OrderManagement component
 import Analytics from './Analytics'; // Import Analytics component
+import AccountSetting from './AccountSetting'
+
 const { Header, Content, Sider } = Layout;
 const { Title } = Typography;
 
@@ -30,7 +32,7 @@ const StorePage: React.FC = () => {
                 </Menu>
             </Sider>
             <Layout>
-                <Header className="site-layout-background" style={{ padding: 0 }}>
+                <Header className="site-layout-background" style={{ padding: 0, backgroundColor: '#f3f3f3' }}>
                     <Title level={2} style={{ padding: '0 24px' }}>Store Management</Title>
                 </Header>
                 <Content style={{ padding: '24px', margin: 0 }}>
@@ -45,7 +47,7 @@ const StorePage: React.FC = () => {
                     {selectedMenu === '4' && (
                         <div>
                             <Title level={3}>Account Settings</Title>
-                            {/* Implement account settings UI here */}
+                            <AccountSetting />
                         </div>
                     )}
                 </Content>
