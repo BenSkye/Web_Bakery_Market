@@ -16,9 +16,10 @@ const keyTokenSchema = new Schema(
         publicKey: {
             type: String, required: true
         },
-        refreshToken: {
-            type: Array, default: []
-        }
+        refreshTokensUsed: {
+            type: Array, default: []//store the refresh tokens that have been used
+        },
+        refreshToken: { type: String, required: true }
     },
     {
         collection: COLLECTION_NAME,

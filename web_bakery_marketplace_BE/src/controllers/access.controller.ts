@@ -1,14 +1,38 @@
 import { NextFunction, Request, Response } from 'express';
 import AccessService from '../services/access.service';
+import { CREATED, SuccessResponse } from '../core/success.response';
+import { asyncHandler } from '../helpers/asyncHandler';
 
 class AccessController {
-  signUp = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      console.log(`[P]::signUp::`, req.body);
-      return res.status(201).json(await AccessService.signup(req.body));
-    } catch (error) {
-      next(error);
-    }
-  };
+
+  handleRefreshToken = asyncHandler(async (req: any, res: Response, next: NextFunction) => {
+    new SuccessResponse({
+      message: 'Refresh token successfully',
+      metadata: await AccessService.handlerRefreshToken(req.user, req.keyStore, req.refreshToken),
+    }).send(res);
+  });
+
+  logout = asyncHandler(async (req: any, res: Response, next: NextFunction) => {
+    new SuccessResponse({
+      message: 'Logout successfully',
+      metadata: await AccessService.logout(req.keyStore),
+    }).send(res);
+  });
+
+  login = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+    new SuccessResponse({
+      message: 'Login successfully',
+      metadata: await AccessService.login(req.body.email, req.body.password),
+    }).send(res);
+  });
+
+
+  //asyncHandler so do not need to use try catch
+  signUp = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+    new CREATED({
+      message: 'Create new user successfully',
+      metadata: await AccessService.signup(req.body),
+    }).send(res);
+  });
 }
 export default new AccessController();

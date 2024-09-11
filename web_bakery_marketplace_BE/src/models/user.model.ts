@@ -24,9 +24,9 @@ const userSchema = new Schema(
       enum: ['active', 'inactive'],
       default: 'inactive',
     },
-    verfify: {
+    verify: {
       type: Schema.Types.Boolean,
-      default: false,
+      default: false, //use to verify email when create account
     },
     roles: {
       type: Array,

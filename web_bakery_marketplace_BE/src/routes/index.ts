@@ -1,14 +1,18 @@
 import { Router, Request, Response } from 'express';
 import accessRouter from './access';
+import { apiKey, permission } from '../auth/checkAuth';
+import bakeryRouter from './bakery';
 
 const router = Router();
 
-router.use('/v1/api', accessRouter);
+//check apiKey
+// router.use(apiKey)
+//check permission
+// router.use(permission('customer'))
 
-// router.get('/', (req: Request, res: Response) => {
-//   return res.status(200).json({
-//     message: 'Welcome to web_bakery_marketplace_BE',
-//   });
-// });
+
+router.use('/v1/api', accessRouter);
+router.use('/v1/api/bakery', bakeryRouter);
+
 
 export default router;
