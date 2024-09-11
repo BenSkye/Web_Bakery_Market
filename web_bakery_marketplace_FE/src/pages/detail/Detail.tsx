@@ -28,7 +28,7 @@ const allCakes = [
 
 
 const Detail: React.FC = () => {
-    const [selectedFilter, setSelectedFilter] = useState('all');
+    const [selectedFilter, setSelectedFilter] = useState('');
     const [filteredCakes, setFilteredCakes] = useState(allCakes);
 
     const { scene } = useGLTF('/public/cake.glb');
