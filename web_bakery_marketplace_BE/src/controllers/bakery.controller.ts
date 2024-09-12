@@ -12,5 +12,20 @@ class BakeryController {
         }).send(res);
     });
 
+    getBakeryById = asyncHandler(async (req: any, res: Response, next: NextFunction) => {
+        new SuccessResponse({
+            message: 'Get bakery by id successfully',
+            metadata: await BakeryService.getBakeryById(req.params.id),
+        }).send(res);
+    });
+
+    getBakeries = asyncHandler(async (req: any, res: Response, next: NextFunction) => {
+        console.log('getBakeries');
+        new SuccessResponse({
+            message: 'Get bakeries successfully',
+            metadata: await BakeryService.getBakeries(),
+        }).send(res);
+    });
+
 }
 export default new BakeryController();

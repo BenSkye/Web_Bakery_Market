@@ -60,7 +60,11 @@ const bakerySchema = new Schema(
         completedOrders: {
             type: Number,
             default: 0,
-        }
+        },
+        customCake: {
+            type: Boolean,
+            default: false,
+        },
     },
     {
         timestamps: true,

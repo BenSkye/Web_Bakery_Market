@@ -1,9 +1,9 @@
 import mongoose from 'mongoose';
 import { countConnect } from '../helpers/check.connect';
 import config from '../configs/config.mongodb';
-const { host, port, name } = config.db;
-const connectString = `mongodb://${host}:${port}/${name}`;
-console.log(connectString);
+const { user, host, password, name } = config.db;
+const connectString = `mongodb+srv://${user}:${password}@${host}/${name}?retryWrites=true&w=majority&appName=Cluster0`;
+console.log('connectString', connectString);
 class Database {
   private static instance: Database;
 

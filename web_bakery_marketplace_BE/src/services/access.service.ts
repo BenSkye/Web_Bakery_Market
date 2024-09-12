@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import { createTokenPair, verifyJWT } from '../auth/authUtils';
 import { getInfoData } from '../utils';
-import { AuthFailureError, BadRequestError, ForbiddenError } from '../core/error.response';
+import { AuthFailureError, BadRequestError, ForbiddenError, NotFoundError } from '../core/error.response';
 import { keyModel } from "../models/keytoken.model"
 import { JwtPayload } from 'jsonwebtoken';
 
@@ -81,7 +81,7 @@ class AccessService {
     await KeyTokenService.createKeyToken(foundUser._id, publicKey.toString(), privateKey.toString(), (tokens as { refreshToken: string }).refreshToken);
     const apiKey = await findByUserId(foundUser._id);
     if (!apiKey) {
-      throw new BadRequestError('API Key not found');
+      throw new NotFoundError('API Key not found');
     }
     return {
       user: getInfoData({ fields: ['_id', 'name', 'email'], object: foundUser }),

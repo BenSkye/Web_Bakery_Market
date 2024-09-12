@@ -3,8 +3,9 @@ const dev = {
     port: process.env.DEV_APP_PORT || 2024,
   },
   db: {
-    host: process.env.DEV_DB_HOST || '127.0.0.1',
-    port: process.env.DEV_DB_PORT || '27017',
+    user: process.env.DEV_DB_USER || 'MerciDev',
+    password: process.env.DEV_DB_PASSWORD || 'MerciDev',
+    host: process.env.DEV_DB_HOST || 'cluster0.akvzr.mongodb.net',
     name: process.env.DEV_DB_NAME || 'bakery_marketplace_dev',
   },
 };
@@ -14,8 +15,9 @@ const pro = {
     port: process.env.PRO_APP_PORT || 3000,
   },
   db: {
-    host: process.env.PRO_DB_HOST || '127.0.0.1',
-    port: process.env.PRO_DB_PORT || '27017',
+    user: process.env.PRO_DB_USER || 'MerciDev',
+    password: process.env.PRO_DB_PASSWORD || 'MerciDev',
+    host: process.env.PRO_DB_HOST || 'cluster0.akvzr.mongodb.net',
     name: process.env.PRO_DB_NAME || 'bakery_marketplace_pro',
   },
 };

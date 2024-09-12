@@ -5,8 +5,14 @@ POST {{url_dev}}/user/signup
 Content-Type: application/json
 
 {
-  "name": "shop1",
-  "email": "shop1.email@example.com",
-  "password": "shop1",
-  "role": "shop"
+  "name": "admin1",
+  "email": "admin1.email@example.com",
+  "password": "admin1",
+  "role": "admin"
 }
+
+### Get bakery list
+GET {{url_dev}}/bakery/get-all
+
+### Get bakery by id
+GET {{url_dev}}/bakery/get-by-id/66e18db5c29d89510d978420
