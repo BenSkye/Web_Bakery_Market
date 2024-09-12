@@ -64,7 +64,7 @@ const bakerySchema = new Schema(
         customCake: {
             type: Boolean,
             default: false,
-        },
+        }
     },
     {
         timestamps: true,
