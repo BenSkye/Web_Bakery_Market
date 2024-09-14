@@ -12,7 +12,7 @@ Content-Type: application/json
 }
 
 ### Get bakery list
-GET {{url_dev}}/bakery/get-all
+GET {{url_dev}}/bakery/get-list
 
 ### Get bakery by id
 GET {{url_dev}}/bakery/get-by-id/66e18db5c29d89510d978420

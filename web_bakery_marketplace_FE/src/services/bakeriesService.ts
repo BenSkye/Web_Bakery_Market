@@ -10,8 +10,9 @@ export interface Bakery {
 
 export const getBakeries = async (): Promise<Bakery[]> => {
   try {
-    const response = await apiClient.get<Bakery[]>('/bakeries');
-    return response.data;
+    const response = await apiClient.get<Bakery[]>('/bakery/get-list');
+    console.log('response:', response.data.metadata);
+    return response.data.metadata;
   } catch (error) {
     console.error('Error fetching bakeries:', error);
     throw error;

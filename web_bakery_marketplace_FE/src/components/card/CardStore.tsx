@@ -19,7 +19,7 @@ const StoreCard: React.FC<StoreCardProps> = ({ bakery }) => {
                 cover={
                     <img
                         alt={bakery.name}
-                        src={bakery.image}
+                        src={bakery.image[0]}
                         style={{ height: "200px", objectFit: "cover" }}
                     />
                 }
@@ -39,8 +39,14 @@ const StoreCard: React.FC<StoreCardProps> = ({ bakery }) => {
                         marginBottom: "10px",
                     }}
                 >
-                    <Rate disabled value={bakery.rating} />
-                    <span style={{ marginLeft: "8px" }}>{bakery.rating}</span>
+                    {bakery.rating >= 0 ? (
+                        <>
+                            <Rate disabled value={bakery.rating} />
+                            <span style={{ marginLeft: "8px" }}>{bakery.rating}</span>
+                        </>
+                    ) : (
+                        <span >Chưa có đánh giá</span>
+                    )}
                 </div>
                 <Link to={`/detail/${bakery.id}`}>
                     <Button type="primary" className="button-hover"  >

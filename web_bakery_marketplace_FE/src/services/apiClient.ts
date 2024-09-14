@@ -1,9 +1,13 @@
 import axios from 'axios';
-
+import Cookies from 'js-cookie';
 const apiClient = axios.create({
-  baseURL: 'https://66ab79e1636a4840d7cad37f.mockapi.io/merci/api/v1',  // URL to mock API
+  baseURL: 'http://localhost:2024/v1/api',
   headers: {
     'Content-Type': 'application/json',
+    'x-api-key': Cookies.get('x-api-key') || '',
+    'x-client-id': Cookies.get('x-client-id') || '',
+    'authorization': Cookies.get('authorization') || '',
+    'x-refresh-token': Cookies.get('x-refresh-token') || '',
   },
 });
 
