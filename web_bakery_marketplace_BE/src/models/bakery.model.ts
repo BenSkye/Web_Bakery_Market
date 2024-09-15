@@ -61,9 +61,9 @@ const bakerySchema = new Schema(
             type: Number,
             default: 0,
         },
-        userId: {
-            type: Schema.Types.ObjectId,
-            ref: "User"
+        customCake: {
+            type: Boolean,
+            default: false,
         }
     },
     {

@@ -3,7 +3,7 @@ import { model, Schema } from 'mongoose';
 const DOCUMENT_NAME = 'ApiKey';
 const COLLECTION_NAME = 'ApiKeys';
 // Declare the Schema of the Mongo model
-const userSchema = new Schema(
+const apiKeySchema = new Schema(
     {
         key: {
             type: String,
@@ -31,5 +31,5 @@ const userSchema = new Schema(
     },
 );
 //Export the model
-const apiKeyModel = model(DOCUMENT_NAME, userSchema);
+const apiKeyModel = model(DOCUMENT_NAME, apiKeySchema);
 export { apiKeyModel };

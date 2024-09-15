@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import accessRouter from './access';
 import { apiKey, permission } from '../auth/checkAuth';
 import bakeryRouter from './bakery';
+import categoryRouter from './category';
 
 const router = Router();
 
@@ -9,10 +10,9 @@ const router = Router();
 // router.use(apiKey)
 //check permission
 // router.use(permission('customer'))
+router.use('/v1/api/category', categoryRouter);
 
-
-router.use('/v1/api', accessRouter);
 router.use('/v1/api/bakery', bakeryRouter);
-
+router.use('/v1/api/user', accessRouter);
 
 export default router;

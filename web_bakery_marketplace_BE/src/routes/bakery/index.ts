@@ -6,6 +6,10 @@ import { apiKey, permission } from '../../auth/checkAuth';
 const bakeryRouter = Router();
 
 
+bakeryRouter.get('/get-list', bakeryController.getBakeries);
+bakeryRouter.get('/get-by-id/:id', bakeryController.getBakeryById);
+
+
 
 //authentication//
 bakeryRouter.use(authentication);

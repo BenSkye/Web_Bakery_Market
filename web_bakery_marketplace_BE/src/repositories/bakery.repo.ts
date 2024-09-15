@@ -1,4 +1,5 @@
-import { bakeryModel } from "../models/bakery";
+import { bakeryModel } from "../models/bakery.model";
+import { getSelectData } from "../utils";
 
 class BakeryRepository {
     async createBakery(bakery: any) {
@@ -6,12 +7,12 @@ class BakeryRepository {
         return await bakeryModel.create(bakery);
     }
 
-    async getBakeryById(id: string) {
-        return await bakeryModel.findById(id);
+    async getBakeryById(id: string, fields: string[]) {
+        return await bakeryModel.findById(id).select(getSelectData(fields)).lean();
     }
 
-    async getBakeries() {
-        return await bakeryModel.find();
+    async getBakeries(fields: string[]) {
+        return await bakeryModel.find().select(getSelectData(fields)).lean();
     }
 
     async updateBakery(id: string, bakery: any) {

@@ -9,4 +9,12 @@ const convertObjectId = (id: string) => {
     new Types.ObjectId(id);
 }
 
-export { getInfoData, convertObjectId }
+const getSelectData = (fields: string[]) => {
+    return fields.join(' ')
+}
+
+const getUnSelectData = (fields: string[]) => {
+    return fields.map(field => `-${field}`).join(' ')
+}
+
+export { getInfoData, convertObjectId, getSelectData, getUnSelectData }
