@@ -24,6 +24,7 @@ import "../../styles/homeStyles/home.css";
 
 
 const HomePage: React.FC = () => {
+
   const [bakeries, setBakeries] = useState<Bakery[]>([]);
   const [workshops, setWorkshops] = useState<Workshop[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
