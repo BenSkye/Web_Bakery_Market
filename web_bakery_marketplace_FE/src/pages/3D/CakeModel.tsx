@@ -6,9 +6,16 @@ import { Mesh, Object3D, Raycaster, Vector2, Intersection, Color, MeshBasicMater
 
 const FBXModel = ({ url, onClick }: { url: string, onClick: (object: Object3D) => void }) => {
   const fbx = useLoader(FBXLoader, url);
+  useEffect(() => {
+    console.log('fbx:', fbx);
+    fbx.children.forEach(child => {
+      console.log('' + child.name, child);
+    });
+  }, [fbx]);
 
   return (
-    <primitive object={fbx} onClick={(event: React.MouseEvent<Element, MouseEvent>) => onClick((event as unknown as { object: Object3D }).object)} />
+    <primitive object={fbx}
+      onClick={(event: React.MouseEvent<Element, MouseEvent>) => onClick((event as unknown as { object: Object3D }).object)} />
   );
 };
 
@@ -49,45 +56,6 @@ const CakeModel = () => {
   const [x, setX] = useState<number>(0);
   const [y, setY] = useState<number>(0);
   const [z, setZ] = useState<number>(1000);
-  const zoomFactor = 0.05;
-  useEffect(() => {
-    if (selectedObject) {
-      const mesh = selectedObject as Mesh;
-      console.log('Selected object:', mesh);
-      // const directionX = mesh.position.x + 0;
-      // const directionY = mesh.position.y + 0;
-      // const directionZ = mesh.position.z + 200;
-      // setX(0)
-      // setY(0)
-      // setZ(1000)
-      // // setX(directionX);
-      // // setY(directionY);
-      // setZ(directionZ);
-      if (Array.isArray(mesh.material)) {
-        mesh.material.forEach((material) => {
-          if (material instanceof MeshBasicMaterial ||
-            material instanceof MeshStandardMaterial ||
-            material instanceof MeshPhongMaterial ||
-            material instanceof MeshLambertMaterial) {
-            console.log('Changing color of material to blue');
-            material.color = new Color(0x0000ff); // Set color to blue
-          } else {
-            console.log('Material type does not support color changes:', material);
-          }
-        });
-        //mesh.materia
-      } else if (mesh.material instanceof MeshBasicMaterial ||
-        mesh.material instanceof MeshStandardMaterial ||
-        mesh.material instanceof MeshPhongMaterial ||
-        mesh.material instanceof MeshLambertMaterial
-      ) {
-        console.log('Changing color of material to blue');
-        mesh.material.color = new Color(0x0000ff); // Set color to blue
-      } else {
-        console.log('Material type does not support color changes:', mesh.material);
-      }
-    }
-  }, [selectedObject]);
 
   useEffect(() => {
     console.log('x:', x, 'y:', y, 'z:', z);
@@ -99,7 +67,7 @@ const CakeModel = () => {
       <OrbitControls />
       <ambientLight intensity={0.5} />
       <directionalLight position={[5, 5, 5]} />
-      <FBXModel url="/public/thaidayy.fbx" onClick={(object) => setSelectedObject(object)} />
+      <FBXModel url="/public/EXE.fbx" onClick={(object) => setSelectedObject(object)} />
       <Scene onSelect={(object) => setSelectedObject(object)} />
     </Canvas>
   );

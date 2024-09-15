@@ -22,7 +22,7 @@ const userSchema = new Schema(
     status: {
       type: String,
       enum: ['active', 'inactive'],
-      default: 'inactive',
+      default: 'active',
     },
     verify: {
       type: Schema.Types.Boolean,

@@ -1,10 +1,33 @@
 import React from 'react';
-import { Form, Input, Button, Row, Col, Typography } from 'antd';
+import { Form, Input, Button, Row, Col, Typography, message } from 'antd';
+import { signup } from '../../services/authenService';
+import { useNavigate } from 'react-router-dom';
 
 const { Title } = Typography;
 
 const SignUp: React.FC = () => {
-    const onFinish = (values: any) => {
+    const [messageApi, contextHolder] = message.useMessage();
+    const navigate = useNavigate();
+    const onFinish = async (values: any) => {
+        const data = {
+            name: values.username,
+            email: values.email,
+            password: values.password,
+        }
+        const response = await signup(data);
+        console.log(response)
+        if (response.status === 201) {
+            messageApi.open({
+                type: 'success',
+                content: 'Đăng kí thành công',
+            });
+            navigate('/');
+        } else {
+            messageApi.open({
+                type: 'error',
+                content: 'Đăng kí thất bại',
+            });
+        }
         console.log('Received values of form: ', values);
     };
 

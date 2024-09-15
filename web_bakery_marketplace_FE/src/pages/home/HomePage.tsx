@@ -35,7 +35,6 @@ const HomePage: React.FC = () => {
         setLoading(true);
         const data = await getBakeries();
         setBakeries(data.metadata);
-        console.log("dataaaaaa", data.metadata);
       } catch (error) {
         console.error("Failed to fetch bakeries:", error);
       } finally {

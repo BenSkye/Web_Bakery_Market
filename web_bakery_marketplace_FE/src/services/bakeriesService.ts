@@ -23,8 +23,7 @@ export const getBakeries = async () => {
 
 export const getBakeryById = async (id: string) => {
   try {
-    const response = await apiClient.get(`/bakery/get-by-id/${id}`);
-
+    const response = await apiClient.get<Bakery>(`/bakery/get-by-id/${id}`);
     return response.data;
 
   } catch (error) {

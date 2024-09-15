@@ -41,8 +41,14 @@ const StoreCard: React.FC<StoreCardProps> = ({ bakery }) => {
                         marginBottom: "10px",
                     }}
                 >
-                    <Rate disabled value={bakery.rating} />
-                    <span style={{ marginLeft: "8px" }}>{bakery.rating}</span>
+                    {bakery.rating >= 0 ? (
+                        <>
+                            <Rate disabled value={bakery.rating} />
+                            <span style={{ marginLeft: "8px" }}>{bakery.rating}</span>
+                        </>
+                    ) : (
+                        <span >Chưa có đánh giá</span>
+                    )}
                 </div>
                 <Link to={`/detail/${bakery._id}`}>
                     <Button type="primary" className="button-hover">
