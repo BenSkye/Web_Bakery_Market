@@ -24,6 +24,7 @@ import "../../styles/homeStyles/home.css";
 
 
 const HomePage: React.FC = () => {
+
   const [bakeries, setBakeries] = useState<Bakery[]>([]);
   const [workshops, setWorkshops] = useState<Workshop[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -33,7 +34,8 @@ const HomePage: React.FC = () => {
       try {
         setLoading(true);
         const data = await getBakeries();
-        setBakeries(data);
+        setBakeries(data.metadata);
+        console.log("dataaaaaa", data.metadata);
       } catch (error) {
         console.error("Failed to fetch bakeries:", error);
       } finally {

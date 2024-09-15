@@ -1,18 +1,15 @@
 import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { Card, Row, Col, Rate, Typography, Avatar, Button } from 'antd';
 import { ClockCircleOutlined, EnvironmentOutlined } from '@ant-design/icons';
 import { IoStorefrontOutline } from "react-icons/io5";
 import { motion } from 'framer-motion';
-import { Canvas } from '@react-three/fiber';
-import { OrbitControls, useGLTF } from '@react-three/drei';
 import BakeryInfo from './BakeryInfo';
 import CustomizeCake from './CustomizeCake';
 import TopSellingCakes from './TopSellingCakes';
 import CakeFilter from './CakeFilter';
 import OtherStores from './OtherStores';
-
-
-
+import { getBakeryById, Bakery } from '../../services/bakeriesService';
 
 const sampleCakeImage = 'path/to/cake-image.jpg'; // Replace with actual cake images
 
@@ -26,15 +23,30 @@ const allCakes = [
     { id: 7, name: "Bánh pie", price: "70.000đ", type: "pie", image: sampleCakeImage },
 ];
 
-
 const Detail: React.FC = () => {
-    const [selectedFilter, setSelectedFilter] = useState('');
+    const [selectedFilter, setSelectedFilter] = useState('all');
     const [filteredCakes, setFilteredCakes] = useState(allCakes);
+    const [bakery, setBakery] = useState<Bakery | null>(null);
 
-    const { scene } = useGLTF('/public/cake.glb');
+    const { id } = useParams<{ id: string }>();
 
-    scene.scale.set(10, 10, 10); // Adjust the scale values as needed
+    useEffect(() => {
+        const fetchBakery = async () => {
+            if (id) {
+                try {
+                    const bakeryData = await getBakeryById(id);
+                    console.log("Bakery detail", bakeryData.metadata);
+                    setBakery(bakeryData.metadata);
+                } catch (error) {
+                    console.error("Error fetching bakery data", error);
+                }
+            } else {
+                console.error("Bakery ID is undefined");
+            }
+        };
 
+        fetchBakery();
+    }, [id]);
 
     useEffect(() => {
         if (selectedFilter === 'all') {
@@ -63,6 +75,10 @@ const Detail: React.FC = () => {
         setSelectedFilter(filter);
     };
 
+    if (!bakery) {
+        return <div>Loading...</div>;
+    }
+
     return (
         <div style={{ padding: '2rem' }}>
             <motion.div
@@ -71,25 +87,20 @@ const Detail: React.FC = () => {
                 animate="visible"
                 transition={{ duration: 0.6, ease: "easeInOut", delay: 0.2 }}
             >
-                <BakeryInfo />
+                <BakeryInfo bakery={bakery} />
                 <hr style={separatorStyle} />
-                <CustomizeCake />
-                <hr style={separatorStyle} />
-                {/* Cake Categories Section */}
-                <TopSellingCakes />
-                <hr style={separatorStyle} />
-                {/* Filter Section */}
+
+                {/* <TopSellingCakes /> */}
+
                 <CakeFilter
                     selectedFilter={selectedFilter}
                     onFilterChange={handleFilterChange}
                     filteredCakes={filteredCakes}
                 />
                 <hr style={separatorStyle} />
-                {/* Other Stores Section */}
-
                 <OtherStores />
-            </motion.div >
-        </div >
+            </motion.div>
+        </div>
     );
 };
 

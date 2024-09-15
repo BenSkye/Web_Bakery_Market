@@ -8,10 +8,12 @@ interface StoreCardProps {
     bakery: Bakery;
 }
 
-
 const StoreCard: React.FC<StoreCardProps> = ({ bakery }) => {
+    // Get the first image or use a placeholder if the array is empty
+    const coverImage = bakery.image.length > 0 ? bakery.image[0] : 'path/to/placeholder/image.jpg';
+
     return (
-        <div className="card-wrapper" >
+        <div className="card-wrapper">
             <Card
                 className="card-hover"
                 bordered={false}
@@ -19,7 +21,7 @@ const StoreCard: React.FC<StoreCardProps> = ({ bakery }) => {
                 cover={
                     <img
                         alt={bakery.name}
-                        src={bakery.image}
+                        src={coverImage}
                         style={{ height: "200px", objectFit: "cover" }}
                     />
                 }
@@ -42,8 +44,8 @@ const StoreCard: React.FC<StoreCardProps> = ({ bakery }) => {
                     <Rate disabled value={bakery.rating} />
                     <span style={{ marginLeft: "8px" }}>{bakery.rating}</span>
                 </div>
-                <Link to={`/detail/${bakery.id}`}>
-                    <Button type="primary" className="button-hover"  >
+                <Link to={`/detail/${bakery._id}`}>
+                    <Button type="primary" className="button-hover">
                         Ghé tiệm
                     </Button>
                 </Link>

@@ -1,8 +1,11 @@
+import { useState, useEffect } from 'react';
 import React from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { Row, Col, Card, Button } from 'antd';
 import { motion } from 'framer-motion';
-import storeImage from '../../assets/384c76efd36e7480fcb3eb5fa0f8b3e2.jpg'; // Thay đổi đường dẫn nếu cần
+import { getBakeries } from '../../services/bakeriesService';
+import { Bakery } from '../../services/bakeriesService';
 
 const { Meta } = Card;
 
@@ -31,6 +34,22 @@ const ViewButton = styled(Button)`
 `;
 
 const StoresPage: React.FC = () => {
+    const [bakeries, setBakeries] = useState<Bakery[]>([]);
+
+    useEffect(() => {
+        const fetchBakeries = async () => {
+            try {
+                const response = await getBakeries();
+                console.log('Bakeries:', response.data);
+                setBakeries(response.metadata);
+            } catch (error) {
+                console.error('Error fetching bakeries:', error);
+            }
+        };
+
+        fetchBakeries();
+    }, []);
+
     const handleViewStore = (storeName: string) => {
         // Thay đổi URL hoặc điều hướng đến trang chi tiết của cửa hàng
         alert(`Xem cửa hàng: ${storeName}`);
@@ -48,86 +67,36 @@ const StoresPage: React.FC = () => {
             </motion.h1>
 
             <Row gutter={[16, 16]} justify="center">
-                <Col xs={24} sm={12} md={8}>
-                    <motion.div
-                        initial={{ opacity: 0, y: 50 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, delay: 0.2 }}
-                    >
-                        <StyledCard
-                            hoverable
-                            cover={<img alt="Cửa Hàng" src={storeImage} style={{ height: '200px', objectFit: 'cover' }} />}
-                            actions={[
-                                <ViewButton
-                                    key="view"
-                                    type="primary"
-                                    onClick={() => handleViewStore('Cửa Hàng 1')}
-                                >
-                                    Xem Cửa Hàng
-                                </ViewButton>
-                            ]}
+                {bakeries.map(bakery => (
+                    <Col xs={24} sm={12} md={8} key={bakery._id}>
+                        <motion.div
+                            initial={{ opacity: 0, y: 50 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8, delay: 0.2 }}
                         >
-                            <Meta
-                                title="Cửa Hàng 1"
-                                description="Đây là mô tả về Cửa Hàng 1. Cửa hàng có nhiều sản phẩm và dịch vụ đa dạng."
-                            />
-                        </StyledCard>
-                    </motion.div>
-                </Col>
+                            <StyledCard
+                                hoverable
+                                cover={<img alt={bakery.name} src={bakery.image[0]} style={{ height: '200px', objectFit: 'cover' }} />}
+                                actions={[
+                                    <Link to={`/detail/${bakery._id}`}>
+                                        <ViewButton
+                                            key="view"
+                                            type="primary"
 
-                <Col xs={24} sm={12} md={8}>
-                    <motion.div
-                        initial={{ opacity: 0, y: 50 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, delay: 0.4 }}
-                    >
-                        <StyledCard
-                            hoverable
-                            cover={<img alt="Cửa Hàng" src={storeImage} style={{ height: '200px', objectFit: 'cover' }} />}
-                            actions={[
-                                <ViewButton
-                                    key="view"
-                                    type="primary"
-                                    onClick={() => handleViewStore('Cửa Hàng 2')}
-                                >
-                                    Xem Cửa Hàng
-                                </ViewButton>
-                            ]}
-                        >
-                            <Meta
-                                title="Cửa Hàng 2"
-                                description="Đây là mô tả về Cửa Hàng 2. Cửa hàng chuyên về các sản phẩm độc đáo và dịch vụ cá nhân hóa."
-                            />
-                        </StyledCard>
-                    </motion.div>
-                </Col>
-
-                <Col xs={24} sm={12} md={8}>
-                    <motion.div
-                        initial={{ opacity: 0, y: 50 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, delay: 0.6 }}
-                    >
-                        <StyledCard
-                            hoverable
-                            cover={<img alt="Cửa Hàng" src={storeImage} style={{ height: '200px', objectFit: 'cover' }} />}
-                            actions={[
-                                <ViewButton
-                                    key="view"
-                                    type="primary"
-                                    onClick={() => handleViewStore('Cửa Hàng 3')}
-                                >
-                                    Xem Cửa Hàng
-                                </ViewButton>
-                            ]}
-                        >
-                            <Meta
-                                title="Cửa Hàng 3"
-                                description="Đây là mô tả về Cửa Hàng 3. Cửa hàng cung cấp đa dạng các sản phẩm với nhiều ưu đãi hấp dẫn."
-                            />
-                        </StyledCard>
-                    </motion.div>
-                </Col>
+                                        >
+                                            Xem Cửa Hàng
+                                        </ViewButton>
+                                    </Link>
+                                ]}
+                            >
+                                <Meta
+                                    title={bakery.name}
+                                    description={bakery.address}
+                                />
+                            </StyledCard>
+                        </motion.div>
+                    </Col>
+                ))}
             </Row>
 
             <motion.div
