@@ -33,7 +33,7 @@ const HomePage: React.FC = () => {
       try {
         setLoading(true);
         const data = await getBakeries();
-        setBakeries(data);
+        setBakeries(data.metadata);
       } catch (error) {
         console.error("Failed to fetch bakeries:", error);
       } finally {

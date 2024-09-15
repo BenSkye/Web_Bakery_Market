@@ -10,7 +10,8 @@ export interface Bakery {
 
 export const getBakeries = async (): Promise<Bakery[]> => {
   try {
-    const response = await apiClient.get<Bakery[]>('/bakeries');
+    const response = await apiClient.get<Bakery[]>('/bakery/get-list');
+    console.log('response:', response.data);
     return response.data;
   } catch (error) {
     console.error('Error fetching bakeries:', error);
@@ -20,7 +21,7 @@ export const getBakeries = async (): Promise<Bakery[]> => {
 
 export const getBakeryById = async (id: string): Promise<Bakery> => {
   try {
-    const response = await apiClient.get<Bakery>(`/bakeries/${id}`);
+    const response = await apiClient.get<Bakery>(`/bakery/get-by-id/${id}`);
     return response.data;
   } catch (error) {
     console.error(`Error fetching bakery with id ${id}:`, error);
