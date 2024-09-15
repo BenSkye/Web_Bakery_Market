@@ -5,10 +5,9 @@ POST {{url_dev}}/user/signup
 Content-Type: application/json
 
 {
-  "name": "admin1",
-  "email": "admin1.email@example.com",
-  "password": "admin1",
-  "role": "admin"
+  "name": "ben",
+  "email": "ben.email@example.com",
+  "password": "ben"
 }
 
 ### Get bakery list

@@ -13,7 +13,7 @@ import KeyTokenService from './keyToken.service';
 import { findByEmail } from './user.service';
 import { createKey, findByUserId } from './apiKey.service';
 const RoleUser = {
-  CUSTOMER: 'customer',
+  MEMBER: 'member',
   ADMIN: 'admin',
   SHOP: 'shop',
 };
@@ -104,7 +104,7 @@ class AccessService {
       name,
       email,
       password: passwordHash,
-      roles: [role] || [RoleUser.CUSTOMER],
+      roles: [role] || [RoleUser.MEMBER],
     });
 
     if (newUser) {
