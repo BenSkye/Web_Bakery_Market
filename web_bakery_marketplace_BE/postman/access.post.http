@@ -23,3 +23,7 @@ GET {{url_dev}}/product/get-list
 
 ### Get product by id
 GET {{url_dev}}/product/get-by-id/66e684ff96bd1c4e183bc025
+
+
+### Get product by bakery id
+GET {{url_dev}}/product/get-by-bakery/66e5b9b9881b3fab9433beaf

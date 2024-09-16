@@ -28,6 +28,14 @@ const userSchema = new Schema(
       type: Schema.Types.Boolean,
       default: false, //use to verify email when create account
     },
+    phone: {
+      type: String,
+      default: '',
+    },
+    address: {
+      type: String,
+      default: '',
+    },
     roles: {
       type: Array,
       default: [],

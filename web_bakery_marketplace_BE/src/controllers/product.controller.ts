@@ -25,6 +25,13 @@ class ProductController {
         }).send(res);
     });
 
+    getProductsByBakery = asyncHandler(async (req: any, res: Response, next: NextFunction) => {
+        new CREATED({
+            message: 'Get products by bakery successfully',
+            metadata: await ProductService.getProductsByBakery(req.params.bakeryId),
+        }).send(res);
+    });
+
 }
 
 export default new ProductController();

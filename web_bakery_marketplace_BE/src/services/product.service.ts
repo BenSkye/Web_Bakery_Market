@@ -44,6 +44,17 @@ class ProductService {
         }
         return product;
     }
+
+    static getProductsByBakery = async (bakeryId: string) => {
+        const select = ['name', 'bakery', 'category', 'price', 'status', 'image', 'rating'];
+        const bakery = await bakeryRepo.getBakeryById(bakeryId, []);
+        if (!bakery) {
+            throw new NotFoundError('No bakery found');
+        }
+        const query = { bakery: bakeryId }
+        const products = await productRepo.getProducts(query, select);
+        return products;
+    }
 }
 
 export default ProductService;
