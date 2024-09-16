@@ -34,13 +34,18 @@ const productSchema = new Schema(
             ref: 'Bakery',
         },
         status: {
-            type: Boolean,
-            default: true,
+            type: String,
+            enum: ['available', 'draft', 'sold_out', 'discontinued'],
+            default: 'draft',
         },
         quantity: {
             type: Number,
             required: true,
             default: 0,
+        },
+        rating: {
+            type: Number,
+            default: -1,
         },
     },
     {

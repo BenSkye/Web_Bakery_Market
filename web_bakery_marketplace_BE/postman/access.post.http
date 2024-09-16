@@ -15,3 +15,11 @@ GET {{url_dev}}/bakery/get-list
 
 ### Get bakery by id
 GET {{url_dev}}/bakery/get-by-id/66e18db5c29d89510d978420
+
+
+### Get product list
+GET {{url_dev}}/product/get-list
+
+
+### Get product by id
+GET {{url_dev}}/product/get-by-id/66e684ff96bd1c4e183bc025
