@@ -10,6 +10,7 @@ import TopSellingCakes from './TopSellingCakes';
 import CakeFilter from './CakeFilter';
 import OtherStores from './OtherStores';
 import { getBakeryById, Bakery } from '../../services/bakeriesService';
+import { getProductsByBakery } from '../../services/productService';
 
 const sampleCakeImage = 'path/to/cake-image.jpg'; // Replace with actual cake images
 
@@ -49,6 +50,10 @@ const Detail: React.FC = () => {
     }, [id]);
 
     useEffect(() => {
+        //fetch data right here
+        // const fetchProductsByBakery = async (id:string) => {
+        //     const products= await getProductsByBakery(id);
+        // }
         if (selectedFilter === 'all') {
             setFilteredCakes(allCakes);
         } else {

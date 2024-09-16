@@ -3,6 +3,7 @@ import accessRouter from './access';
 import { apiKey, permission } from '../auth/checkAuth';
 import bakeryRouter from './bakery';
 import categoryRouter from './category';
+import productRouter from './product';
 
 const router = Router();
 
@@ -10,9 +11,10 @@ const router = Router();
 // router.use(apiKey)
 //check permission
 // router.use(permission('customer'))
-router.use('/v1/api/category', categoryRouter);
 
+router.use('/v1/api/category', categoryRouter);
 router.use('/v1/api/bakery', bakeryRouter);
+router.use('/v1/api/product', productRouter);
 router.use('/v1/api/user', accessRouter);
 
 export default router;

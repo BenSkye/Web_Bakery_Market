@@ -6,7 +6,7 @@ import BakeryService from '../services/bakery.service';
 
 class BakeryController {
     createBakery = asyncHandler(async (req: any, res: Response, next: NextFunction) => {
-        new SuccessResponse({
+        new CREATED({
             message: 'Create new bakery successfully',
             metadata: await BakeryService.createBakery(req.body, req.keyStore.user),
         }).send(res);
