@@ -12,6 +12,7 @@ import { JwtPayload } from 'jsonwebtoken';
 import KeyTokenService from './keyToken.service';
 import { findByEmail } from './user.service';
 import { createKey, findByUserId } from './apiKey.service';
+import CartService from './cart.service';
 const RoleUser = {
   MEMBER: 'member',
   ADMIN: 'admin',
@@ -99,12 +100,14 @@ class AccessService {
     }
 
     const passwordHash = await bcrypt.hash(password, 10);
-
+    if (!role) {
+      role = RoleUser.MEMBER;
+    }
     const newUser = await userModel.create({
       name,
       email,
       password: passwordHash,
-      roles: [role] || [RoleUser.MEMBER],
+      roles: [role],
     });
 
     if (newUser) {
@@ -120,9 +123,13 @@ class AccessService {
       //create token pair
       const tokens = await createTokenPair({ userId: newUser._id, email }, publicKey.toString(), privateKey.toString());
       console.log('Create Token Success', tokens);
+      console.log('role', newUser.roles);
       const apiKey = await createKey(newUser.roles, newUser._id);
       if (!apiKey) {
         throw new BadRequestError('Create API Key Fail');
+      }
+      if (newUser.roles.includes(RoleUser.MEMBER)) {
+        const userCart = await CartService.createCart(newUser._id.toString());//create cart for new user when signup
       }
       return {
         user: getInfoData({ fields: ['_id', 'name', 'email', 'roles'], object: newUser }),
