@@ -12,6 +12,7 @@ export interface Bakery {
 
 export const getBakeries = async () => {
   try {
+    console.log(apiClient.defaults.headers)
     const response = await apiClient.get('/bakery/get-list');
 
     return response.data;

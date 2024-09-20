@@ -2,6 +2,7 @@ import { NotFoundError } from "../core/error.response";
 import { userModel } from "../models/user.model";
 import bakeryRepo from "../repositories/bakery.repo";
 import categoryRepo from "../repositories/category.repo";
+import inventoryRepo from "../repositories/inventory.repo";
 import productRepo from "../repositories/product.repo";
 
 class ProductService {
@@ -25,7 +26,14 @@ class ProductService {
         if (!category) {
             throw new NotFoundError('No category found');
         }
-        const newProduct = productRepo.createProduct(data);
+        const newProduct = await productRepo.createProduct(data);
+        if (newProduct) {
+            const inventory = await inventoryRepo.createInventory({
+                product_id: newProduct._id,
+                shop_id: bakeryId,
+                stock: 0,
+            })
+        }
         return newProduct;
     }
 
