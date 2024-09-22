@@ -31,3 +31,15 @@ export const getBakeryById = async (id: string) => {
     throw error;
   }
 };
+
+export const createBakery = async (data: any) => {
+  try {
+    console.log('apiclient', apiClient.defaults.headers);
+    const response = await apiClient.post('/bakery/create', data);
+
+    return response.data;
+  } catch (error) {
+    console.error('Error creating bakery:', error);
+    throw error;
+  }
+}
