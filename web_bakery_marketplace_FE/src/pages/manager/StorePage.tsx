@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Layout, Menu, Typography, Card, Button, Table } from 'antd';
-import { UserOutlined, ShopOutlined, FileDoneOutlined, BarChartOutlined, SettingOutlined } from '@ant-design/icons';
+import { Layout, Menu, Typography } from 'antd';
+import { UserOutlined, ShopOutlined, FileDoneOutlined, BarChartOutlined, SettingOutlined, FormOutlined } from '@ant-design/icons';
 import StoreInfo from './StoreInfo'; // Import StoreInfo component
 import OrderManagement from './OrderManagement'; // Import OrderManagement component
 import Analytics from './Analytics'; // Import Analytics component
-import AccountSetting from './AccountSetting'
+import AccountSetting from './AccountSetting'; // Import AccountSetting component
+import BakerySignupPage from './BakerySignupPage'; // Import BakerySignupPage component
 
 const { Header, Content, Sider } = Layout;
 const { Title } = Typography;
@@ -29,6 +30,7 @@ const StorePage: React.FC = () => {
                     <Menu.Item key="2" icon={<FileDoneOutlined />}>Order Management</Menu.Item>
                     <Menu.Item key="3" icon={<BarChartOutlined />}>Analytics</Menu.Item>
                     <Menu.Item key="4" icon={<SettingOutlined />}>Account Settings</Menu.Item>
+                    <Menu.Item key="5" icon={<FormOutlined />}>Create Bakery</Menu.Item> {/* New Menu Item for Bakery Signup */}
                 </Menu>
             </Sider>
             <Layout>
@@ -50,6 +52,12 @@ const StorePage: React.FC = () => {
                             <AccountSetting />
                         </div>
                     )}
+                    {selectedMenu === '5' && (
+                        <div>
+                            <Title level={3}>Create a New Bakery</Title>
+                            <BakerySignupPage />
+                        </div>
+                    )} {/* Render BakerySignupPage when 'Create Bakery' is selected */}
                 </Content>
             </Layout>
         </Layout>
