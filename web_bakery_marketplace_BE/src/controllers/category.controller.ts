@@ -13,5 +13,18 @@ class CategoryController {
         }).send(res);
     });
 
+    getListCategory = asyncHandler(async (req: any, res: Response, next: NextFunction) => {
+        new SuccessResponse({
+            message: 'Get list category successfully',
+            metadata: await CategoryService.getListCategory(),
+        }).send(res);
+    });
+
+    activeCategory = asyncHandler(async (req: any, res: Response, next: NextFunction) => {
+        new SuccessResponse({
+            message: 'Active category successfully',
+            metadata: await CategoryService.activeCategory(req.params.id),
+        }).send(res);
+    });
 }
 export default new CategoryController();

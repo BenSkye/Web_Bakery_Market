@@ -18,7 +18,6 @@ const createKey = async (permissions: string[], user: Types.ObjectId) => {
     const key = crypto.randomBytes(64).toString('hex')
     const newKey = await apiKeyModel.create({ key, permissions, user })
     return newKey;
-    return newKey
 }
 
 export { findById, createKey, findByUserId }

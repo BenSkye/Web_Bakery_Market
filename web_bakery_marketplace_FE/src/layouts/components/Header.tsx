@@ -1,20 +1,36 @@
 import React from 'react';
 import { Layout, Menu, Input, Button, Row, Col, Badge, Dropdown } from 'antd';
-import { ShoppingCartOutlined, UserOutlined } from '@ant-design/icons';
+import { ShoppingCartOutlined, UserOutlined, LogoutOutlined } from '@ant-design/icons';
 import logo from '../../assets/1.png';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../../stores/authContex';
 
 const { Header } = Layout;
 
 const HeaderComponent: React.FC = () => {
+    const { user, logout } = useAuth();
+
     const userMenu = (
         <Menu>
-            <Menu.Item key="login">
-                <Link to='/login'>Login</Link>
-            </Menu.Item>
-            <Menu.Item key="signup">
-                <Link to='/signup'>Sign Up</Link>
-            </Menu.Item>
+            {user ? (
+                <>
+                    <Menu.Item key="profile">
+                        <Link to='/profile'>Hồ sơ</Link>
+                    </Menu.Item>
+                    <Menu.Item key="logout" onClick={logout}>
+                        <LogoutOutlined /> Đăng xuất
+                    </Menu.Item>
+                </>
+            ) : (
+                <>
+                    <Menu.Item key="login">
+                        <Link to='/login'>Đăng nhập</Link>
+                    </Menu.Item>
+                    <Menu.Item key="signup">
+                        <Link to='/signup'>Đăng ký</Link>
+                    </Menu.Item>
+                </>
+            )}
         </Menu>
     );
 
@@ -35,7 +51,7 @@ const HeaderComponent: React.FC = () => {
                     </Row>
                 </Col>
                 <Col span={16}>
-                    <Row style={{ gap: '2rem' }} justify="end" align="middle" >
+                    <Row style={{ gap: '2rem' }} justify="end" align="middle">
                         <Menu mode="horizontal" defaultSelectedKeys={['home']} style={{ textAlign: 'center', backgroundColor: 'inherit', fontSize: '20px' }}>
                             <Menu.Item key="home"><Link to='/'>Trang chủ</Link></Menu.Item>
                             <Menu.Item key="about"><Link to='/about'>Giới Thiệu</Link></Menu.Item>
@@ -52,13 +68,14 @@ const HeaderComponent: React.FC = () => {
                             </Col>
                             <Col>
                                 <Dropdown overlay={userMenu} trigger={['click']}>
-                                    <Button type="text" icon={<UserOutlined />} style={{ fontSize: '1.5rem' }} />
+                                    <Button type="text" style={{ fontSize: '1rem' }}>
+                                        {user ? `Xin chào, ${user.name}` : <UserOutlined />}
+                                    </Button>
                                 </Dropdown>
                             </Col>
                         </Row>
                     </Row>
                 </Col>
-
             </Row>
         </Header>
     );

@@ -5,13 +5,15 @@ import { Card, Row, Col, Button, Typography } from 'antd';
 interface CakeFilterProps {
     selectedFilter: string;
     onFilterChange: (filter: string) => void;
-    filteredCakes: Array<{ id: number; image: string; name: string; price: string; }>;
+    filteredCakes: Array<unknown>;
+    listFilter: Array<unknown>;
 }
 
 const { Title } = Typography;
 
-const CakeFilter: React.FC<CakeFilterProps> = ({ selectedFilter, onFilterChange, filteredCakes }) => {
+const CakeFilter: React.FC<CakeFilterProps> = ({ selectedFilter, onFilterChange, filteredCakes, listFilter }) => {
 
+    console.log('filteredCakes', filteredCakes)
     // Styles (could be extracted to a separate CSS or SCSS file)
     const filterStyle: React.CSSProperties = {
         margin: '1rem 0',
@@ -76,54 +78,21 @@ const CakeFilter: React.FC<CakeFilterProps> = ({ selectedFilter, onFilterChange,
             <div style={filterStyle}>
                 <Title level={4} style={{ margin: '0 0 1rem' }}>Lọc theo loại bánh</Title>
                 <div style={buttonGroupStyle}>
-                    <button
-                        className="button-hover"
-                        style={getButtonStyle('all')}
-                        onClick={() => handleButtonClick('all')}
-                    >
-                        Tất cả
-                    </button>
-                    <button
-                        className="button-hover"
-                        style={getButtonStyle('sweet')}
-                        onClick={() => handleButtonClick('sweet')}
-                    >
-                        Bánh ngọt
-                    </button>
-                    <button
-                        className="button-hover"
-                        style={getButtonStyle('bread')}
-                        onClick={() => handleButtonClick('bread')}
-                    >
-                        Bánh mì
-                    </button>
-                    <button
-                        className="button-hover"
-                        style={getButtonStyle('cookie')}
-                        onClick={() => handleButtonClick('cookie')}
-                    >
-                        Bánh quy
-                    </button>
-                    <button
-                        className="button-hover"
-                        style={getButtonStyle('donut')}
-                        onClick={() => handleButtonClick('donut')}
-                    >
-                        Bánh donut
-                    </button>
-                    <button
-                        className="button-hover"
-                        style={getButtonStyle('pie')}
-                        onClick={() => handleButtonClick('pie')}
-                    >
-                        Bánh pie
-                    </button>
+                    {listFilter.map((filter) => (
+                        <button
+                            className="button-hover"
+                            style={getButtonStyle(filter.name)}
+                            onClick={() => handleButtonClick(filter.name)}
+                        >
+                            {filter.name}
+                        </button>
+                    ))}
                 </div>
             </div>
             <Row gutter={[16, 16]}>
                 {filteredCakes.map(cake => (
                     <Col key={cake.id} span={8}>
-                        <Card className="card-hover" cover={<img src={cake.image} alt={cake.name} style={cakeImageStyle} />}>
+                        <Card className="card-hover" cover={<img src={cake.image[0]} alt={cake.name} style={cakeImageStyle} />}>
                             <Card.Meta title={cake.name} description={`Giá: ${cake.price}`} />
                             <Button className="button-hover" style={addToCartButtonStyle} type="primary">Thêm vào giỏ</Button>
                         </Card>

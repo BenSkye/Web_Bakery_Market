@@ -5,10 +5,20 @@ POST {{url_dev}}/user/signup
 Content-Type: application/json
 
 {
-  "name": "ben",
-  "email": "ben.email@example.com",
-  "password": "ben"
+  "name": "admin1.email@example.com",
+  "email": "khanh@gmail.com",
+  "password": "khanh"
 }
+
+###login
+POST {{url_dev}}/user/login
+Content-Type: application/json
+
+{
+  "email": "shop1.email@example.com",
+  "password": "shop1"
+}
+
 
 ### Get bakery list
 GET {{url_dev}}/bakery/get-list
@@ -27,3 +37,5 @@ GET {{url_dev}}/product/get-by-id/66e684ff96bd1c4e183bc025
 
 ### Get product by bakery id
 GET {{url_dev}}/product/get-by-bakery/66e5b9b9881b3fab9433beaf
+
+### Get personal cart
