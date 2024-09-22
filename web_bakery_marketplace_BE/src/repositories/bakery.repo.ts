@@ -11,7 +11,7 @@ class BakeryRepository {
         return await bakeryModel.findById(id).select(getSelectData(fields)).lean();
     }
 
-    async getBakeries(fields: string[]) {
+    async getBakeries(fields: string[],) {
         return await bakeryModel.find().select(getSelectData(fields)).lean();
     }
 

@@ -1,6 +1,7 @@
 // OtherStores.tsx
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, Row, Col } from 'antd';
+import { getBakeries } from '../../services/bakeriesService';
 
 const otherStores = [
     { id: 1, name: "Tiệm bánh ngọt XYZ", address: "456 Đường Nguyễn Trãi, Quận 5, TP. Hồ Chí Minh", image: 'path/to/other-store-image.jpg' },
@@ -8,7 +9,34 @@ const otherStores = [
     { id: 3, name: "Tiệm bánh quy DEF", address: "101 Đường Lê Duẩn, Quận 3, TP. Hồ Chí Minh", image: 'path/to/other-store-image.jpg' },
 ];
 
-const OtherStores: React.FC = () => {
+const OtherStores: React.FC = ({ bakeryId }: { bakeryId: string }) => {
+
+
+    const [bakeries, setBakeries] = useState([]);
+    const [workshops, setWorkshops] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchBakeries = async () => {
+            try {
+                setLoading(true);
+                const data = await getBakeries();
+                console.log('data', data.metadata)
+                console.log('bakeryId', bakeryId)
+                const filteredBakeries = data.metadata.filter((bakery: any) => bakery._id !== bakeryId);
+                const shuffled = filteredBakeries.sort(() => 0.5 - Math.random());
+                const selected = shuffled.slice(0, 3);
+                setBakeries(selected);
+            } catch (error) {
+                console.error("Failed to fetch bakeries:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchBakeries();
+    }, []);
+
     const sectionTitleStyle: React.CSSProperties = {
         marginTop: '2rem',
         marginBottom: '1rem',
@@ -27,9 +55,9 @@ const OtherStores: React.FC = () => {
         <div>
             <div style={sectionTitleStyle}>Các cửa hàng khác</div>
             <Row gutter={[16, 16]}>
-                {otherStores.map(store => (
-                    <Col key={store.id} span={8}>
-                        <Card className="card-hover" cover={<img src={store.image} alt={store.name} style={cakeImageStyle} />}>
+                {bakeries.map((store: any) => (
+                    <Col key={store._id} span={8}>
+                        <Card className="card-hover" cover={<img src={store.image[0]} alt={store.name} style={cakeImageStyle} />}>
                             <Card.Meta title={store.name} description={store.address} />
                         </Card>
                     </Col>

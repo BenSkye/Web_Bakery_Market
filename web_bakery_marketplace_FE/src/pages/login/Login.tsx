@@ -1,11 +1,13 @@
 import React from 'react';
 import { Form, Input, Button, Row, Col, Typography, message } from 'antd';
-import { login } from '../../services/authenService';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../stores/authContex';
 
 const { Title } = Typography;
 
 const Login: React.FC = () => {
+    const { login } = useAuth();
+
     const [messageApi, contextHolder] = message.useMessage();
     const navigate = useNavigate();
     const onFinish = async (values: any) => {

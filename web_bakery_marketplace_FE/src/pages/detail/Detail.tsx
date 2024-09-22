@@ -11,6 +11,7 @@ import CakeFilter from './CakeFilter';
 import OtherStores from './OtherStores';
 import { getBakeryById, Bakery } from '../../services/bakeriesService';
 import { getProductsByBakery } from '../../services/productService';
+import { getListCategory } from '../../services/categorService';
 
 const sampleCakeImage = 'path/to/cake-image.jpg'; // Replace with actual cake images
 
@@ -25,9 +26,11 @@ const allCakes = [
 ];
 
 const Detail: React.FC = () => {
-    const [selectedFilter, setSelectedFilter] = useState('all');
-    const [filteredCakes, setFilteredCakes] = useState(allCakes);
+    const [selectedFilter, setSelectedFilter] = useState('Tất cả');
+    const [filteredCakes, setFilteredCakes] = useState();
+    const [listCake, setListCake] = useState();
     const [bakery, setBakery] = useState<Bakery | null>(null);
+    const [listFilter, setListFilter] = useState([]);
 
     const { id } = useParams<{ id: string }>();
 
@@ -38,6 +41,15 @@ const Detail: React.FC = () => {
                     const bakeryData = await getBakeryById(id);
                     console.log("Bakery detail", bakeryData.metadata);
                     setBakery(bakeryData.metadata);
+                    const products = await getProductsByBakery(id);
+                    console.log("Products", products);
+                    setListCake(products.metadata);
+                    const listCategory = await getListCategory();
+                    console.log("List category", listCategory);
+                    const categoryNames = listCategory.metadata.map((category: { name: string }) => ({ name: category.name }));
+                    const allCategory = { name: 'Tất cả' };
+                    categoryNames.unshift(allCategory);
+                    setListFilter(categoryNames);
                 } catch (error) {
                     console.error("Error fetching bakery data", error);
                 }
@@ -50,16 +62,14 @@ const Detail: React.FC = () => {
     }, [id]);
 
     useEffect(() => {
-        //fetch data right here
-        // const fetchProductsByBakery = async (id:string) => {
-        //     const products= await getProductsByBakery(id);
-        // }
-        if (selectedFilter === 'all') {
-            setFilteredCakes(allCakes);
+        if (selectedFilter === 'Tất cả') {
+            setFilteredCakes(listCake);
         } else {
-            setFilteredCakes(allCakes.filter(cake => cake.type === selectedFilter));
+            setFilteredCakes(listCake?.filter((cake: any) => cake.category.name === selectedFilter));
         }
-    }, [selectedFilter]);
+    }, [selectedFilter, listCake]);
+
+
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -100,10 +110,11 @@ const Detail: React.FC = () => {
                 <CakeFilter
                     selectedFilter={selectedFilter}
                     onFilterChange={handleFilterChange}
-                    filteredCakes={filteredCakes}
+                    filteredCakes={filteredCakes || []}
+                    listFilter={listFilter}
                 />
                 <hr style={separatorStyle} />
-                <OtherStores />
+                <OtherStores bakeryId={bakery._id} />
             </motion.div>
         </div>
     );

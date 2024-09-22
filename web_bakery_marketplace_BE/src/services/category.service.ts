@@ -8,5 +8,8 @@ class CategoryService {
     static activeCategory = async (id: string) => {
         return await categoryRepo.updateCategory(id, { status: 'active' });
     }
+    static getListCategory = async () => {
+        return await categoryRepo.getListCategory();
+    }
 }
 export default CategoryService;

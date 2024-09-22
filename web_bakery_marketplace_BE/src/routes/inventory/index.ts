@@ -5,10 +5,6 @@ import inventoryController from '../../controllers/inventory,controller';
 
 const inventoryRouter = Router();
 
-inventoryRouter.get('/your-route', (req, res) => {
-    res.send('Hello World');
-});
-
 //authentication//
 inventoryRouter.use(authentication);
 ////////////////////////////

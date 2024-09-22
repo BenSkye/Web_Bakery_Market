@@ -1,5 +1,6 @@
-import { NotFoundError } from "../core/error.response";
+import { BadRequestError, NotFoundError } from "../core/error.response";
 import cartRepo from "../repositories/cart.repo";
+import inventoryRepo from "../repositories/inventory.repo";
 import { convertObjectId } from "../utils";
 
 class CartService {
@@ -12,6 +13,10 @@ class CartService {
         product_id: string,
         quantity: number,
     }) => {
+        const inventory = await inventoryRepo.findInventory({ product_id: productData.product_id });
+        if (!inventory || inventory.stock < productData.quantity) {
+            throw new BadRequestError('Not enough stock');
+        }
         const userCart = await cartRepo.findCart({ user_id: userId });
         if (!userCart) {
             const newCart = await cartRepo.createCart(userId);

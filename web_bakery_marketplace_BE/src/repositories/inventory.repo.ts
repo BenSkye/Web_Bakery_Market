@@ -7,6 +7,11 @@ class InventoryRepo {
     async createInventory(data: any) {
         return await inventoryModel.create(data);
     }
+
+    async findInventory(query: any) {
+        return await inventoryModel.findOne(query);
+    }
+
     async addStockToInventory(productId: string, quantity: number, shop_id: string) {
         const today = new Date().setHours(0, 0, 0, 0);
         const inventory = await inventoryModel.findOne({ product_id: productId });

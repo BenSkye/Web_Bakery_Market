@@ -11,6 +11,9 @@ class CategoryRepo {
     async getCategoriesById(id: string) {
         return await categoryModel.findById(id);
     }
+    async getListCategory() {
+        return await categoryModel.find({ status: 'active' });
+    }
 
 }
 

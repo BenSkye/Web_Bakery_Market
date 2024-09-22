@@ -17,6 +17,13 @@ class OrderProductRepo {
         return await orderProductModel.create(newOder);
     }
 
+    async getPersonalOderProduct(userId: string) {
+        return await orderProductModel.find({ user_id: userId });
+    }
+    async getOderProductByBakeryId(bakeryId: string) {
+        return await orderProductModel.find({ bakery_id: bakeryId });
+    }
+
 }
 
 export default new OrderProductRepo();

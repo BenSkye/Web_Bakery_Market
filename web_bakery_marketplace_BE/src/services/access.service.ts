@@ -73,7 +73,7 @@ class AccessService {
     const privateKey = crypto.randomBytes(64).toString('hex');
     const publicKey = crypto.randomBytes(64).toString('hex');
     //4 generate tokens
-    const tokens = await createTokenPair({ userId: foundUser._id, email }, publicKey.toString(), privateKey.toString());
+    const tokens = await createTokenPair({ userId: foundUser._id, email, name: foundUser.name }, publicKey.toString(), privateKey.toString());
 
     if (!tokens) {
       throw new BadRequestError('Create Token Fail');
