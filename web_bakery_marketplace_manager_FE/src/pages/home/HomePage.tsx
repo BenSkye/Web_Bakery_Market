@@ -7,6 +7,7 @@ import { StarOutlined, StarFilled, PlusCircleOutlined } from '@ant-design/icons'
 import AddBakeryModal from '../../components/modal/AddBakeryModal'; // Import modal mới
 import { createBakery } from '../../services/bakeriesService';
 
+
 interface Bakery {
     key: number;
     name: string;
@@ -56,11 +57,11 @@ const BakeryManager: React.FC = () => {
     const handleAddBakery = async (values: any) => {
         try {
             const openingHoursMap: { [key: string]: { open: string; close: string } } = {};
-            values.openingHours.forEach(({ day, open, close }) => {
+            Object.keys(values.openingHours).forEach((day) => {
+                const { open, close } = values.openingHours[day];
                 openingHoursMap[day] = { open, close };
             });
 
-            // Prepare bakery data
             const bakeryData = {
                 name: values.name,
                 address: values.address,
@@ -68,22 +69,26 @@ const BakeryManager: React.FC = () => {
                 customCake: values.customCake,
                 image: values.image,
                 openingHours: openingHoursMap,
-                // Add more fields if needed
             };
 
-            // Call API to create a new bakery
-            const createdBakery = await createBakery(bakeryData);
+            const response = await createBakery(bakeryData); // Ensure the response is correctly returned
 
-            // If the bakery is successfully created, update the state
-            setBakeries([...bakeries, { key: createdBakery._id, ...createdBakery }]);
-            message.success("Thêm tiệm bánh thành công!");
+            if (response && response.status === 201) {
+                setBakeries([...bakeries, { key: response.data._id, ...response.data }]);
+                message.success("Thêm tiệm bánh thành công!");
+                return response;
+            } else {
+                message.error("Đã xảy ra lỗi, vui lòng thử lại.");
+            }
 
-            // Close the modal
-            handleCloseModal();
+            // Return the response for handling in the modal
         } catch (error) {
-            message.error("Thêm tiệm bánh thất bại!");
+            message.error((error as Error).message || "Thêm tiệm bánh thất bại, vui lòng thử lại.");
+            return undefined; // Explicitly return undefined in case of error
         }
     };
+
+
 
     const renderStars = (rating: number) => {
         const stars = [];

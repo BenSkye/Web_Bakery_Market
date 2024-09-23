@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { Form, Input, Button, Modal, TimePicker, Upload, Switch, Table, message } from "antd";
-import { PlusCircleOutlined } from '@ant-design/icons';
+import { storage } from '../../config/firebase/firebaseConfig';
+import { uploadBytesResumable, ref, getDownloadURL } from "firebase/storage";
+
 
 interface Bakery {
-    key: number;
     name: string;
     address: string;
     contact: {
@@ -11,9 +12,11 @@ interface Bakery {
         facebook?: string;
         instagram?: string;
     };
-    image: string[];
     customCake: boolean;
+    image: string[];
+    openingHours: { [key: string]: { open: string; close: string } };
 }
+
 
 interface AddBakeryModalProps {
     visible: boolean;
@@ -24,40 +27,114 @@ interface AddBakeryModalProps {
 const AddBakeryModal: React.FC<AddBakeryModalProps> = ({ visible, onClose, onAdd }) => {
     const [form] = Form.useForm();
     const [isScheduleVisible, setIsScheduleVisible] = useState(false);
+
+    const [fileList, setFileList] = useState<any[]>([]);
+    const [imagePreviewUrls, setImagePreviewUrls] = useState<string[]>([]);
+
     const [openingHours, setOpeningHours] = useState<{ day: string; open: string; close: string }[]>([
-        { day: "Thứ Hai", open: "", close: "" },
-        { day: "Thứ Ba", open: "", close: "" },
-        { day: "Thứ Tư", open: "", close: "" },
-        { day: "Thứ Năm", open: "", close: "" },
-        { day: "Thứ Sáu", open: "", close: "" },
-        { day: "Thứ Bảy", open: "", close: "" },
-        { day: "Chủ Nhật", open: "", close: "" },
+        { day: "monday", open: "", close: "" },
+        { day: "tuesday", open: "", close: "" },
+        { day: "wednesday", open: "", close: "" },
+        { day: "thursday", open: "", close: "" },
+        { day: "friday", open: "", close: "" },
+        { day: "saturday", open: "", close: "" },
+        { day: "sunday", open: "", close: "" },
     ]);
 
 
-    const handleScheduleCancel = () => setIsScheduleVisible(false);
-    const handleTimeChange = (day: string, timeType: 'open' | 'close', time: string) => {
+    const handleUploadChange = (info: any) => {
+        // Update the file list and set preview URLs
+        const newFileList = info.fileList.slice(-3); // Limiting to 3 files if needed
+        setFileList(newFileList);
+
+        // Generate preview URLs for display
+        const newImagePreviewUrls = newFileList.map((file: any) => {
+            return URL.createObjectURL(file.originFileObj);
+        });
+        setImagePreviewUrls(newImagePreviewUrls);
+    };
+
+
+    const handleTimeChange = (day: string, timeType: 'open' | 'close', time: any) => {
         const newOpeningHours = openingHours.map((item) =>
-            item.day === day ? { ...item, [timeType]: time } : item
+            item.day === day ? { ...item, [timeType]: time.format('HH:mm') } : item
         );
         setOpeningHours(newOpeningHours);
+    };
+
+    const handleSaveSchedule = () => {
+        // Perform any additional validation if needed
+        message.success("Giờ mở cửa đã được lưu thành công!");
+        setIsScheduleVisible(false); // Close the modal after saving
     };
 
     const handleOk = async () => {
         try {
             const values = await form.validateFields();
-            const openingHoursMap = {};
-            openingHours.forEach(({ day, open, close }) => {
-                openingHoursMap[day] = { open, close };
-            });
-            onAdd({ key: Math.random(), ...values, openingHours: openingHoursMap });
-            message.success("Thêm tiệm bánh thành công!");
-            form.resetFields();
-            onClose();
+
+
+            // Validate images
+            if (fileList.length === 0) {
+                message.warning("Vui lòng chọn ít nhất một hình ảnh!");
+                return;
+            }
+
+            // Upload images to Firebase and gather URLs
+            const imageUrls: string[] = await Promise.all(
+                fileList.map(async (file: any) => {
+                    const storageRef = ref(storage, `bakeryImages/${file.name}`);
+                    const uploadTask = uploadBytesResumable(storageRef, file.originFileObj);
+                    const downloadURL = await new Promise<string>((resolve, reject) => {
+                        uploadTask.on(
+                            "state_changed",
+                            null,
+                            reject,
+                            () => {
+                                getDownloadURL(uploadTask.snapshot.ref).then(resolve).catch(reject);
+                            }
+                        );
+                    });
+                    return downloadURL;
+                })
+            );
+
+            console.log('====================================');
+            console.log('imageUrls:', imageUrls);
+            console.log('====================================');
+
+            const bakeryData = {
+                name: values.name,
+                address: values.address,
+                contact: values.contact,
+                customCake: values.customCake,
+                image: imageUrls,
+                openingHours: openingHours.reduce((acc, { day, open, close }) => {
+                    acc[day] = { open, close };
+                    return acc;
+                }, {} as { [key: string]: { open: string; close: string } }),
+            };
+
+            const response = onAdd(bakeryData);
+            console.log('====================================');
+            console.log('bakeryData:', bakeryData);
+            console.log('====================================');
+            console.log("Response:", response); // Log the response
+
+            if (response && response.status === 201) {
+                message.success(response.message || "Tạo tiệm bánh thành công!");
+                form.resetFields();
+                onClose();
+            } else {
+                message.error(response?.message || "Tạo tiệm bánh thất bại.");
+            }
         } catch (error) {
             console.error("Validation Failed:", error);
+            message.error("Vui lòng nhập đầy đủ thông tin!, Bakery Modal");
         }
     };
+
+
+
 
     const openingHoursColumns = [
         {
@@ -70,7 +147,10 @@ const AddBakeryModal: React.FC<AddBakeryModalProps> = ({ visible, onClose, onAdd
             dataIndex: "open",
             key: "open",
             render: (_, record: { day: string }) => (
-                <TimePicker onChange={(time, timeString) => handleTimeChange(record.day, 'open', timeString)} />
+                <TimePicker
+                    format="HH:mm"
+                    onChange={(time) => handleTimeChange(record.day, 'open', time)}
+                />
             ),
         },
         {
@@ -78,10 +158,21 @@ const AddBakeryModal: React.FC<AddBakeryModalProps> = ({ visible, onClose, onAdd
             dataIndex: "close",
             key: "close",
             render: (_, record: { day: string }) => (
-                <TimePicker onChange={(time, timeString) => handleTimeChange(record.day, 'close', timeString)} />
+                <TimePicker
+                    format="HH:mm"
+                    onChange={(time) => handleTimeChange(record.day, 'close', time)}
+                />
             ),
         },
     ];
+
+    const normFile = (e: any) => {
+        if (Array.isArray(e)) {
+            return e;
+        }
+        return e && e.fileList ? e.fileList : []; // Return an empty array if no files are selected
+    };
+
 
     return (
         <Modal
@@ -116,10 +207,29 @@ const AddBakeryModal: React.FC<AddBakeryModalProps> = ({ visible, onClose, onAdd
                     <Input placeholder="Nhập số điện thoại" />
                 </Form.Item>
 
-                <Form.Item label="Hình ảnh" name="image">
-                    <Upload multiple>
+                <Form.Item label="Hình ảnh" name="image" valuePropName="fileList">
+                    <Upload
+                        multiple
+                        beforeUpload={() => false}
+                        fileList={fileList}
+                        onChange={handleUploadChange}
+                    >
                         <Button>Chọn Hình Ảnh</Button>
                     </Upload>
+
+                    {/* Display image previews */}
+                    {imagePreviewUrls.length > 0 && (
+                        <div style={{ marginTop: "10px" }}>
+                            {imagePreviewUrls.map((url, index) => (
+                                <img
+                                    key={index}
+                                    src={url}
+                                    alt="Hình ảnh đã chọn"
+                                    style={{ maxWidth: '100px', marginRight: '10px' }}
+                                />
+                            ))}
+                        </div>
+                    )}
                 </Form.Item>
 
                 <Form.Item label="Thiết kế bánh 3D" name="customCake" valuePropName="checked">
@@ -131,16 +241,24 @@ const AddBakeryModal: React.FC<AddBakeryModalProps> = ({ visible, onClose, onAdd
                 <Modal
                     title="Cài Đặt Giờ Mở Cửa"
                     visible={isScheduleVisible}
-                    onCancel={handleScheduleCancel}
-                    footer={null}
+                    onCancel={() => setIsScheduleVisible(false)}
+                    footer={[
+                        <Button key="cancel" onClick={() => setIsScheduleVisible(false)}>
+                            Hủy
+                        </Button>,
+                        <Button key="save" type="primary" onClick={handleSaveSchedule}>
+                            Lưu
+                        </Button>,
+                    ]}
+
                 >
                     <Table
                         dataSource={openingHours}
                         columns={openingHoursColumns}
                         pagination={false}
                     />
-                </Modal>
 
+                </Modal>
             </Form>
         </Modal>
     );
