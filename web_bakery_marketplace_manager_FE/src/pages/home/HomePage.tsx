@@ -5,6 +5,7 @@ import { getBakeries } from "../../services/bakeriesService";
 import "../../styles/ManagePageStyles/BakeryManager.css";
 import { StarOutlined, StarFilled, PlusCircleOutlined } from '@ant-design/icons';
 import AddBakeryModal from '../../components/modal/AddBakeryModal'; // Import modal mới
+import { createBakery } from '../../services/bakeriesService';
 
 interface Bakery {
     key: number;
@@ -52,12 +53,36 @@ const BakeryManager: React.FC = () => {
     const showModal = () => setIsModalVisible(true);
     const handleCloseModal = () => setIsModalVisible(false);
 
-    const handleAddBakery = (values: any) => {
-        const openingHoursMap: { [key: string]: { open: string; close: string } } = {};
-        // Chuyển đổi giờ mở cửa nếu cần thiết
-        setBakeries([...bakeries, { key: bakeries.length + 1, ...values, openingHours: openingHoursMap }]);
-        message.success("Thêm tiệm bánh thành công!");
-        handleCloseModal();
+    const handleAddBakery = async (values: any) => {
+        try {
+            const openingHoursMap: { [key: string]: { open: string; close: string } } = {};
+            values.openingHours.forEach(({ day, open, close }) => {
+                openingHoursMap[day] = { open, close };
+            });
+
+            // Prepare bakery data
+            const bakeryData = {
+                name: values.name,
+                address: values.address,
+                contact: values.contact,
+                customCake: values.customCake,
+                image: values.image,
+                openingHours: openingHoursMap,
+                // Add more fields if needed
+            };
+
+            // Call API to create a new bakery
+            const createdBakery = await createBakery(bakeryData);
+
+            // If the bakery is successfully created, update the state
+            setBakeries([...bakeries, { key: createdBakery._id, ...createdBakery }]);
+            message.success("Thêm tiệm bánh thành công!");
+
+            // Close the modal
+            handleCloseModal();
+        } catch (error) {
+            message.error("Thêm tiệm bánh thất bại!");
+        }
     };
 
     const renderStars = (rating: number) => {
@@ -107,11 +132,10 @@ const BakeryManager: React.FC = () => {
                 className="bakery-table"
                 style={{ marginTop: "2rem" }}
             />
-
             <AddBakeryModal
                 visible={isModalVisible}
                 onClose={handleCloseModal}
-                onAddBakery={handleAddBakery}
+                onAdd={handleAddBakery}
             />
         </div>
     );
