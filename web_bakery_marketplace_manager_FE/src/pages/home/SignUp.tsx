@@ -1,6 +1,7 @@
 import React from "react";
 import { Form, Input, Button, Col, Row, message } from "antd";
 import { signup } from "../../services/authenService";
+import logo from "../../assets/logo.png";
 
 const SignUp: React.FC = () => {
   // Handle form submission
@@ -45,17 +46,23 @@ const SignUp: React.FC = () => {
         <Col
           span={8}
           style={{
-            backgroundColor: "#1e88e5",
+            background: 'linear-gradient(to left, rgba(253, 222, 222, 1), rgba(253, 222, 222, 0.1))',
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
           }}
         >
-          <div style={{ textAlign: "center" }}>
+          <div style={{ textAlign: "center", color: "#1e88e5" }}>
+            <h2 className="typing-effect" style={{ color: '#594b47', fontSize: "1.5rem", fontWeight: "bold", marginBottom: "1rem" }}>
+              Đăng kí đối tác để bán hàng
+            </h2>
+            <p style={{ fontSize: "1rem", color: '#594b47' }}>
+              Chào mừng đến với Merci!
+            </p>
             <img
-              src="/path-to-logo/logo.png"
+              src={logo}
               alt="Logo"
-              style={{ width: "200px" }}
+              style={{ width: "200px", marginBottom: "2rem", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)", borderRadius: "10px" }}
             />
           </div>
         </Col>

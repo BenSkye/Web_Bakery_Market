@@ -1,13 +1,19 @@
 import apiClient from './apiClient';
+export interface Contact {
+  phone: string;
+  facebook?: string;
+  instagram?: string;
+}
 
 export interface Bakery {
   id: string;
   _id: string;
   name: string;
   address: string;
+  contact: Contact;
   rating: number;
   image: string;
-
+  status: string;
 }
 
 export const getBakeries = async () => {

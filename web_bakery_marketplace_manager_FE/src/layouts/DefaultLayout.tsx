@@ -1,18 +1,14 @@
 import React from 'react';
 import { Layout } from 'antd';
-
 import HeaderComponent from './components/Header';
 import FooterComponent from './components/Footer';
 import { Outlet } from 'react-router-dom';
 
-
-const { Content } = Layout;
+const { Content, Sider } = Layout;
 
 const layoutStyle: React.CSSProperties = {
     display: 'flex',
-    flexDirection: 'column',
     minHeight: '100vh',
-
 };
 
 const contentStyle: React.CSSProperties = {
@@ -21,16 +17,24 @@ const contentStyle: React.CSSProperties = {
     color: 'black',
     textAlign: 'center',
     padding: '24px',
-
 };
 
+const siderStyle: React.CSSProperties = {
+    background: 'white',
+};
 
 const MainLayout: React.FC = () => {
     return (
         <Layout style={layoutStyle}>
-            <HeaderComponent />
-            <Content style={contentStyle}><Outlet /></Content>
-            <FooterComponent />
+            <Sider style={siderStyle} width={250}>
+                <HeaderComponent />
+            </Sider>
+            <Layout>
+                <Content style={contentStyle}>
+                    <Outlet />
+                </Content>
+                <FooterComponent />
+            </Layout>
         </Layout>
     );
 };

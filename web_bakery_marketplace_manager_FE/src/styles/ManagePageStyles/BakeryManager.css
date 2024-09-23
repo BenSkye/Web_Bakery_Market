@@ -1,0 +1,62 @@
+.bakery-manager-container {
+  padding: 2rem;
+  background: linear-gradient(
+    to left,
+    rgba(253, 222, 222, 1),
+    rgba(253, 222, 222, 0.1)
+  );
+  min-height: 100vh;
+}
+
+.page-title {
+  font-size: 2rem;
+  color: #ff7e67;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.add-button {
+  background-color: #ff7e67;
+  border: none;
+  font-weight: bold;
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.7);
+}
+
+.bakery-table {
+  margin-top: 2rem;
+}
+
+.bakery-table .ant-table-thead > tr > th {
+  background-color: #ff7e67;
+  color: white;
+  font-weight: bold;
+}
+
+.bakery-table .ant-table-tbody > tr:hover {
+  background-color: #f0f8ff;
+}
+
+.add-bakery-modal {
+  padding: 1.5rem;
+}
+
+.bakery-form .ant-form-item-label > label {
+  font-weight: bold;
+}
+
+.add-bakery-modal .ant-modal-content {
+  width: 90%;
+  max-width: 600px; /* Giới hạn chiều rộng tối đa */
+}
+
+.bakery-form .ant-form-item {
+  margin-bottom: 16px; /* Khoảng cách giữa các trường */
+}
+
+.bakery-form .ant-form-item label {
+  font-weight: 500; /* Làm đậm nhãn trường */
+}
+
+.bakery-form .ant-upload {
+  margin-top: 8px; /* Khoảng cách giữa nhãn và upload */
+}
