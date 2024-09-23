@@ -2,6 +2,7 @@ import React from "react";
 import { Form, Input, Button, Col, Row, message } from "antd";
 import { signup } from "../../services/authenService";
 import logo from "../../assets/logo.png";
+import { Link } from 'react-router-dom';
 
 const SignUp: React.FC = () => {
   // Handle form submission
@@ -151,6 +152,11 @@ const SignUp: React.FC = () => {
                   Đăng Ký
                 </Button>
               </Form.Item>
+
+              <div style={{ textAlign: "center" }}>
+                <span>Bạn đã có tài khoản </span>
+                <Link to="/login">Đăng nhập</Link>
+              </div>
             </Form>
           </div>
         </Col>
