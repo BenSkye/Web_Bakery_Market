@@ -1,36 +1,34 @@
 import React from 'react';
 import { Form, Input, Button, Row, Col, Typography, message } from 'antd';
-import { useNavigate, Link } from 'react-router-dom'; // Added Link for navigation to Forgot Password
-import { useAuth } from '../../stores/authContex';
+import { forgotPassword } from '../../services/authenService'; // Assuming this handles API request
+import { useNavigate } from 'react-router-dom';
 
 const { Title } = Typography;
 
-const Login: React.FC = () => {
-    const { login } = useAuth();
-
+const ForgotPassword: React.FC = () => {
     const [messageApi, contextHolder] = message.useMessage();
     const navigate = useNavigate();
 
     const onFinish = async (values: any) => {
-        const data = {
-            email: values.email,
-            password: values.password,
-        };
-        const response = await login(data);
-        console.log(response);
-        if (response.status === 200) {
+        try {
+            const response = await forgotPassword(values);
+            console.log('Forgot password response:', response);
+
+
             messageApi.open({
                 type: 'success',
-                content: 'Đăng nhập thành công',
+                content: 'Reset password link has been sent to your email. Please check your inbox.',
             });
-            navigate('/');
-        } else {
+
+            // Optionally navigate to another page
+            // navigate('/login'); 
+        } catch (error) {
+            console.error('Error in forgotPassword:', error);
             messageApi.open({
                 type: 'error',
-                content: 'Đăng nhập thất bại',
+                content: 'Failed to send reset link. Please try again later.',
             });
         }
-        console.log('Received values of form: ', values);
     };
 
     return (
@@ -43,9 +41,9 @@ const Login: React.FC = () => {
                     borderRadius: '8px',
                     boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
                 }}>
-                    <Title level={2} style={{ textAlign: 'center' }}>Login</Title>
+                    <Title level={2} style={{ textAlign: 'center' }}>Forgot Password</Title>
                     <Form
-                        name="login"
+                        name="forgotPassword"
                         layout="vertical"
                         onFinish={onFinish}
                     >
@@ -57,25 +55,10 @@ const Login: React.FC = () => {
                             <Input placeholder="Email" />
                         </Form.Item>
 
-                        <Form.Item
-                            name="password"
-                            label="Password"
-                            rules={[{ required: true, message: 'Please input your password!' }]}
-                        >
-                            <Input.Password placeholder="Password" />
-                        </Form.Item>
-
                         <Form.Item>
                             <Button type="primary" htmlType="submit" block>
-                                Login
+                                Send Reset Link
                             </Button>
-                        </Form.Item>
-
-                        {/* Added Forgot Password link */}
-                        <Form.Item>
-                            <div style={{ textAlign: 'center' }}>
-                                <Link to="/forgot-password">Forgot Password?</Link>
-                            </div>
                         </Form.Item>
                     </Form>
                 </div>
@@ -84,4 +67,4 @@ const Login: React.FC = () => {
     );
 };
 
-export default Login;
+export default ForgotPassword;

@@ -13,14 +13,18 @@ import Dashboard from '../pages/admin/Dashboard';
 import Cart from '../pages/stores/Cart';
 import StorePage from '../pages/manager/StorePage';
 import ListStoreAcceptDesignPage from '../pages/listStoreAcceptDesign/StoreAcceptDesignPage';
-
+import ForgotPassword from '../pages/login/ForgotPassword';
 import SignUpManager from '../pages/manager/BakerySignupPage';
+import ResetPassword from '../pages/login/ResetPassword';
 
 const AppRoutes: React.FC = () => {
     return (
         <Routes>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignUp />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+
 
 
             <Route element={<MainLayout />}>
