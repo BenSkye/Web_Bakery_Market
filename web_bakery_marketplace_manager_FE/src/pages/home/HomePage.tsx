@@ -1,54 +1,75 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Form, Input, Button, Table, Modal, message } from "antd";
-import { getBakeries } from "../../services/bakeriesService"; // Đường dẫn đến file dịch vụ của bạn
+import { Button, Table, message } from "antd";
+import { getBakeries } from "../../services/bakeriesService";
+import "../../styles/ManagePageStyles/BakeryManager.css";
+import { StarOutlined, StarFilled, PlusCircleOutlined } from '@ant-design/icons';
+import AddBakeryModal from '../../components/modal/AddBakeryModal'; // Import modal mới
 
 interface Bakery {
     key: number;
     name: string;
     address: string;
-    phone: string;
+    rating: number;
+    contact: {
+        phone: string;
+        facebook?: string;
+        instagram?: string;
+    };
+    openingHours: {
+        [key: string]: { open: string; close: string };
+    };
+    image: string[];
+    customCake: boolean;
 }
 
 const BakeryManager: React.FC = () => {
     const [bakeries, setBakeries] = useState<Bakery[]>([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
-    const [form] = Form.useForm();
 
-    // Lấy danh sách tiệm bánh khi component được mount
     useEffect(() => {
         const fetchBakeries = async () => {
             try {
                 const data = await getBakeries();
-                // Chuyển đổi dữ liệu để thêm thuộc tính `key`
-                console.log(data.metadata);
-                setBakeries(data.metadata);
+                const mappedBakeries = data.metadata.map((bakery: any) => ({
+                    key: bakery._id,
+                    name: bakery.name,
+                    address: bakery.address,
+                    rating: bakery.rating,
+                    contact: bakery.contact,
+                    openingHours: bakery.openingHours,
+                    image: bakery.image,
+                    customCake: bakery.customCake,
+                }));
+                setBakeries(mappedBakeries);
             } catch (error) {
                 message.error("Lấy danh sách tiệm bánh thất bại!");
             }
         };
-
         fetchBakeries();
     }, []);
 
-    const showModal = () => {
-        setIsModalVisible(true);
+    const showModal = () => setIsModalVisible(true);
+    const handleCloseModal = () => setIsModalVisible(false);
+
+    const handleAddBakery = (values: any) => {
+        const openingHoursMap: { [key: string]: { open: string; close: string } } = {};
+        // Chuyển đổi giờ mở cửa nếu cần thiết
+        setBakeries([...bakeries, { key: bakeries.length + 1, ...values, openingHours: openingHoursMap }]);
+        message.success("Thêm tiệm bánh thành công!");
+        handleCloseModal();
     };
 
-    const handleOk = async () => {
-        try {
-            const values = await form.validateFields();
-            setBakeries([...bakeries, { key: bakeries.length + 1, ...values }]);
-            message.success("Thêm tiệm bánh thành công!");
-            form.resetFields();
-            setIsModalVisible(false);
-        } catch (error) {
-            console.error("Validation Failed:", error);
+    const renderStars = (rating: number) => {
+        const stars = [];
+        for (let i = 1; i <= 5; i++) {
+            stars.push(
+                <span key={i}>
+                    {i <= Math.floor(rating) ? <StarFilled style={{ color: 'yellow' }} /> : <StarOutlined />}
+                </span>
+            );
         }
-    };
-
-    const handleCancel = () => {
-        setIsModalVisible(false);
+        return <div>{stars}</div>;
     };
 
     const columns = [
@@ -56,9 +77,9 @@ const BakeryManager: React.FC = () => {
             title: "Tên tiệm bánh",
             dataIndex: "name",
             key: "name",
-            render: (text: string, record: Bakery) => (
-                <Link to={''}>{text}</Link> // Tạo liên kết đến trang chi tiết tiệm bánh
-            ),
+            render: (text: string, record: Bakery) => {
+                return <Link to={`/bakery/${record.key}`}>{text}</Link>;
+            },
         },
         {
             title: "Địa chỉ",
@@ -66,56 +87,32 @@ const BakeryManager: React.FC = () => {
             key: "address",
         },
         {
-            title: "Số điện thoại",
-            dataIndex: "phone",
-            key: "phone",
+            title: "Đánh giá",
+            dataIndex: "rating",
+            key: "rating",
+            render: (text: number) => renderStars(text),
         },
     ];
 
     return (
-        <div style={{ padding: "2rem" }}>
-            <h1>Quản Lý Tiệm Bánh</h1>
-            <Button type="primary" onClick={showModal}>
-                Thêm Tiệm Bánh
+        <div className="bakery-manager-container">
+            <h1 className="page-title">Quản Lý Tiệm Bánh</h1>
+            <Button type="primary" className="add-button" onClick={showModal}>
+                Thêm Tiệm Bánh <PlusCircleOutlined />
             </Button>
 
-            <Table columns={columns} dataSource={bakeries} style={{ marginTop: "2rem" }} />
+            <Table
+                columns={columns}
+                dataSource={bakeries}
+                className="bakery-table"
+                style={{ marginTop: "2rem" }}
+            />
 
-            <Modal
-                title="Thêm Tiệm Bánh"
+            <AddBakeryModal
                 visible={isModalVisible}
-                onOk={handleOk}
-                onCancel={handleCancel}
-            >
-                <Form form={form} layout="vertical">
-                    <Form.Item
-                        label="Tên tiệm bánh"
-                        name="name"
-                        rules={[{ required: true, message: "Vui lòng nhập tên tiệm bánh!" }]}
-                    >
-                        <Input placeholder="Nhập tên tiệm bánh" />
-                    </Form.Item>
-
-                    <Form.Item
-                        label="Địa chỉ"
-                        name="address"
-                        rules={[{ required: true, message: "Vui lòng nhập địa chỉ!" }]}
-                    >
-                        <Input placeholder="Nhập địa chỉ" />
-                    </Form.Item>
-
-                    <Form.Item
-                        label="Số điện thoại"
-                        name="contact"
-                        rules={[
-                            { required: true, message: "Vui lòng nhập số điện thoại!" },
-                            { pattern: /^[0-9]*$/, message: "Số điện thoại phải là số!" },
-                        ]}
-                    >
-                        <Input placeholder="Nhập số điện thoại" />
-                    </Form.Item>
-                </Form>
-            </Modal>
+                onClose={handleCloseModal}
+                onAddBakery={handleAddBakery}
+            />
         </div>
     );
 };

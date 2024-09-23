@@ -1,6 +1,7 @@
 import React from "react";
 import { Form, Input, Button, Col, Row, message } from "antd";
 import { login } from "../../services/authenService"; // Ensure this imports your login service correctly
+import logo from "../../assets/logo.png";
 
 const LoginManager: React.FC = () => {
   // Handle form submission
@@ -35,27 +36,32 @@ const LoginManager: React.FC = () => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "#f0f2f5",
         height: "100vh",
       }}
     >
       <Row style={{ height: "100vh", width: "100%" }}>
-        {/* 1/3 - Left section with logo and color theme */}
+        {/* 1/3 - Left section with logo and welcome text */}
         <Col
           span={8}
           style={{
-            backgroundColor: "#1e88e5",
+            background: 'linear-gradient(to left, rgba(253, 222, 222, 1), rgba(253, 222, 222, 0.1))',
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
+            padding: "2rem",
           }}
         >
-          <div style={{ textAlign: "center" }}>
-            {/* Add your logo here */}
+          <div style={{ textAlign: "center", color: "#1e88e5" }}>
+            <h2 className="typing-effect" style={{ color: '#594b47', fontSize: "1.5rem", fontWeight: "bold", marginBottom: "1rem" }}>
+              Đăng nhập để vào shop của bạn
+            </h2>
+            <p style={{ fontSize: "1rem", color: '#594b47' }}>
+              Chào mừng đến với Merci!
+            </p>
             <img
-              src="/path-to-logo/logo.png"
+              src={logo}
               alt="Logo"
-              style={{ width: "200px" }}
+              style={{ width: "200px", marginBottom: "2rem", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)", borderRadius: "10px" }}
             />
           </div>
         </Col>
@@ -90,10 +96,8 @@ const LoginManager: React.FC = () => {
             >
               <Form.Item
                 label="Email"
-                name="email" // Keep as username for form compatibility
-                rules={[
-                  { required: true, message: "Vui lòng nhập email!" },
-                ]}
+                name="email"
+                rules={[{ required: true, message: "Vui lòng nhập email!" }]}
               >
                 <Input placeholder="Nhập email" />
               </Form.Item>
@@ -101,9 +105,7 @@ const LoginManager: React.FC = () => {
               <Form.Item
                 label="Mật khẩu"
                 name="password"
-                rules={[
-                  { required: true, message: "Vui lòng nhập mật khẩu!" },
-                ]}
+                rules={[{ required: true, message: "Vui lòng nhập mật khẩu!" }]}
               >
                 <Input.Password placeholder="Nhập mật khẩu" />
               </Form.Item>
@@ -120,5 +122,7 @@ const LoginManager: React.FC = () => {
     </div>
   );
 };
+
+
 
 export default LoginManager;
