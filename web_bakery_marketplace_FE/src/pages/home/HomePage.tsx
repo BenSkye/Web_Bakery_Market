@@ -102,7 +102,7 @@ const HomePage: React.FC = () => {
 
   const cardStyle: React.CSSProperties = {
     position: "absolute",
-    top: "50%",
+    top: "60%",
     left: "18%",
     transform: "translate(-50%, -215%)",
     zIndex: 2,
