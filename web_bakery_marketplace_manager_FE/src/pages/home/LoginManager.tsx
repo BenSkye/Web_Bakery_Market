@@ -1,22 +1,27 @@
 import React from "react";
 import { Form, Input, Button, Col, Row, message } from "antd";
-import { login } from "../../services/authenService"; // Ensure this imports your login service correctly
+import { useNavigate, Link } from "react-router-dom"; // Import Link
+import { login } from "../../services/authenService";
 import logo from "../../assets/logo.png";
 
 const LoginManager: React.FC = () => {
+  const navigate = useNavigate(); // Initialize navigate
+
   // Handle form submission
   const onFinish = async (values: any) => {
     try {
       // Call the login function to send login data to the backend
       const result = await login({
-        email: values.email, // Use 'email' based on your service
+        email: values.email,
         password: values.password,
       });
 
       // Check for success
       if (result?.metadata) {
         message.success("Đăng nhập thành công!");
-        // Redirect or perform other actions after successful login
+
+        // Redirect to another page after successful login
+        navigate("/"); // Change '/dashboard' to the desired route
       } else {
         message.error(result?.message || "Đăng nhập thất bại, vui lòng thử lại.");
       }
@@ -40,7 +45,6 @@ const LoginManager: React.FC = () => {
       }}
     >
       <Row style={{ height: "100vh", width: "100%" }}>
-        {/* 1/3 - Left section with logo and welcome text */}
         <Col
           span={8}
           style={{
@@ -66,7 +70,6 @@ const LoginManager: React.FC = () => {
           </div>
         </Col>
 
-        {/* 2/3 - Right section with login form */}
         <Col
           span={16}
           style={{
@@ -115,6 +118,12 @@ const LoginManager: React.FC = () => {
                   Đăng Nhập
                 </Button>
               </Form.Item>
+
+              {/* Add "Register" link */}
+              <div style={{ textAlign: "center" }}>
+                <span>Bạn chưa có tài khoản? </span>
+                <Link to="/signup">Đăng ký tại đây</Link>
+              </div>
             </Form>
           </div>
         </Col>
@@ -122,7 +131,5 @@ const LoginManager: React.FC = () => {
     </div>
   );
 };
-
-
 
 export default LoginManager;
