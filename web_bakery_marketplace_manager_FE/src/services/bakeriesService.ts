@@ -12,7 +12,7 @@ export interface Bakery {
   address: string;
   contact: Contact;
   rating: number;
-  image: string;
+  image: string[];
   status: string;
 }
 
@@ -40,12 +40,11 @@ export const getBakeryById = async (id: string) => {
 
 export const createBakery = async (data: any) => {
   try {
-    console.log('apiclient', apiClient.defaults.headers);
     const response = await apiClient.post('/bakery/create', data);
-
-    return response.data;
+    return response; // Return the entire response, not just response.data
   } catch (error) {
     console.error('Error creating bakery:', error);
-    throw error;
+    throw error; // Ensure that the error is propagated for handling
   }
-}
+};
+
