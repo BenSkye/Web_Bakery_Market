@@ -16,10 +16,13 @@ class ProductRepository {
     }
 
     async getProductById(id: string, fields: string[]) {
-        return await productModel.findById(id).select(getSelectData(fields)).populate({
+        return await productModel.findById(id).select(getSelectData(fields)).populate([{
             path: 'category',
             select: 'name _id'
-        }).lean();
+        }, {
+            path: 'bakery',
+            select: 'name _id'
+        }]).lean();
     }
 
     // async updateProduct(id: number, product: Product): Promise<[number, Product[]]> {

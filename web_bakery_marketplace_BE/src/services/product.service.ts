@@ -38,19 +38,23 @@ class ProductService {
     }
 
     static getProducts = async () => {
-        const select = ['name', 'bakery', 'category', 'price', 'status', 'image', 'rating'];
+        const select = ['name', 'bakery', 'thumbnail', 'category', 'price', 'status', 'image', 'rating'];
         const query = { status: "available" }
         const products = await productRepo.getProducts(query, select);
         return products;
     }
 
     static getProductById = async (id: string) => {
-        const select = ['name', 'bakery', 'category', 'price', 'status', 'image', 'rating', 'description', 'ingredients'];
+        const select = ['name', 'bakery', 'thumbnail', 'category', 'price', 'status', 'image', 'rating', 'description', 'ingredients'];
         const product = await productRepo.getProductById(id, select);
+        const inventory = await inventoryRepo.findInventory({ product_id: id }, ['stock']);
         if (!product) {
             throw new NotFoundError('No product found');
         }
-        return product;
+        if (!inventory) {
+            throw new NotFoundError('No inventory found');
+        }
+        return { product, inventory };
     }
 
     static getProductsByBakery = async (bakeryId: string) => {
