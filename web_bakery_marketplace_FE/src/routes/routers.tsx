@@ -17,6 +17,9 @@ import ForgotPassword from '../pages/login/ForgotPassword';
 import SignUpManager from '../pages/manager/BakerySignupPage';
 import ResetPassword from '../pages/login/ResetPassword';
 import Checkout from '../pages/stores/Checkout';
+import OrderStatus from '../pages/stores/OrderStatus';
+import OrderDetailStatus from '../pages/stores/OrderDetailStatus';
+import Profile from '../pages/profile/Profile';
 
 const AppRoutes: React.FC = () => {
     return (
@@ -29,12 +32,16 @@ const AppRoutes: React.FC = () => {
 
 
             <Route element={<MainLayout />}>
+
                 <Route path="/" element={<HomePage />} />
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/about" element={<AboutPage />} />
                 <Route path="/stores" element={<StoresPage />} />
                 <Route path="/workshop" element={<WorkshopPage />} />
                 <Route path="/storepage" element={<StorePage />} />
+                <Route path="/orderstatus" element={<OrderStatus />} />
+                <Route path="/orderdetailstatus" element={<OrderDetailStatus />} />
+                <Route path="/profile" element={<Profile />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/checkout" element={<Checkout />} />
                 <Route path="/detail/:id" element={<Detail />} />

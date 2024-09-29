@@ -77,6 +77,11 @@ const Login: React.FC = () => {
                                 <Link to="/forgot-password">Forgot Password?</Link>
                             </div>
                         </Form.Item>
+                        <Form.Item>
+                            <div style={{ textAlign: 'center' }}>
+                                <Link to="/signup">You don't have account, click here.</Link>
+                            </div>
+                        </Form.Item>
                     </Form>
                 </div>
             </Col>
