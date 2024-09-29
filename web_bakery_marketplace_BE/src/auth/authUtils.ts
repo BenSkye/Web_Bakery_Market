@@ -51,6 +51,7 @@ const authentication = asyncHandler(async (req: any, res: any, next: any) => {
     if (req.headers[HEADER.REFRESH_TOKEN]) {
         try {
             const refreshToken = req.headers[HEADER.REFRESH_TOKEN] as string;
+            console.log('refreshToken::', refreshToken)
             const decodeUser: JwtPayload = jwt.verify(refreshToken, keyStore.privateKey) as JwtPayload;
             if (userId !== decodeUser.userId) throw new AuthFailureError('Invalid UserId')
             req.user = decodeUser;
@@ -64,6 +65,7 @@ const authentication = asyncHandler(async (req: any, res: any, next: any) => {
     const accessToken = req.headers[HEADER.AUTHORIZATION]
     if (!accessToken) throw new AuthFailureError('Invalid accessToken')
     try {
+console.log('accessToken::', accessToken)
         const decodeUser: JwtPayload = jwt.verify(accessToken, keyStore.publicKey) as JwtPayload;
         if (userId !== decodeUser.userId) throw new AuthFailureError('Invalid UserId')
         req.keyStore = keyStore;
