@@ -15,6 +15,7 @@ import StorePage from '../pages/manager/StorePage';
 import ListStoreAcceptDesignPage from '../pages/listStoreAcceptDesign/StoreAcceptDesignPage';
 
 import SignUpManager from '../pages/manager/BakerySignupPage';
+import ProductDetail from '../pages/detail/ProductDetail';
 
 const AppRoutes: React.FC = () => {
     return (
@@ -31,7 +32,7 @@ const AppRoutes: React.FC = () => {
                 <Route path="/workshop" element={<WorkshopPage />} />
                 <Route path="/storepage" element={<StorePage />} />
                 <Route path="/dashboard" element={<Dashboard />} />
-
+                <Route path="/product/:id" element={<ProductDetail />} />
                 <Route path="/detail/:id" element={<Detail />} />
                 <Route path="/CakeDesigner" element={<CakeDesigner />} />
                 <Route path="/listStoreAcceptDesign" element={<ListStoreAcceptDesignPage />} />

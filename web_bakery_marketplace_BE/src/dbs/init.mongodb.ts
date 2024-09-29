@@ -18,7 +18,11 @@ class Database {
     // }
 
     mongoose
-      .connect(connectString)
+      .connect(connectString, {
+        serverSelectionTimeoutMS: 30000,
+        socketTimeoutMS: 45000,
+        connectTimeoutMS: 30000,
+      })
       .then((_) => {
         countConnect();
         console.log('Connected to MongoDB');
