@@ -18,6 +18,9 @@ const HeaderComponent: React.FC = () => {
                     <Menu.Item key="profile">
                         <Link to='/profile'>Hồ sơ</Link>
                     </Menu.Item>
+                    <Menu.Item key="order">
+                        <Link to='/orderstatus'>Đơn Hàng</Link>
+                    </Menu.Item>
                     <Menu.Item key="logout" onClick={logout}>
                         <LogoutOutlined /> Đăng xuất
                     </Menu.Item>

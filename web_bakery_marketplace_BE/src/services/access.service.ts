@@ -6,7 +6,7 @@ import { getInfoData } from '../utils';
 import { AuthFailureError, BadRequestError, ForbiddenError, NotFoundError } from '../core/error.response';
 import { keyModel } from "../models/keytoken.model"
 import { JwtPayload } from 'jsonwebtoken';
-
+import nodemailer from 'nodemailer';
 
 //import service
 import KeyTokenService from './keyToken.service';
@@ -143,6 +143,105 @@ class AccessService {
     }
 
   };
-}
 
+
+  static forgotPassword = async (email: string) => {
+    console.log('forgotPassword', email);
+    // 1. Find the user based on the email provided
+    const foundUser = await userModel.findOne({ email });
+    if (!foundUser) {
+      throw new NotFoundError('User not found');
+    }
+
+    // 2. Generate a reset token (32 bytes random)
+    const token = crypto.randomBytes(32).toString('hex');
+
+    // 3. Hash the token for secure storage
+    const resetPasswordTokenHash = crypto.createHash('sha256').update(token).digest('hex');
+
+    // 4. Set token expiration (e.g., 10 minutes)
+    const resetPasswordExpire = new Date(Date.now() + 10 * 60 * 1000);
+
+    // 5. Update the user with the hashed token and expiration
+    await userModel.findOneAndUpdate(
+      { email },
+      {
+        passwordResetToken: resetPasswordTokenHash,
+        passwordResetExpire: resetPasswordExpire
+      },
+      { new: true }
+    );
+
+
+    const resetUrl = `http://localhost:2709/reset-password?token=${token}`;
+    console.log('resetUrllllll', resetUrl);
+    try {
+
+      const transporter = nodemailer.createTransport({
+
+
+        service: 'Gmail',
+        auth: {
+          user: 'khanhhgse173474@fpt.edu.vn',
+          pass: 'zkoawauogcjlccfg',
+        },
+      });
+      console.log('transporter', transporter);
+
+      const mailOptions = {
+        from: 'khanhhgse173474@fpt.edu.vn',
+        to: email,
+        subject: 'Password Reset Request',
+        html: `
+                <p>You requested to reset your password. Click the link below to reset your password:</p>
+                <a href="${resetUrl}" target="_blank">Reset Password</a>
+                <p>This link will expire in 10 minutes.</p>
+            `
+      };
+      console.log('mailOptions', mailOptions);
+      // Send the email
+      await transporter.sendMail(mailOptions);
+
+      return {
+        message: "Forgot password email sent successfully",
+        status: 200,
+        metadata: {
+          resetPasswordToken: token,
+          resetPasswordExpire
+        }
+      };
+    } catch (error) {
+      console.error('Error sending reset email:', error);
+      throw new Error('Error sending the reset email');
+    }
+  }
+
+  static resetPassword = async (token: string, newPassword: string) => {
+    // 1. Hash the reset token for comparison
+    const resetPasswordTokenHash = crypto.createHash('sha256').update(token).digest('hex');
+
+    // 2. Find the user with the hashed token and expiration
+    const user = await userModel.findOne({
+      passwordResetToken: resetPasswordTokenHash,
+      passwordResetExpire: { $gt: Date.now() }
+    });
+
+    if (!user) {
+      throw new BadRequestError('Invalid or expired reset token');
+    }
+
+    // 3. Update the user's password
+    user.password = await bcrypt.hash(newPassword, 10);
+    user.passwordResetToken = ''; // Clear the reset token
+    user.passwordResetExpire = undefined; // Clear the expiration
+    await user.save();
+
+    return {
+      message: 'Password reset successfully',
+      status: 200
+    };
+  }
+
+
+}
 export default AccessService;
