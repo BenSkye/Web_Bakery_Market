@@ -40,7 +40,16 @@ const userSchema = new Schema(
       type: Array,
       default: [],
     },
+    passwordResetToken: {
+      type: String,
+      default: '',
+
+    },
+    passwordResetExpire: {
+      type: Date,
+    },
   },
+
   {
     timestamps: true,
     collection: COLLECTION_NAME,

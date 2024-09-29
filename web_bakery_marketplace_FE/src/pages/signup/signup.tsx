@@ -21,7 +21,7 @@ const SignUp: React.FC = () => {
                 type: 'success',
                 content: 'Đăng kí thành công',
             });
-            navigate('/');
+            navigate('/login');
         } else {
             messageApi.open({
                 type: 'error',

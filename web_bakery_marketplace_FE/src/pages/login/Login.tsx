@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form, Input, Button, Row, Col, Typography, message } from 'antd';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom'; // Added Link for navigation to Forgot Password
 import { useAuth } from '../../stores/authContex';
 
 const { Title } = Typography;
@@ -10,17 +10,18 @@ const Login: React.FC = () => {
 
     const [messageApi, contextHolder] = message.useMessage();
     const navigate = useNavigate();
+
     const onFinish = async (values: any) => {
         const data = {
             email: values.email,
             password: values.password,
-        }
+        };
         const response = await login(data);
-        console.log(response)
+        console.log(response);
         if (response.status === 200) {
             messageApi.open({
                 type: 'success',
-                content: 'Đăng nhâp thành công',
+                content: 'Đăng nhập thành công',
             });
             navigate('/');
         } else {
@@ -68,6 +69,18 @@ const Login: React.FC = () => {
                             <Button type="primary" htmlType="submit" block>
                                 Login
                             </Button>
+                        </Form.Item>
+
+                        {/* Added Forgot Password link */}
+                        <Form.Item>
+                            <div style={{ textAlign: 'center' }}>
+                                <Link to="/forgot-password">Forgot Password?</Link>
+                            </div>
+                        </Form.Item>
+                        <Form.Item>
+                            <div style={{ textAlign: 'center' }}>
+                                <Link to="/signup">You don't have account, click here.</Link>
+                            </div>
                         </Form.Item>
                     </Form>
                 </div>
