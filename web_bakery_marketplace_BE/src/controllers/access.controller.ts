@@ -34,5 +34,23 @@ class AccessController {
       metadata: await AccessService.signup(req.body),
     }).send(res);
   });
+  forgotPassword = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+    new SuccessResponse({
+      message: 'Forgot password successfully',
+      metadata: await AccessService.forgotPassword(req.body.email),
+    }).send(res);
+  });
+
+  resetPassword = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+    const { token } = req.params;
+    const { newPassword } = req.body;
+
+    const result = await AccessService.resetPassword(token, newPassword);
+    return new SuccessResponse({
+      message: 'Reset password successfully',
+      metadata: result,
+    }).send(res);
+  });
+
 }
 export default new AccessController();
