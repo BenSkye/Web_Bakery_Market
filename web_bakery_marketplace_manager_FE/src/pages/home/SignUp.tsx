@@ -1,11 +1,12 @@
 import React from "react";
-import { Form, Input, Button, Col, Row, message } from "antd";
+import { Form, Input, Button, Col, Row, notification } from "antd"; // Import notification
 import { signup } from "../../services/authenService";
 import logo from "../../assets/logo.png";
 import { Link } from 'react-router-dom';
 
 const SignUp: React.FC = () => {
   // Handle form submission
+
   const onFinish = async (values: any) => {
     try {
       const result = await signup({
@@ -16,14 +17,30 @@ const SignUp: React.FC = () => {
         address: values.address,
         role: "shop", // Default role for signup
       });
+      console.log("Signup Result:", result);
 
-      if (result && result.success) {
-        message.success("Đăng ký thành công!");
+      if (result && result.status === 201) {
+        notification.success({
+          message: 'Đăng ký thành công!',
+          description: 'Bạn đã đăng ký thành công. Hãy đăng nhập để tiếp tục.',
+          placement: 'topRight', // Position of the notification
+          duration: 3, // Duration in seconds
+        });
       } else {
-        message.error(result?.message || "Đăng ký thất bại, vui lòng thử lại.");
+        notification.error({
+          message: 'Đăng ký thất bại',
+          description: result?.message || "Đăng ký thất bại, vui lòng thử lại.",
+          placement: 'topRight',
+          duration: 3,
+        });
       }
     } catch (error) {
-      message.error("Đăng ký thất bại, vui lòng thử lại.");
+      notification.error({
+        message: 'Đăng ký thất bại',
+        description: "Đăng ký thất bại, vui lòng thử lại.",
+        placement: 'topRight',
+        duration: 3,
+      });
     }
   };
 

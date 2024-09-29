@@ -33,14 +33,15 @@ export const forgotPassword = async (data: any) => {
     try {
         const response = await apiClient.post('/user/forgot-password', data);
         console.log('response forgotpassword:', response.data);
-
-        return response.data.metadata;
+        return response.data;
     } catch (error: any) {
         console.error('Error forgotPassword:', error);
-        return error.response.data;
-        throw error;
+        return { status: error.response?.status, message: error.response?.data.message };
     }
 }
+
+
+
 export const resetPassword = async (token: string, newPassword: string) => {
     try {
         const response = await apiClient.post(`/user/reset-password/${token}`, { newPassword });

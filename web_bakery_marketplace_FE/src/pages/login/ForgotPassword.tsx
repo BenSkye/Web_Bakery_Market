@@ -1,5 +1,5 @@
-import React from 'react';
-import { Form, Input, Button, Row, Col, Typography, message } from 'antd';
+import React, { useState } from 'react';
+import { Form, Input, Button, Row, Col, Typography, message, Spin } from 'antd';
 import { forgotPassword } from '../../services/authenService'; // Assuming this handles API request
 import { useNavigate } from 'react-router-dom';
 
@@ -7,27 +7,35 @@ const { Title } = Typography;
 
 const ForgotPassword: React.FC = () => {
     const [messageApi, contextHolder] = message.useMessage();
+    const [loading, setLoading] = useState(false); // State for loading
     const navigate = useNavigate();
 
     const onFinish = async (values: any) => {
+        setLoading(true); // Start loading
         try {
             const response = await forgotPassword(values);
-            console.log('Forgot password response:', response);
+            console.log('Forgot password response:', response.status);
 
-
-            messageApi.open({
-                type: 'success',
-                content: 'Reset password link has been sent to your email. Please check your inbox.',
-            });
-
-            // Optionally navigate to another page
-            // navigate('/login'); 
+            // Check if the response indicates a user not found error (404)
+            if (response && response.status === 404) {
+                messageApi.open({
+                    type: 'error',
+                    content: 'User not found. Please check your email and try again.',
+                });
+            } else {
+                messageApi.open({
+                    type: 'success',
+                    content: 'Reset password link has been sent to your email. Please check your inbox.',
+                });
+            }
         } catch (error) {
             console.error('Error in forgotPassword:', error);
             messageApi.open({
                 type: 'error',
                 content: 'Failed to send reset link. Please try again later.',
             });
+        } finally {
+            setLoading(false); // Stop loading
         }
     };
 
@@ -56,8 +64,8 @@ const ForgotPassword: React.FC = () => {
                         </Form.Item>
 
                         <Form.Item>
-                            <Button type="primary" htmlType="submit" block>
-                                Send Reset Link
+                            <Button type="primary" htmlType="submit" block loading={loading}>
+                                {loading ? 'Sending...' : 'Send Reset Link'}
                             </Button>
                         </Form.Item>
                     </Form>
