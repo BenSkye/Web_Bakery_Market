@@ -1,0 +1,55 @@
+.modal-container {
+  transition: all 0.3s ease;
+}
+
+.form-container {
+  padding: 20px;
+}
+
+.input-field {
+  border-radius: 5px;
+  transition: border-color 0.3s;
+}
+
+.input-field:hover {
+  border-color: #1890ff; /* Change this to your desired color */
+}
+
+.upload-button {
+  background-color: #52c41a; /* Change to your desired color */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.upload-button:hover {
+  background-color: #73d13d; /* Lighter shade */
+}
+
+.image-preview-container {
+  margin-top: 10px;
+  display: flex;
+}
+
+.image-preview {
+  max-width: 100px;
+  margin-right: 10px;
+  border-radius: 5px;
+}
+
+.schedule-button {
+  margin-top: 10px;
+}
+
+.custom-switch {
+  display: block;
+}
+
+.schedule-modal {
+  transition: all 0.3s ease;
+}
+
+.schedule-table {
+  margin-top: 10px;
+}
