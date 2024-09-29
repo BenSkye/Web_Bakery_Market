@@ -20,6 +20,7 @@ import Checkout from '../pages/stores/Checkout';
 import OrderStatus from '../pages/stores/OrderStatus';
 import OrderDetailStatus from '../pages/stores/OrderDetailStatus';
 import Profile from '../pages/profile/Profile';
+import ProductDetail from '../pages/detail/ProductDetail';
 
 const AppRoutes: React.FC = () => {
     return (
@@ -44,6 +45,7 @@ const AppRoutes: React.FC = () => {
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/checkout" element={<Checkout />} />
+                <Route path="/product/:id" element={<ProductDetail />} />
                 <Route path="/detail/:id" element={<Detail />} />
                 <Route path="/CakeDesigner" element={<CakeDesigner />} />
                 <Route path="/listStoreAcceptDesign" element={<ListStoreAcceptDesignPage />} />

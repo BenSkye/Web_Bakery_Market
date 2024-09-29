@@ -4,12 +4,13 @@ import { ShoppingCartOutlined, UserOutlined, LogoutOutlined } from '@ant-design/
 import logo from '../../assets/1.png';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../stores/authContex';
+import { useCart } from '../../stores/cartContext';
 
 const { Header } = Layout;
 
 const HeaderComponent: React.FC = () => {
     const { user, logout } = useAuth();
-
+    const { cart } = useCart();
     const userMenu = (
         <Menu>
             {user ? (
@@ -62,13 +63,15 @@ const HeaderComponent: React.FC = () => {
                             <Menu.Item key="workshop"><Link to='/workshop'>Workshop</Link></Menu.Item>
                         </Menu>
                         <Row align="middle">
-                            <Col style={{ marginRight: '1rem' }}>
-                                <Badge count={5} size="small">
-                                    <Link to="/cart">
-                                        <Button type="text" icon={<ShoppingCartOutlined />} style={{ fontSize: '1.5rem' }} />
-                                    </Link>
-                                </Badge>
-                            </Col>
+                            {user && (
+                                <Col style={{ marginRight: '1rem' }}>
+                                    <Badge count={cart?.cart_count_products} size="small">
+                                        <Link to="/cart">
+                                            <Button type="text" icon={<ShoppingCartOutlined />} style={{ fontSize: '1.5rem' }} />
+                                        </Link>
+                                    </Badge>
+                                </Col>
+                            )}
                             <Col>
                                 <Dropdown overlay={userMenu} trigger={['click']}>
                                     <Button type="text" style={{ fontSize: '1rem' }}>

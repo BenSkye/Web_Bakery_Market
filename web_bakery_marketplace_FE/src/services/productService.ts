@@ -9,3 +9,14 @@ export const getProductsByBakery = async (bakeryId: string) => {
         throw error;
     }
 };
+
+export const getProductById = async (productId: string) => {
+    try {
+        const response = await apiClient.get(`/product/get-by-id/${productId}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching product:', error);
+        throw error;
+    }
+};
+

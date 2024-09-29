@@ -1,5 +1,6 @@
 import { BadRequestError } from "../core/error.response";
 import { inventoryModel } from "../models/inventory.model";
+import { getSelectData } from "../utils";
 
 
 class InventoryRepo {
@@ -8,8 +9,8 @@ class InventoryRepo {
         return await inventoryModel.create(data);
     }
 
-    async findInventory(query: any) {
-        return await inventoryModel.findOne(query);
+    async findInventory(query: any, fields: string[]) {
+        return await inventoryModel.findOne(query).select(getSelectData(fields));
     }
 
     async addStockToInventory(productId: string, quantity: number, shop_id: string) {
