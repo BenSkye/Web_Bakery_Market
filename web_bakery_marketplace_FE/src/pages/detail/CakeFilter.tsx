@@ -1,5 +1,6 @@
 import React from 'react';
 import { Card, Row, Col, Button, Typography } from 'antd';
+import { Link } from 'react-router-dom';
 
 // Define prop types
 interface CakeFilterProps {
@@ -94,7 +95,9 @@ const CakeFilter: React.FC<CakeFilterProps> = ({ selectedFilter, onFilterChange,
                     <Col key={cake.id} span={8}>
                         <Card className="card-hover" cover={<img src={cake.image[0]} alt={cake.name} style={cakeImageStyle} />}>
                             <Card.Meta title={cake.name} description={`Giá: ${cake.price}`} />
-                            <Button className="button-hover" style={addToCartButtonStyle} type="primary">Thêm vào giỏ</Button>
+                            <Link to={`/product/${cake._id}`}>
+                                <Button className="button-hover" style={addToCartButtonStyle} type="primary">Xem chi tiết</Button>
+                            </Link>
                         </Card>
                     </Col>
                 ))}

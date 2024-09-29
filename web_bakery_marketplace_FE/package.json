@@ -15,7 +15,7 @@
     "@mapbox/mapbox-gl-geocoder": "^5.0.2",
     "@mapbox/mapbox-sdk": "^0.16.0",
     "@react-spring/web": "^9.7.4",
-    "@react-three/drei": "^9.112.0",
+    "@react-three/drei": "^9.0.1",
     "@react-three/fiber": "^8.17.6",
     "@reduxjs/toolkit": "^2.2.6",
     "@types/js-cookie": "^3.0.6",
@@ -37,7 +37,7 @@
     "recharts": "^2.12.7",
     "redux": "^5.0.1",
     "styled-components": "^6.1.12",
-    "three": "^0.166.1",
+    "three": "^0.150.1",
     "web-bakery-marketplace-fe": "file:"
   },
   "devDependencies": {

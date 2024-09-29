@@ -13,7 +13,7 @@ cartRouter.use(permission('member'));
 // Cart routes
 cartRouter.post('/', CartController.createCart);
 cartRouter.get('/get-cart', CartController.getCart);
-cartRouter.post('/add', CartController.addToCart);
+cartRouter.post('/add-to-cart', CartController.addToCart);
 cartRouter.delete('/remove/:productId', CartController.removeFromCart);
 cartRouter.put('/update/:productId', CartController.updateProductQuantity);
 cartRouter.delete('/clear', CartController.clearCart);
