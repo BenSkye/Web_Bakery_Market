@@ -4,7 +4,15 @@ import apiClient from '../services/apiClient';
 interface CartItem {
     id: string;
     name: string;
-    cart_products: Array<unknown>;
+    cart_products: Array<{
+        product_id: {
+            _id: string;
+            name: string;
+            price: number;
+            thumbnail: string;
+        },
+        quantity: number;
+    }>;
     cart_count_products: number;
 }
 
@@ -56,15 +64,18 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
         setCart(response.data.metadata);
     };
 
-    // const removeFromCart = (id: string) => {
-    //     setCart((prevCart) => prevCart.filter((item) => item.id !== id));
-    // };
+    const removeFromCart = async (productId: string) => {
+        console.log('productData', productId)
+        const response = await apiClient.delete(`/cart/remove/${productId}`);
+        console.log(response.data.metadata);
+        setCart(response.data.metadata);
+    };
 
     // const clearCart = () => {
     //     setCart([]);
     // };
     return (
-        <CartContext.Provider value={{ cart, addToCart }}>
+        <CartContext.Provider value={{ cart, addToCart, removeFromCart }}>
             {children}
         </CartContext.Provider>
     );

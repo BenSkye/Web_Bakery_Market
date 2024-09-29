@@ -1,45 +1,63 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Table, InputNumber, Button, Typography, Space, Image } from 'antd';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
+import { useCart } from '../../stores/cartContext';
+import { convertToVND } from '../../utils';
 
-// Define a type for cart items with an image URL
-type CartItem = {
-    id: number;
-    name: string;
-    price: number;
-    quantity: number;
-    imageUrl: string; // New field for image URL
-};
 
-// Sample cart data with images
-const initialCartItems: CartItem[] = [
-    { id: 1, name: 'Cake A', price: 20, quantity: 1, imageUrl: 'https://brodardbakery.com/wp-content/uploads/2020/12/Duong-phen-Chocolate-2-2.png' },
-    { id: 2, name: 'Cake B', price: 25, quantity: 2, imageUrl: 'https://brodardbakery.com/wp-content/uploads/2020/12/Duong-phen-Chocolate-2-2.png' },
-];
 
 const { Title } = Typography;
 
 const CartPage: React.FC = () => {
-    const [cartItems, setCartItems] = useState<CartItem[]>(initialCartItems);
+    const { cart, addToCart, removeFromCart } = useCart();
+    const cart_products = cart.cart_products
+    console.log('cart', cart)
+    const [cartItems, setCartItems] = useState<any[]>([]);
     const navigate = useNavigate(); // Hook for navigation
+
+    useEffect(() => {
+        console.log('cartItems', cartItems)
+        setCartItems(cart_products)
+    }, [cart])
 
     // Function to handle quantity change
     const handleQuantityChange = (id: number, value: number | null) => {
         if (value !== null) {
-            setCartItems(cartItems.map(item =>
-                item.id === id ? { ...item, quantity: value } : item
-            ));
+            let productData: any = null;
+            setCartItems(prevItems => prevItems.map(item => {
+                if (item._id === id) {
+                    productData = item.product_id;
+                    return { ...item, quantity: value };
+                }
+                return item;
+            }));
+            addToCart({
+                product_id: productData._id,
+                quantity: value,
+            })
+
         }
     };
 
     // Function to remove item from cart
     const handleRemoveItem = (id: number) => {
-        setCartItems(cartItems.filter(item => item.id !== id));
+        let productData: any = null;
+        cartItems.forEach(item => {
+            if (item._id === id) {
+                productData = item.product_id;
+            }
+        });
+        // setCartItems(cartItems.filter(item => item._id !== id));
+        removeFromCart(productData._id);
+
     };
 
     // Calculate total price
     const getTotalPrice = () => {
-        return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+        return cartItems.reduce((total, item) => {
+            const price = item.product_id?.price || 0;
+            return total + price * (item.quantity || 0);
+        }, 0);
     };
 
     // Function to handle checkout
@@ -50,46 +68,65 @@ const CartPage: React.FC = () => {
 
     const columns = [
         {
-            title: 'Image',
-            dataIndex: 'imageUrl',
-            key: 'imageUrl',
-            render: (url: string) => <Image src={url} width={100} />,
+            title: 'Hình ảnh',
+            dataIndex: 'product_id',
+            key: 'thumbnail',
+            render: (product_id: any) => (
+                <div style={{
+                    width: '100px',
+                    height: '100px',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    overflow: 'hidden',
+                }}>
+                    <Image
+                        src={product_id.thumbnail}
+                        style={{
+                            maxWidth: '100%',
+                            maxHeight: '100%',
+                            objectFit: 'cover',
+                        }}
+                    />
+                </div>
+            ),
         },
         {
-            title: 'Item',
-            dataIndex: 'name',
+            title: 'Tên sản phẩm',
+            dataIndex: 'product_id',
             key: 'name',
+            render: (product_id: any) => <p>{product_id.name}</p>,
         },
         {
-            title: 'Price',
-            dataIndex: 'price',
+            title: 'Giá',
+            dataIndex: 'product_id',
             key: 'price',
-            render: (text: number) => `$${text.toFixed(2)}`,
+            render: (product_id: any) => `${convertToVND(product_id.price)}`,
         },
         {
-            title: 'Quantity',
+            title: 'Số lượng',
             dataIndex: 'quantity',
             key: 'quantity',
-            render: (text: number, record: CartItem) => (
+            render: (text: number, record: any) => (
                 <InputNumber
                     min={1}
                     value={text}
-                    onChange={(value) => handleQuantityChange(record.id, value)}
+                    onChange={(value) => handleQuantityChange(record._id, value)}
                 />
             ),
         },
         {
-            title: 'Total',
+            title: 'Tổng',
             dataIndex: 'total',
             key: 'total',
-            render: (_: any, record: CartItem) => `$${(record.price * record.quantity).toFixed(2)}`,
+            render: (_: any, record: any) => `${convertToVND(record.product_id.price * record.quantity)}`,
         },
         {
-            title: 'Actions',
+            title: '',
             key: 'actions',
-            render: (_: any, record: CartItem) => (
-                <Button type="primary" danger onClick={() => handleRemoveItem(record.id)}>
-                    Remove
+            render: (_: any, record: any) => (
+                <Button type="primary" danger onClick={() => handleRemoveItem(record._id)}>
+                    Xóa
                 </Button>
             ),
         },
@@ -97,31 +134,27 @@ const CartPage: React.FC = () => {
 
     return (
         <div style={{ padding: '24px' }}>
-            <Title level={2}>Shopping Cart</Title>
-            {cartItems.length === 0 ? (
-                <Typography.Paragraph>Giỏ hàng trống</Typography.Paragraph>
-            ) : (
-                <>
-                    <Table
-                        dataSource={cartItems}
-                        columns={columns}
-                        rowKey="id"
-                        pagination={false}
-                        style={{ marginBottom: '24px' }}
-                    />
-                    <Space direction="vertical" size="large" style={{ float: 'right' }}>
-                        <Title level={3}>Total Price: ${getTotalPrice().toFixed(2)}</Title>
-                        <Button
-                            type="primary"
-                            size="large"
-                            onClick={handleCheckout}
-                            style={{ marginTop: '16px' }}
-                        >
-                            Thanh Toán
-                        </Button>
-                    </Space>
-                </>
-            )}
+            <Title level={2}>Giỏ hàng của bạn</Title>
+
+            <Table
+                dataSource={cartItems}
+                columns={columns}
+                // rowKey="id"
+                pagination={false}
+                style={{ marginBottom: '24px' }}
+            />
+            <Space direction="vertical" size="large" style={{ float: 'right' }}>
+                <Title level={3}>Tổng tiền: {convertToVND(getTotalPrice())}</Title>
+                <Button
+                    type="primary"
+                    size="large"
+                    onClick={handleCheckout}
+                    style={{ marginTop: '16px' }}
+                >
+                    Thanh Toán
+                </Button>
+            </Space>
+
         </div>
     );
 };
