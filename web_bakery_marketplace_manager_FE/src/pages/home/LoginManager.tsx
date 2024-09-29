@@ -22,9 +22,10 @@ const LoginManager: React.FC = () => {
         message.success("Đăng nhập thành công!");
 
         // Redirect to another page after successful login
-        navigate("/"); // Change '/dashboard' to the desired route
+        navigate("/statistics"); // Change '/dashboard' to the desired route
       } else {
         message.error(result?.message || "Đăng nhập thất bại, vui lòng thử lại.");
+        navigate("/login"); // Redirect to the login page
       }
     } catch (error) {
       message.error("Đăng nhập thất bại, vui lòng thử lại.");
