@@ -6,7 +6,7 @@ import { NotFoundError } from "../core/error.response";
 class CartRepository {
 
     async findCart(filter: any) {
-        return await cartModel.findOne(filter).populate('cart_products.product_id', 'price name');
+        return await cartModel.findOne(filter).populate('cart_products.product_id', 'price name thumbnail');
     }
 
     async createCart(userId: string) {
@@ -31,7 +31,7 @@ class CartRepository {
             $inc: { cart_count_products: productData.quantity }
         };
         const options = { upsert: true, new: true };
-        return await cartModel.findOneAndUpdate(query, update, options).populate('cart_products.product_id', 'price name');
+        return await cartModel.findOneAndUpdate(query, update, options).populate('cart_products.product_id', 'price name thumbnail');
     }
 
     async removeProductFromCart(userId: string, productId: string) {
@@ -71,7 +71,7 @@ class CartRepository {
             $set: { cart_products: [], cart_count_products: 0 }
         };
         const options = { new: true };
-        return await cartModel.findOneAndUpdate(query, update, options).populate('cart_products.product_id', 'price name');
+        return await cartModel.findOneAndUpdate(query, update, options).populate('cart_products.product_id', 'price name thumbnail');
     }
 
     async calculateCartTotal(userId: string) {
