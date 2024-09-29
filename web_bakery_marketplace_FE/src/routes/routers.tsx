@@ -16,6 +16,7 @@ import ListStoreAcceptDesignPage from '../pages/listStoreAcceptDesign/StoreAccep
 import ForgotPassword from '../pages/login/ForgotPassword';
 import SignUpManager from '../pages/manager/BakerySignupPage';
 import ResetPassword from '../pages/login/ResetPassword';
+import Checkout from '../pages/stores/Checkout';
 
 const AppRoutes: React.FC = () => {
     return (
@@ -35,7 +36,7 @@ const AppRoutes: React.FC = () => {
                 <Route path="/workshop" element={<WorkshopPage />} />
                 <Route path="/storepage" element={<StorePage />} />
                 <Route path="/dashboard" element={<Dashboard />} />
-
+                <Route path="/checkout" element={<Checkout />} />
                 <Route path="/detail/:id" element={<Detail />} />
                 <Route path="/CakeDesigner" element={<CakeDesigner />} />
                 <Route path="/listStoreAcceptDesign" element={<ListStoreAcceptDesignPage />} />

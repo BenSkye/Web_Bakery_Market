@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Table, InputNumber, Button, Typography, Space, Image } from 'antd';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
+import { useNavigate, Link } from 'react-router-dom'; // Import useNavigate for navigation
 
 // Define a type for cart items with an image URL
 type CartItem = {
@@ -111,14 +111,16 @@ const CartPage: React.FC = () => {
                     />
                     <Space direction="vertical" size="large" style={{ float: 'right' }}>
                         <Title level={3}>Total Price: ${getTotalPrice().toFixed(2)}</Title>
-                        <Button
-                            type="primary"
-                            size="large"
-                            onClick={handleCheckout}
-                            style={{ marginTop: '16px' }}
-                        >
-                            Thanh Toán
-                        </Button>
+                        <Link to="/checkout">
+                            <Button
+                                type="primary"
+                                size="large"
+                                onClick={handleCheckout}
+                                style={{ marginTop: '16px' }}
+                            >
+                                Thanh Toán
+                            </Button>
+                        </Link>
                     </Space>
                 </>
             )}
