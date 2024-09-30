@@ -8,7 +8,9 @@ import productRepo from "../repositories/product.repo";
 class InventoryService {
     static addStockToInventory = async (userId: string, productId: string, quantity: number) => {
         const product_detail = await productRepo.getProductById(productId, ['bakery']);
-        const bakery_detail = await bakeryRepo.getBakeryById(product_detail?.bakery?.toString() ?? '', ['_id', 'user_id']);
+        console.log('product_detail', product_detail);
+        const bakery_detail = await bakeryRepo.getBakeryById(product_detail?.bakery?._id?.toString() ?? '', ['_id', 'user_id']);
+        console.log('bakery_detail', bakery_detail);
         if (bakery_detail?.user_id?.toString() !== userId.toString()) {
             throw new BadRequestError('User is not authorized to add stock to this product');
         }
@@ -18,7 +20,7 @@ class InventoryService {
 
     static removeStockFromInventory = async (userId: string, productId: string, quantity: number) => {
         const product_detail = await productRepo.getProductById(productId, ['bakery']);
-        const bakery_detail = await bakeryRepo.getBakeryById(product_detail?.bakery?.toString() ?? '', ['_id', 'user_id']);
+        const bakery_detail = await bakeryRepo.getBakeryById(product_detail?.bakery?._id?.toString() ?? '', ['_id', 'user_id']);
         if (bakery_detail?.user_id?.toString() !== userId.toString()) {
             throw new BadRequestError('User is not authorized to remove stock from this product');
         }

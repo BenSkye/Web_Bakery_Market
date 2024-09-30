@@ -7,14 +7,15 @@ import ManageBakery from '../pages/home/ManageBakery';
 import BakeryDetail from '../pages/home/ManageBakeryDetail';
 import MainLayout from '../layouts/DefaultLayout';
 import StatisticsPage from '../components/chart/ChartStatic';
+import ProtectedRoute from './ProtectedRoute';
+
 const AppRoutes: React.FC = () => {
     return (
         <Routes>
-
             <Route path="/signup" element={<SignUp />} />
             <Route path="/login" element={<LoginManager />} />
-            <Route element={<MainLayout />}>
-                <Route path="/" element={<HomePage />} />
+            <Route element={<ProtectedRoute element={<MainLayout />} />}>
+                <Route path="/home" element={<HomePage />} />
                 <Route path="/manage" element={<ManageBakery />} />
                 <Route path="/bakery/:id" element={<BakeryDetail />} />
                 <Route path='/statistics' element={<StatisticsPage />} />

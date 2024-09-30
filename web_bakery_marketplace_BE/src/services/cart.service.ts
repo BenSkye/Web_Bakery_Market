@@ -14,6 +14,7 @@ class CartService {
         quantity: number,
     }) => {
         const inventory = await inventoryRepo.findInventory({ product_id: productData.product_id }, []);
+        console.log('inventory', inventory);
         if (!inventory || inventory.stock < productData.quantity) {
             throw new BadRequestError('Not enough stock');
         }

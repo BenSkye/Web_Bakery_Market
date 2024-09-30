@@ -1,8 +1,9 @@
 import React from 'react';
 import { Layout } from 'antd';
-import HeaderComponent from './components/Header';
 import FooterComponent from './components/Footer';
 import { Outlet } from 'react-router-dom';
+import NavigationComponent from './components/Navigation';
+import UserHeader from './components/Header';
 
 const { Content, Sider } = Layout;
 
@@ -27,9 +28,10 @@ const MainLayout: React.FC = () => {
     return (
         <Layout style={layoutStyle}>
             <Sider style={siderStyle} width={250}>
-                <HeaderComponent />
+                <NavigationComponent />
             </Sider>
             <Layout>
+                <UserHeader />
                 <Content style={contentStyle}>
                     <Outlet />
                 </Content>

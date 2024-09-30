@@ -92,6 +92,33 @@
   animation: typing 3.5s steps(30, end) forwards, blink 0.75s step-end infinite;
 }
 
+.curvy-text {
+  font-size: 50px;
+  font-weight: bold;
+  font-family: serif;
+  color: #ff5733; /* Màu chữ */
+  display: inline-block;
+  animation: bounce 1s ease-in-out infinite; /* Hiệu ứng nhảy */
+  text-shadow: 0 0 10px rgba(255, 87, 51, 0.5); /* Đổ bóng cho chữ */
+}
+
+/* Tạo hiệu ứng cong bằng cách sử dụng transform */
+@keyframes bounce {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    transform: translateY(2) rotate(20deg); /* Vị trí ban đầu */
+  }
+  40% {
+    transform: translateY(-10px) rotate(-10deg); /* Nhảy lên và nghiêng trái */
+  }
+  60% {
+    transform: translateY(-10px) rotate(10deg); /* Nhảy xuống và nghiêng phải */
+  }
+}
+
 @keyframes typing {
   from {
     width: 0;
