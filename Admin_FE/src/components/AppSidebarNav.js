@@ -11,19 +11,19 @@ export const AppSidebarNav = ({ items }) => {
   const navLink = (name, icon, badge, indent = false) => {
     return (
       <>
-        {icon
+        {/* {icon
           ? icon
           : indent && (
-              <span className="nav-icon">
-                <span className="nav-icon-bullet"></span>
-              </span>
-            )}
+            <span className="nav-icon">
+              <span className="nav-icon-bullet"></span>
+            </span>
+          )} */}
         {name && name}
-        {badge && (
+        {/* {badge && (
           <CBadge color={badge.color} className="ms-auto">
             {badge.text}
           </CBadge>
-        )}
+        )} */}
       </>
     )
   }
@@ -48,11 +48,12 @@ export const AppSidebarNav = ({ items }) => {
     const { component, name, icon, items, to, ...rest } = item
     const Component = component
     return (
-      <Component compact as="div" key={index} toggler={navLink(name, icon)} {...rest}>
-        {item.items?.map((item, index) =>
-          item.items ? navGroup(item, index) : navItem(item, index, true),
-        )}
-      </Component>
+      // <Component compact as="div" key={index} toggler={navLink(name, icon)} {...rest}>
+      //   {/* {item.items?.map((item, index) =>
+      //     item.items ? navGroup(item, index) : navItem(item, index, true),
+      //   )} */}
+      // </Component>
+      <></>
     )
   }
 

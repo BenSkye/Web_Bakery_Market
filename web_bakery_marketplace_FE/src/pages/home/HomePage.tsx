@@ -223,7 +223,7 @@ const HomePage: React.FC = () => {
               Thiết kế chiếc bánh của bạn, chia sẽ yêu thương
             </animated.h4>
           </div>
-          <Link to="/listStoreAcceptDesign">
+          <Link to="/CakeDesigner">
             <Button
               type="primary"
               size="large"
