@@ -1,4 +1,5 @@
 import apiClient from './apiClient';
+import axios from 'axios';
 
 export interface Workshop {
   id: string;
@@ -10,7 +11,7 @@ export interface Workshop {
 
 export const getWorkshops = async (): Promise<Workshop[]> => {
   try {
-    const response = await apiClient.get<Workshop[]>('/workshops');
+    const response = await axios.get('https://66ab79e1636a4840d7cad37f.mockapi.io/merci/api/v1/workshops');
     return response.data;
   } catch (error) {
     console.error('Error fetching workshops:', error);
