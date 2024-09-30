@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import HomePage from '../pages/home/HomePage';
 import SignUp from '../pages/home/SignUp';
 import LoginManager from '../pages/home/LoginManager';
@@ -8,8 +8,10 @@ import BakeryDetail from '../pages/home/ManageBakeryDetail';
 import MainLayout from '../layouts/DefaultLayout';
 import StatisticsPage from '../components/chart/ChartStatic';
 import ProtectedRoute from './ProtectedRoute';
+import { useAuth } from '../stores/authContex';
 
 const AppRoutes: React.FC = () => {
+    const { user } = useAuth();
     return (
         <Routes>
             <Route path="/signup" element={<SignUp />} />
@@ -20,6 +22,7 @@ const AppRoutes: React.FC = () => {
                 <Route path="/bakery/:id" element={<BakeryDetail />} />
                 <Route path='/statistics' element={<StatisticsPage />} />
             </Route>
+            <Route path="/" element={user ? <Navigate to="/home" /> : <Navigate to="/login" />} />
 
         </Routes>
     );

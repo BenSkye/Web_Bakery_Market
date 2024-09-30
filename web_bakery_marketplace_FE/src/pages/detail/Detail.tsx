@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { Card, Row, Col, Rate, Typography, Avatar, Button } from 'antd';
 import { ClockCircleOutlined, EnvironmentOutlined } from '@ant-design/icons';
 import { IoStorefrontOutline } from "react-icons/io5";
@@ -12,6 +12,7 @@ import OtherStores from './OtherStores';
 import { getBakeryById, Bakery } from '../../services/bakeriesService';
 import { getProductsByBakery } from '../../services/productService';
 import { getListCategory } from '../../services/categorService';
+import Render3D from '../3D/Render3D';
 
 const sampleCakeImage = 'path/to/cake-image.jpg'; // Replace with actual cake images
 
@@ -69,8 +70,6 @@ const Detail: React.FC = () => {
         }
     }, [selectedFilter, listCake]);
 
-
-
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
@@ -105,8 +104,25 @@ const Detail: React.FC = () => {
                 <BakeryInfo bakery={bakery} />
                 <hr style={separatorStyle} />
 
-                {/* <TopSellingCakes /> */}
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '20px 0' }}>
+                    <h2 style={{ textAlign: 'center', marginBottom: '10px' }}>Thiết Kế Bánh</h2>
+                    <Render3D />
+                    <Link to='/CakeDesigner'>
+                        <Button
+                            type="primary"
+                            style={{
+                                marginTop: '20px',
+                                backgroundColor: '#ff4d4f',
+                                borderColor: '#ff4d4f',
+                                fontSize: '16px'
+                            }}
+                        >
+                            Thiết kế bánh
+                        </Button>
+                    </Link>
+                </div>
 
+                <hr style={separatorStyle} />
                 <CakeFilter
                     selectedFilter={selectedFilter}
                     onFilterChange={handleFilterChange}
