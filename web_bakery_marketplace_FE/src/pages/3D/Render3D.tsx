@@ -4,6 +4,8 @@ import { Canvas } from '@react-three/fiber';
 import { useLoader } from '@react-three/fiber';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
 import { OrbitControls } from '@react-three/drei';
+import { Link } from 'react-router-dom';
+import { Button } from 'antd';
 
 interface FBXModelProps {
     url: string;
@@ -20,15 +22,31 @@ const FBXModel: React.FC<FBXModelProps> = ({ url }) => {
 
 const Render3D: React.FC = () => {
     return (
-        <Canvas
-            style={{ height: '600px', width: '1000px', border: '1px solid #ccc', borderRadius: '8px', overflow: 'hidden' }}
-            camera={{ position: [0, 2, 5], fov: 50 }} // Adjust camera position as needed
-        >
-            <ambientLight intensity={0.5} />
-            <directionalLight position={[5, 5, 5]} intensity={1} />
-            <OrbitControls /> {/* Enables interaction with the model */}
-            <FBXModel url="/Cake1.fbx" />
-        </Canvas>
+
+        <>
+            <Canvas
+                style={{ height: '200px', width: '600px' }}
+                camera={{ position: [0, 5, 5], fov: 50 }} // Adjust camera position as needed
+            >
+                <ambientLight intensity={0.5} />
+                <directionalLight position={[5, 5, 5]} intensity={1} />
+                <OrbitControls /> {/* Enables interaction with the model */}
+                <FBXModel url="/Cake1.fbx" />
+
+            </Canvas>
+            <Link to='/CakeDesigner'>
+                <Button
+                    type="primary"
+                    style={{
+                        marginTop: '20px',
+                        backgroundColor: '#ff4d4f',
+                        borderColor: '#ff4d4f',
+                        fontSize: '16px'
+                    }}
+                >
+                    Thiết kế bánh
+                </Button>
+            </Link></>
     );
 };
 

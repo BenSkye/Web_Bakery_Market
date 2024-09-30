@@ -106,20 +106,10 @@ const Detail: React.FC = () => {
 
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '20px 0' }}>
                     <h2 style={{ textAlign: 'center', marginBottom: '10px' }}>Thiết Kế Bánh</h2>
-                    <Render3D />
-                    <Link to='/CakeDesigner'>
-                        <Button
-                            type="primary"
-                            style={{
-                                marginTop: '20px',
-                                backgroundColor: '#ff4d4f',
-                                borderColor: '#ff4d4f',
-                                fontSize: '16px'
-                            }}
-                        >
-                            Thiết kế bánh
-                        </Button>
-                    </Link>
+                    <Card>
+                        <Render3D />
+                    </Card>
+
                 </div>
 
                 <hr style={separatorStyle} />
