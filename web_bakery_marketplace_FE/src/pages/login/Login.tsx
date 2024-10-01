@@ -64,7 +64,7 @@ const Login: React.FC = () => {
                 >
                     <div style={{ textAlign: "center", color: "#1e88e5" }}>
                         <h2 className="typing-effect" style={{ color: '#594b47', fontSize: "1.5rem", fontWeight: "bold", marginBottom: "1rem" }}>
-                            Đăng nhập để vào shop của bạn
+                            Merci nơi bạn thỏa sức sáng tạo
                         </h2>
                         <p style={{ fontSize: "1rem", color: '#594b47' }}>
                             Chào mừng đến với Merci!

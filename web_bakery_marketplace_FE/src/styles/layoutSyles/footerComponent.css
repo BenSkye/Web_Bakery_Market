@@ -1,0 +1,23 @@
+.footer-wrapper {
+  background-color: #857777;
+  color: #fff;
+  padding: 40px 0;
+}
+
+.footer-wrapper h3 {
+  margin-bottom: 10px;
+  font-size: 20px;
+}
+
+.footer-wrapper p {
+  margin: 0;
+}
+
+.footer-wrapper ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.footer-wrapper ul li {
+  margin: 5px 0;
+}

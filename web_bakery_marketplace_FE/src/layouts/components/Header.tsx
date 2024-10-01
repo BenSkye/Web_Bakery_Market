@@ -1,16 +1,20 @@
 import React from 'react';
-import { Layout, Menu, Input, Button, Row, Col, Badge, Dropdown } from 'antd';
-import { ShoppingCartOutlined, UserOutlined, LogoutOutlined } from '@ant-design/icons';
-import logo from '../../assets/1.png';
+import { Layout, Menu, Button, Row, Col, Badge, Dropdown } from 'antd';
+import { ShoppingCartOutlined, UserOutlined, LogoutOutlined, ShareAltOutlined, SearchOutlined, HeartOutlined, HomeOutlined, InfoCircleOutlined, ShopOutlined, FundViewOutlined, QuestionCircleOutlined, ToolOutlined } from '@ant-design/icons';
+import logo from '../../assets/logoNobackground.png';
+import cakeIcon from '../../assets/pen_1324.png'
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../stores/authContex';
 import { useCart } from '../../stores/cartContext';
+import '../../styles/layoutSyles/headerComponent.css';
 
 const { Header } = Layout;
 
 const HeaderComponent: React.FC = () => {
     const { user, logout } = useAuth();
     const { cart } = useCart();
+
+    // Dropdown menu for user
     const userMenu = (
         <Menu>
             {user ? (
@@ -27,7 +31,7 @@ const HeaderComponent: React.FC = () => {
                 </>
             ) : (
                 <>
-                    <Menu.Item key="login">
+                    <Menu.Item key="login" >
                         <Link to='/login'>Đăng nhập</Link>
                     </Menu.Item>
                     <Menu.Item key="signup">
@@ -39,47 +43,60 @@ const HeaderComponent: React.FC = () => {
     );
 
     return (
-        <Header style={{ background: 'linear-gradient(to left, rgba(253, 222, 222, 1), rgba(253, 222, 222, 0.1))', padding: '0 16px' }}>
-            <Row justify="space-between" align="middle">
-                <Col span={8}>
-                    <Row align="middle">
-                        <Col style={{ display: 'flex', alignItems: 'center' }}>
-                            <img src={logo} alt="logo" style={{ width: 64, height: 64, marginRight: 16 }} />
-                        </Col>
-                        <Col style={{ display: 'flex', alignItems: 'center' }}>
-                            <Input.Search placeholder="Tìm kiếm" style={{
-                                width: '300px', borderRadius: '10px',
-                                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
-                            }} />
-                        </Col>
-                    </Row>
+        <Header className="header-wrapper">
+            <Row justify="space-between" align="middle" style={{ width: '100%' }}>
+                {/* Cụm bên trái - Menu */}
+                <Col flex="1">
+                    <Menu mode="horizontal" className="header-menu" style={{ border: 'none' }}>
+                        <Menu.Item key="home" icon={<HomeOutlined />}>
+                            <Link to='/'>Trang chủ</Link>
+                        </Menu.Item>
+                        <Menu.Item key="about" icon={<QuestionCircleOutlined />}>
+                            <Link to='/about'>Giới Thiệu</Link>
+                        </Menu.Item>
+                        <Menu.Item key="store" icon={<ShopOutlined />}>
+                            <Link to='/stores'>Cửa Hàng</Link>
+                        </Menu.Item>
+                        <Menu.Item key="workshop" icon={<ToolOutlined />}>
+                            <Link to='/workshop'>Workshop</Link>
+                        </Menu.Item>
+                    </Menu>
                 </Col>
-                <Col span={16}>
-                    <Row style={{ gap: '2rem' }} justify="end" align="middle">
-                        <Menu mode="horizontal" defaultSelectedKeys={['home']} style={{ textAlign: 'center', backgroundColor: 'inherit', fontSize: '20px' }}>
-                            <Menu.Item key="home"><Link to='/'>Trang chủ</Link></Menu.Item>
-                            <Menu.Item key="about"><Link to='/about'>Giới Thiệu</Link></Menu.Item>
-                            <Menu.Item key="store"><Link to='/stores'>Cửa Hàng</Link></Menu.Item>
-                            <Menu.Item key="workshop"><Link to='/workshop'>Workshop</Link></Menu.Item>
-                        </Menu>
-                        <Row align="middle">
-                            {user && (
-                                <Col style={{ marginRight: '1rem' }}>
-                                    <Badge count={cart?.cart_count_products} size="small">
-                                        <Link to="/cart">
-                                            <Button type="text" icon={<ShoppingCartOutlined />} style={{ fontSize: '1.5rem' }} />
-                                        </Link>
-                                    </Badge>
-                                </Col>
-                            )}
+
+                {/* Cụm giữa - Logo */}
+                <Col flex="none" className="logo-section">
+                    <img src={logo} alt="logo" className="header-logo" />
+                    <img src={cakeIcon} alt="cake icon" className="cake-icon" />
+                </Col>
+
+                {/* Cụm bên phải - Tìm kiếm, Chia sẻ, Giỏ hàng, User */}
+                <Col flex="1" style={{ textAlign: 'right' }}>
+                    <Row gutter={[16, 16]} align="middle" justify="end">
+                        <Col>
+                            <Button type="text" icon={<SearchOutlined />} className="header-button" />
+                        </Col>
+                        <Col>
+                            <Button type="text" icon={<HeartOutlined />} className="header-button" />
+                        </Col>
+                        <Col>
+                            <Button type="text" icon={<ShareAltOutlined />} className="header-button" />
+                        </Col>
+                        {user && (
                             <Col>
-                                <Dropdown overlay={userMenu} trigger={['click']}>
-                                    <Button type="text" style={{ fontSize: '1rem' }}>
-                                        {user ? `Xin chào, ${user.name}` : <UserOutlined />}
-                                    </Button>
-                                </Dropdown>
+                                <Badge count={cart?.cart_count_products} size="small">
+                                    <Link to="/cart">
+                                        <Button type="text" icon={<ShoppingCartOutlined />} className="header-button" />
+                                    </Link>
+                                </Badge>
                             </Col>
-                        </Row>
+                        )}
+                        <Col>
+                            <Dropdown overlay={userMenu} trigger={['hover']} >
+                                <Button type="text" className="header-user-button">
+                                    {user ? `Xin chào, ${user.name}` : <UserOutlined />}
+                                </Button>
+                            </Dropdown>
+                        </Col>
                     </Row>
                 </Col>
             </Row>
