@@ -1,0 +1,77 @@
+/* HeaderComponent.css */
+.header-wrapper {
+  background: linear-gradient(to right, #ffecd2, #fcb69f);
+  padding: 0 16px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Giữ khoảng cách giữa các phần tử */
+  height: 64px; /* Đảm bảo chiều cao của header là cố định */
+}
+
+.header-logo {
+  width: 74px;
+  height: 74px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.header-logo:hover {
+  transform: scale(1.1);
+}
+
+.header-menu {
+  background-color: transparent;
+  font-size: 16px;
+}
+
+.header-menu a {
+  color: #ff6347;
+}
+
+.header-button {
+  font-size: 20px;
+  color: #ff6347;
+  background: transparent;
+  transition: color 0.3s ease-in-out, transform 0.3s;
+}
+
+.header-button:hover {
+  color: #ff4500;
+  transform: scale(1.2);
+}
+
+.header-user-button {
+  font-size: 16px;
+  color: #ff6347;
+  transition: color 0.3s ease-in-out;
+}
+
+.header-user-button:hover {
+  color: #ff4500;
+}
+
+.logo-section {
+  display: flex; /* Sử dụng flexbox để căn chỉnh */
+  align-items: center; /* Căn giữa theo chiều dọc */
+}
+
+/* HeaderComponent.css */
+.cake-icon {
+  position: absolute;
+  top: 10px; /* Điều chỉnh vị trí */
+  left: 70px; /* Điều chỉnh vị trí */
+  width: 50px; /* Kích thước icon bánh */
+  animation: float 3s ease-in-out infinite; /* Thêm hiệu ứng di chuyển */
+}
+
+/* Hiệu ứng di chuyển */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translate3d(4px, 3px, -1px);
+    /* Di chuyển lên */
+  }
+}

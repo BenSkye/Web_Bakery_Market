@@ -21,9 +21,17 @@ const ListStoreAcceptDesignPage: React.FC = () => {
             try {
                 setLoading(true);
                 const data = await getBakeries();
-                setBakeries(data);
+
+                // Check if data is an array
+                if (Array.isArray(data.metadata)) {
+                    setBakeries(data.metadata);
+                } else {
+                    console.error("Fetched data is not an array:", data.metadata);
+                    setBakeries([]);
+                }
             } catch (error) {
                 console.error("Failed to fetch bakeries:", error);
+                setBakeries([]); // Reset to an empty array in case of error
             } finally {
                 setLoading(false);
             }

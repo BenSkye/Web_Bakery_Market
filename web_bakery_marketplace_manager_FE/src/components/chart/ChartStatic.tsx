@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, Legend, ResponsiveContainer
+    LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, Legend, ResponsiveContainer, LabelList
 } from 'recharts';
 
 const storeData = [
@@ -60,7 +60,6 @@ const storeData = [
     },
 ];
 
-
 const StatisticsPage: React.FC = () => {
     return (
         <div style={{ padding: '20px' }}>
@@ -79,7 +78,9 @@ const StatisticsPage: React.FC = () => {
                                         <YAxis />
                                         <Tooltip />
                                         <Legend />
-                                        <Line type="monotone" dataKey="amount" stroke="#8884d8" />
+                                        <Line type="monotone" dataKey="amount" stroke="#8884d8">
+                                            <LabelList dataKey="amount" position="top" />
+                                        </Line>
                                     </LineChart>
                                 </ResponsiveContainer>
                             </div>
@@ -92,7 +93,9 @@ const StatisticsPage: React.FC = () => {
                                         <YAxis />
                                         <Tooltip />
                                         <Legend />
-                                        <Line type="monotone" dataKey="count" stroke="#ff7300" />
+                                        <Line type="monotone" dataKey="count" stroke="#ff7300">
+                                            <LabelList dataKey="count" position="top" />
+                                        </Line>
                                     </LineChart>
                                 </ResponsiveContainer>
                             </div>
@@ -108,7 +111,9 @@ const StatisticsPage: React.FC = () => {
                                         <YAxis />
                                         <Tooltip />
                                         <Legend />
-                                        <Line type="monotone" dataKey="count" stroke="#00c49f" />
+                                        <Line type="monotone" dataKey="count" stroke="#00c49f">
+                                            <LabelList dataKey="count" position="top" />
+                                        </Line>
                                     </LineChart>
                                 </ResponsiveContainer>
                             </div>

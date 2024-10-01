@@ -28,15 +28,15 @@ const Map: React.FC<MapProps> = ({ address }) => {
     };
     return (
         <>
-            <Input.Search
+            {/* <Input.Search
                 placeholder="Tìm kiếm tiệm bánh"
                 onSearch={handleSearch}
                 style={{ marginBottom: '10px', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)', borderRadius: '5px' }}
                 onChange={(e) => setSearchQuery(e.target.value)}
-            />
+            /> */}
             <ReactMapGL
                 {...viewport}
-                style={{ width: '100%', height: '220px', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)', borderRadius: '5px' }}
+                style={{ width: '100%', height: '250px', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)', borderRadius: '5px' }}
                 mapStyle="mapbox://styles/mapbox/streets-v11"
                 mapboxAccessToken={import.meta.env.VITE_MAPBOX_ACCESS_TOKEN as string}
                 onMove={(evt) => setViewport(evt.viewState)}
