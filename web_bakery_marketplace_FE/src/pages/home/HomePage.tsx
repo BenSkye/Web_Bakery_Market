@@ -1,12 +1,11 @@
 // /pages/Home.tsx
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from 'react-router-dom';
-import { Carousel, Card, Button, Row, Col, Rate } from "antd";
+import { Carousel, Card, Button, Row, Col } from "antd";
 import { IoStorefrontOutline } from "react-icons/io5";
 import { useSpring, animated } from "@react-spring/web";
 import Map from "../../utils/mapbox/Map";
 import banner1 from "../../assets/_394e20f4-1a3d-47ea-aea9-b3dfb2e1bbc6.jpg";
-import banner2 from "../../assets/pexels-marinautrabo-1729808.jpg";
 import {
   LeftOutlined,
   RightOutlined,
@@ -18,6 +17,7 @@ import { getBakeries, Bakery } from "../../services/bakeriesService";
 import { getWorkshops, Workshop } from "../../services/workshopsService";
 import SpinLoading from "../../components/loading/SpinLoading";
 import StoreCard from '../../components/card/CardStore';
+import WorkShopCard from '../../components/card/CardWorkshop';
 import About from './AboutUs';
 import TryCake3D from '../3D/Try3D';
 
@@ -293,26 +293,8 @@ const HomePage: React.FC = () => {
             <SpinLoading />
           ) : (
             workshops.map((workshop, index) => (
-              <Col span={8} key={index}>
-                <div style={workshopBannerStyle} className="card-hover">
-                  <img
-                    src={workshop.image}
-                    alt={workshop.title}
-                    style={workshopImageStyle}
-                  />
-                  <div style={workshopInfoStyle}>
-                    <h2>{workshop.title}</h2>
-                    <p>{workshop.description}</p>
-                    <p>
-                      <strong>Date:</strong>{" "}
-                      {new Date(workshop.date).toLocaleDateString()}
-                    </p>
-                    <Button type="primary" className="button-hover">
-                      Đăng ký tham gia
-                    </Button>
-                  </div>
-                </div>
-              </Col>
+              <div key={index} className="card-wrapper">
+                <WorkShopCard key={index} workshop={workshop} /></div>
             ))
           )}
         </Row>
