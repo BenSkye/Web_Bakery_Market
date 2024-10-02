@@ -2,10 +2,13 @@ import apiClient from './apiClient';
 
 export interface Workshop {
   id: string;
-  title: string;
-  description: string;
-  date: string;
-  image: string;
+  name: string;
+  bakeryId: string;
+  description:string
+  days:  string;
+  image: string[];
+  time: string;
+  cont
 }
 
 export const getWorkshops = async (): Promise<Workshop[]> => {

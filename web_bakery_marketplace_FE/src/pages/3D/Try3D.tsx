@@ -77,10 +77,11 @@ const FBXModel = ({ url, onClick,
 
     useFrame(() => {
         if (modelRef.current) {
+            // Tăng góc xoay của trục Y để mô hình tự động xoay
+            modelRef.current.rotation.y += 0.0055; // Giá trị này xác định tốc độ xoay, bạn có thể thay đổi cho phù hợp
             modelRef.current.rotation.x = rotateModel(rotation[0]);
-            modelRef.current.rotation.y = rotateModel(rotation[1]);
             modelRef.current.rotation.z = rotateModel(rotation[2]);
-            modelRef.current.scale.set(scale[0], scale[1], scale[2]);
+            modelRef.current.scale.set(scale[0], scale[2], scale[2]);
         }
     });
 
