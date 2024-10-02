@@ -4,6 +4,7 @@ import orderRepo from "../repositories/order.repo";
 import productRepo from "../repositories/product.repo";
 import { acquireLock, releaseLock } from "./redis.service";
 import orderProductRepo from "../repositories/oder_product.repo";
+import VnpayService from "./vnpay.service";
 class CheckoutService {
     static checkoutReview = async (userId: String, product_list: any) => {
         const cart = await cartRepo.findCart({ user_id: userId });
@@ -28,7 +29,7 @@ class CheckoutService {
         };
     }
 
-    static oderByUser = async (userId: string, product_list: Object, user_address: Object, payment_method: string) => {
+    static oderByUser = async (userId: string, product_list: Object, user_address: Object, payment_method: string, req: any) => {
         const checkout_info = await this.checkoutReview(userId, product_list);
 
         //check if it has enough stock
@@ -57,7 +58,7 @@ class CheckoutService {
                 throw new BadRequestError('Product not found');
             }
             const newOrderProduct = await orderProductRepo.createOderProduct(
-                userId, product_id, product_detail.bakery.toString(), quantity, product_detail.price, user_address, payment_method
+                userId, product_id, product_detail.bakery, quantity, product_detail.price * quantity, user_address, payment_method
             );
 
             order_products.push(product_detail._id);
@@ -71,7 +72,25 @@ class CheckoutService {
                 await cartRepo.removeProductFromCart(userId, product_id);
             }
         }
-        return newOder;
+        const ipAddr = req.headers['x-forwarded-for'] ||
+            req.connection.remoteAddress ||
+            req.socket.remoteAddress ||
+            req.connection.socket.remoteAddress;
+        console.log('ipAddr:::', ipAddr);
+        const paymentInfo = {
+            orderId: newOder._id.toString(),
+            amount: checkout_info.checkout_oder.total_price,
+            orderDescription: 'thanh toan don hang' + newOder._id.toString(),
+            language: 'vn',
+            ipAddr: ipAddr
+        }
+        const vnpayService = new VnpayService();
+        const paymentUrl = await vnpayService.createPaymentUrl(paymentInfo);
+
+        return {
+            paymentUrl,
+            newOder
+        };
     }
 }
 export default CheckoutService;

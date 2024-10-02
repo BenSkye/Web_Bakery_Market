@@ -27,5 +27,11 @@ class BakeryController {
         }).send(res);
     });
 
+    getBakeryByUserId = asyncHandler(async (req: any, res: Response, next: NextFunction) => {
+        new SuccessResponse({
+            message: 'Get bakery by user id successfully',
+            metadata: await BakeryService.getBakeryByUserId(req.keyStore.user),
+        }).send(res);
+    });
 }
 export default new BakeryController();

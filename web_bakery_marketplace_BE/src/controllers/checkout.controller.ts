@@ -15,7 +15,7 @@ class CheckoutController {
     oderByUser = asyncHandler(async (req: any, res: Response, next: NextFunction) => {
         new SuccessResponse({
             message: 'Checkout successfully',
-            metadata: await CheckoutService.oderByUser(req.keyStore.user, req.body.product_list, req.body.user_address, req.body.payment_method),
+            metadata: await CheckoutService.oderByUser(req.keyStore.user, req.body.product_list, req.body.user_address, req.body.payment_method, req),
         }).send(res);
     });
 
