@@ -24,6 +24,15 @@ class OrderProductRepo {
     async getOderProductByBakeryId(bakeryId: string) {
         return await orderProductModel.find({ bakery_id: bakeryId });
     }
+    async getOderProductById(oderProductId: string) {
+        return await orderProductModel.findById(oderProductId);
+    }
+    async updateOderProduct(oderProductId: string, update: Object) {
+        return await orderProductModel.findByIdAndUpdate(oderProductId, update, { new: true, upsert: true });
+    }
+    async deleteOderProduct(oderProductId: string) {
+        return await orderProductModel.findByIdAndDelete(oderProductId);
+    }
 
 }
 

@@ -46,8 +46,8 @@ class VnpayService {
             vnp_TxnRef: paymentInfo.orderId,  // Sử dụng orderId từ paymentInfo
             vnp_OrderInfo: paymentInfo.orderDescription,
             vnp_OrderType: this.config.orderType,
-            vnp_Amount: paymentInfo.amount * 100,  // Chuyển đổi sang đơn vị tiền tệ nhỏ nhất (VND)
-            vnp_ReturnUrl: this.config.returnUrl,
+            vnp_Amount: paymentInfo.amount * 100,
+            vnp_ReturnUrl: this.config.returnUrl + '/return-product-payment',
             vnp_IpAddr: paymentInfo.ipAddr,
             vnp_CreateDate: createDate
         };

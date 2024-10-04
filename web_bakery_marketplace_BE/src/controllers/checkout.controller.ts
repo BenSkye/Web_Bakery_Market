@@ -14,9 +14,13 @@ class CheckoutController {
 
     oderByUser = asyncHandler(async (req: any, res: Response, next: NextFunction) => {
         new SuccessResponse({
-            message: 'Checkout successfully',
+            message: 'Order successfully',
             metadata: await CheckoutService.oderByUser(req.keyStore.user, req.body.product_list, req.body.user_address, req.body.payment_method, req),
         }).send(res);
+    });
+    getVnpayReturn = asyncHandler(async (req: any, res: any, next: NextFunction) => {
+        await CheckoutService.getVnpayReturn(req.query)
+        res.render('success', { code: req.query.vnp_ResponseCode });
     });
 
 }
