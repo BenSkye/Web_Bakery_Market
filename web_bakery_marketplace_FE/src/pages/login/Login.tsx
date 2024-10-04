@@ -1,13 +1,13 @@
-import React from 'react';
-import { Form, Input, Button, Row, Col, Typography, message } from 'antd';
-import { useNavigate, Link } from 'react-router-dom'; // Added Link for navigation to Forgot Password
-import { useAuth } from '../../stores/authContex';
+import React from "react";
+import { Form, Input, Button, Col, Row, Typography, message } from "antd";
+import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../../stores/authContex";
+import logo from "../../assets/logo.png"; // Import the logo
 
 const { Title } = Typography;
 
 const Login: React.FC = () => {
     const { login } = useAuth();
-
     const [messageApi, contextHolder] = message.useMessage();
     const navigate = useNavigate();
 
@@ -18,74 +18,130 @@ const Login: React.FC = () => {
         };
         const response = await login(data);
         console.log(response);
+
         if (response.status === 200) {
             messageApi.open({
                 type: 'success',
-                content: 'Đăng nhập thành công',
+                content: 'Đăng nhập thành công!',
             });
-            navigate('/');
+            navigate('/'); // Navigate to home page
         } else {
             messageApi.open({
                 type: 'error',
-                content: 'Đăng nhập thất bại',
+                content: 'Đăng nhập thất bại!',
             });
         }
         console.log('Received values of form: ', values);
     };
 
+    // Handle form failure
+    const onFinishFailed = (errorInfo: any) => {
+        console.log("Failed:", errorInfo);
+    };
+
     return (
-        <Row justify="center" align="middle" style={{ minHeight: '100vh', background: '#f0f2f5' }}>
+        <div
+            style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "100vh",
+                backgroundColor: "#f0f2f5",
+            }}
+        >
             {contextHolder}
-            <Col xs={24} sm={16} md={12} lg={8}>
-                <div style={{
-                    padding: '24px',
-                    background: '#fff',
-                    borderRadius: '8px',
-                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
-                }}>
-                    <Title level={2} style={{ textAlign: 'center' }}>Login</Title>
-                    <Form
-                        name="login"
-                        layout="vertical"
-                        onFinish={onFinish}
+            <Row style={{ height: "100vh", width: "100%" }}>
+                {/* Left section with logo and welcome message */}
+                <Col
+                    span={8}
+                    style={{
+                        background: 'linear-gradient(to left, rgba(253, 222, 222, 1), rgba(253, 222, 222, 0.1))',
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        padding: "2rem",
+                    }}
+                >
+                    <div style={{ textAlign: "center", color: "#1e88e5" }}>
+                        <h2 className="typing-effect" style={{ color: '#594b47', fontSize: "1.5rem", fontWeight: "bold", marginBottom: "1rem" }}>
+                            Merci nơi bạn thỏa sức sáng tạo
+                        </h2>
+                        <p style={{ fontSize: "1rem", color: '#594b47' }}>
+                            Chào mừng đến với Merci!
+                        </p>
+                        <img
+                            src={logo}
+                            alt="Logo"
+                            style={{ width: "200px", marginBottom: "2rem", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)", borderRadius: "10px" }}
+                        />
+                    </div>
+                </Col>
+
+                {/* Right section with login form */}
+                <Col
+                    span={16}
+                    style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        backgroundColor: "white",
+                    }}
+                >
+                    <div
+                        style={{
+                            width: "80%",
+                            padding: "2rem",
+                            backgroundColor: "#fff",
+                            boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+                            borderRadius: "10px",
+                        }}
                     >
-                        <Form.Item
-                            name="email"
-                            label="Email"
-                            rules={[{ required: true, message: 'Please input your email!' }, { type: 'email', message: 'Please enter a valid email!' }]}
+                        <Title level={2} style={{ textAlign: "center", marginBottom: "1rem" }}>Đăng Nhập</Title>
+                        <Form
+                            name="login"
+                            layout="vertical"
+                            onFinish={onFinish}
+                            onFinishFailed={onFinishFailed}
                         >
-                            <Input placeholder="Email" />
-                        </Form.Item>
+                            <Form.Item
+                                label="Email"
+                                name="email"
+                                rules={[{ required: true, message: "Vui lòng nhập email!" }, { type: 'email', message: "Email không hợp lệ!" }]}
+                            >
+                                <Input placeholder="Nhập email" />
+                            </Form.Item>
 
-                        <Form.Item
-                            name="password"
-                            label="Password"
-                            rules={[{ required: true, message: 'Please input your password!' }]}
-                        >
-                            <Input.Password placeholder="Password" />
-                        </Form.Item>
+                            <Form.Item
+                                label="Mật khẩu"
+                                name="password"
+                                rules={[{ required: true, message: "Vui lòng nhập mật khẩu!" }]}
+                            >
+                                <Input.Password placeholder="Nhập mật khẩu" />
+                            </Form.Item>
 
-                        <Form.Item>
-                            <Button type="primary" htmlType="submit" block>
-                                Login
-                            </Button>
-                        </Form.Item>
+                            <Form.Item>
+                                <Button type="primary" htmlType="submit" style={{ width: "100%" }}>
+                                    Đăng Nhập
+                                </Button>
+                            </Form.Item>
 
-                        {/* Added Forgot Password link */}
-                        <Form.Item>
-                            <div style={{ textAlign: 'center' }}>
-                                <Link to="/forgot-password">Forgot Password?</Link>
-                            </div>
-                        </Form.Item>
-                        <Form.Item>
-                            <div style={{ textAlign: 'center' }}>
-                                <Link to="/signup">You don't have account, click here.</Link>
-                            </div>
-                        </Form.Item>
-                    </Form>
-                </div>
-            </Col>
-        </Row>
+                            {/* Added Forgot Password link */}
+                            <Form.Item>
+                                <div style={{ textAlign: 'center' }}>
+                                    <Link to="/forgot-password">Quên mật khẩu?</Link>
+                                </div>
+                            </Form.Item>
+                            <Form.Item>
+                                <div style={{ textAlign: 'center' }}>
+                                    <span>Bạn chưa có tài khoản? </span>
+                                    <Link to="/signup">Đăng ký tại đây</Link>
+                                </div>
+                            </Form.Item>
+                        </Form>
+                    </div>
+                </Col>
+            </Row>
+        </div>
     );
 };
 

@@ -1,12 +1,11 @@
 // /pages/Home.tsx
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from 'react-router-dom';
-import { Carousel, Card, Button, Row, Col, Rate } from "antd";
+import { Carousel, Card, Button, Row, Col } from "antd";
 import { IoStorefrontOutline } from "react-icons/io5";
 import { useSpring, animated } from "@react-spring/web";
 import Map from "../../utils/mapbox/Map";
-import banner1 from "../../assets/_99ba4fdc-95a0-4dd8-8bb0-d8942d8ab671.jpg";
-import banner2 from "../../assets/pexels-marinautrabo-1729808.jpg";
+import banner1 from "../../assets/_394e20f4-1a3d-47ea-aea9-b3dfb2e1bbc6.jpg";
 import {
   LeftOutlined,
   RightOutlined,
@@ -18,8 +17,9 @@ import { getBakeries, Bakery } from "../../services/bakeriesService";
 import { getWorkshops, Workshop } from "../../services/workshopsService";
 import SpinLoading from "../../components/loading/SpinLoading";
 import StoreCard from '../../components/card/CardStore';
+import WorkShopCard from '../../components/card/CardWorkshop';
 import About from './AboutUs';
-import "../../styles/homeStyles/home.css";
+import TryCake3D from '../3D/Try3D';
 
 
 
@@ -82,7 +82,7 @@ const HomePage: React.FC = () => {
 
   const overlayContainerStyle: React.CSSProperties = {
     position: "absolute",
-    top: "10%",
+    top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
     color: "white",
@@ -94,23 +94,10 @@ const HomePage: React.FC = () => {
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     padding: "10px 20px",
     borderRadius: "5px",
-    fontSize: "24px",
+    fontSize: "20px",
     fontFamily: "monospace",
     fontWeight: "bold",
     fontStyle: "italic", // Italicize the text
-  };
-
-  const cardStyle: React.CSSProperties = {
-    position: "absolute",
-    top: "60%",
-    left: "18%",
-    transform: "translate(-50%, -215%)",
-    zIndex: 2,
-    width: "500px",
-    height: "300px",
-    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
-    background:
-      "linear-gradient(to left, rgba(253, 222, 222, 0.5), rgba(253, 222, 222, 0.7))",
   };
 
   // Spring animation for the text
@@ -215,12 +202,14 @@ const HomePage: React.FC = () => {
 
   return (
     <div style={homeContainerStyle}>
-      <div>
-        <animated.div style={{ ...overlayContainerStyle }}>
+      <Row>
+
+        <Col span={12}><Card style={{ background: 'none', border: 'none' }}><TryCake3D /></Card></Col>
+        <Col span={12}> <animated.div style={{ ...overlayContainerStyle }}>
           <div style={sloganStyle}>
             <animated.h1 style={springPropsH1}>TỰ DO SÁNG TẠO</animated.h1>
             <animated.h4 style={springPropsH4}>
-              Thiết kế chiếc bánh của bạn, chia sẽ yêu thương
+              Thiết kế chiếc bánh của bạn
             </animated.h4>
           </div>
           <Link to="/listStoreAcceptDesign">
@@ -230,25 +219,23 @@ const HomePage: React.FC = () => {
               className="button-hover"
               style={buttonStyle}
             >
-              Thử ngay
+              Bắt tay vào làm
             </Button>
           </Link>
-        </animated.div>
-        <Carousel autoplay style={bannerCarouselStyle}>
-          <div>
-            <img src={banner2} alt="Banner 1" style={bannerImageStyle} />
-          </div>
-          <div>
-            <img src={banner1} alt="Banner 2" style={bannerImageStyle} />
-          </div>
-          <div>
-            <img src={banner1} alt="Banner 3" style={bannerImageStyle} />
-          </div>
-        </Carousel>
-        <Card style={cardStyle}>
-          <Map address="Hồ Chí Minh" />
-        </Card>
-      </div>
+        </animated.div><Carousel autoplay style={bannerCarouselStyle}>
+            <div>
+              <img src={banner1} alt="Banner 1" style={bannerImageStyle} />
+            </div>
+            <div>
+              <img src={banner1} alt="Banner 2" style={bannerImageStyle} />
+            </div>
+            <div>
+              <img src={banner1} alt="Banner 3" style={bannerImageStyle} />
+            </div>
+          </Carousel></Col>
+      </Row>
+
+
       <Col style={{ marginTop: "4rem" }}>
         <animated.h1
           style={{
@@ -283,6 +270,11 @@ const HomePage: React.FC = () => {
           </Button>
         </Row>
       </Col>
+
+      <Col style={{ marginTop: "1.2rem" }}>
+        <Map address="Hồ Chí Minh" />
+      </Col>
+
       <Col style={{ marginTop: "2rem" }}>
         <animated.h1
           style={{
@@ -301,26 +293,8 @@ const HomePage: React.FC = () => {
             <SpinLoading />
           ) : (
             workshops.map((workshop, index) => (
-              <Col span={8} key={index}>
-                <div style={workshopBannerStyle} className="card-hover">
-                  <img
-                    src={workshop.image}
-                    alt={workshop.title}
-                    style={workshopImageStyle}
-                  />
-                  <div style={workshopInfoStyle}>
-                    <h2>{workshop.title}</h2>
-                    <p>{workshop.description}</p>
-                    <p>
-                      <strong>Date:</strong>{" "}
-                      {new Date(workshop.date).toLocaleDateString()}
-                    </p>
-                    <Button type="primary" className="button-hover">
-                      Đăng ký tham gia
-                    </Button>
-                  </div>
-                </div>
-              </Col>
+              <div key={index} className="card-wrapper">
+                <WorkShopCard key={index} workshop={workshop} /></div>
             ))
           )}
         </Row>

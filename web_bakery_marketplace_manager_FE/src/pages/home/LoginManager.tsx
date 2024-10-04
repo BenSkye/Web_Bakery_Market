@@ -18,14 +18,15 @@ const LoginManager: React.FC = () => {
       });
 
       // Check for success
-      if (result?.metadata) {
+      console.log('r1', result)
+      if (result.status === 200) {
         message.success("Đăng nhập thành công!");
 
         // Redirect to another page after successful login
         navigate("/statistics"); // Change '/dashboard' to the desired route
       } else {
         message.error(result?.message || "Đăng nhập thất bại, vui lòng thử lại.");
-        navigate("/login"); // Redirect to the login page
+        // Redirect to the login page
       }
     } catch (error) {
       message.error("Đăng nhập thất bại, vui lòng thử lại.");
