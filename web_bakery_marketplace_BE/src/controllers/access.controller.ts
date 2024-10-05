@@ -34,6 +34,18 @@ class AccessController {
       metadata: await AccessService.signup(req.body),
     }).send(res);
   });
+
+  verifyEmail = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+
+    const { token } = req.query;
+    const result = await AccessService.verifyEmail(token as string);
+    return new SuccessResponse({
+      message: 'Verify email successfully',
+      metadata: result,
+    }).send(res);
+  }
+  );
+
   forgotPassword = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     new SuccessResponse({
       message: 'Forgot password successfully',

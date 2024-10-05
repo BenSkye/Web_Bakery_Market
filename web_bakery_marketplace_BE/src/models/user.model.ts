@@ -26,7 +26,7 @@ const userSchema = new Schema(
     },
     verify: {
       type: Schema.Types.Boolean,
-      default: false, //use to verify email when create account
+      default: false,
     },
     phone: {
       type: String,
@@ -40,12 +40,19 @@ const userSchema = new Schema(
       type: Array,
       default: [],
     },
+    verificationToken: {
+      type: String,
+      default: '',
+    },
     passwordResetToken: {
       type: String,
       default: '',
 
     },
     passwordResetExpire: {
+      type: Date,
+    },
+    verificationTokenExpire: {
       type: Date,
     },
   },

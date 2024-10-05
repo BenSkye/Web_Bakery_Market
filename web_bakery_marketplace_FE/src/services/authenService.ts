@@ -54,3 +54,15 @@ export const resetPassword = async (token: string, newPassword: string) => {
     }
 };
 
+export const verifyEmail = async (token: string) => {
+    try {
+
+        const response = await apiClient.get(`/user/verify-email?token=${token}`);
+        console.log('response:', response.data);
+        return response.data;
+    } catch (error: any) {
+        console.error('Error signup:', error);
+        return error.response;
+    }
+};
+

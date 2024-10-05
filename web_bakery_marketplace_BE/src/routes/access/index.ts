@@ -8,6 +8,7 @@ const accessRouter = Router();
 //signup
 accessRouter.post('/signup', accessController.signUp);
 accessRouter.post('/login', accessController.login);
+accessRouter.get('/verify-email', accessController.verifyEmail);
 accessRouter.post('/forgot-password', accessController.forgotPassword);
 accessRouter.post('/reset-password/:token', accessController.resetPassword);
 //authentication//
