@@ -8,6 +8,7 @@ import cartRouter from './cart';
 import checkoutRouter from './checkout';
 import inventoryRouter from './inventory';
 import workshopRouter from './workshop';
+import vnpayRouter from './vnpay';
 
 const router = Router();
 
@@ -23,5 +24,6 @@ router.use('/v1/api/cart', cartRouter);
 router.use('/v1/api/checkout', checkoutRouter);
 router.use('/v1/api/user', accessRouter);
 router.use('/v1/api/workshop', workshopRouter);
+router.use('/v1/api/vnpay', vnpayRouter);
 
 export default router;

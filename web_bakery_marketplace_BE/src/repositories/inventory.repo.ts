@@ -64,6 +64,9 @@ class InventoryRepo {
         return await inventoryModel.updateOne(query, updateSet, options);
     }
 
+    async updateInventory(product_id: string, quantity: number) {
+        return await inventoryModel.findOneAndUpdate({ product_id: product_id }, { $inc: { stock: quantity } }, { new: true, upsert: true });
+    }
 }
 
 export default new InventoryRepo();

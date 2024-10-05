@@ -21,6 +21,17 @@ class OrderRepo {
         return await ordersModel.find({ user_id: userId }).populate('order_products');
     }
 
+    async getOderById(oderId: string) {
+        return await ordersModel.findById(oderId);
+    }
+
+    async updateOder(oderId: string, update: Object) {
+        return await ordersModel.findByIdAndUpdate(oderId, update);
+    }
+    async deleteOder(oderId: string) {
+        return await ordersModel.findByIdAndDelete(oderId);
+    }
+
 }
 
 export default new OrderRepo();

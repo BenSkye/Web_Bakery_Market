@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Table, InputNumber, Button, Typography, Space, Image } from 'antd';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
-import { useCart } from '../../stores/cartContext';
+import { CartContext } from '../../stores/cartContext';
 import { convertToVND } from '../../utils';
 
 
@@ -9,30 +9,32 @@ import { convertToVND } from '../../utils';
 const { Title } = Typography;
 
 const CartPage: React.FC = () => {
-    const { cart, addToCart, removeFromCart } = useCart();
-    const cart_products = cart.cart_products
-    console.log('cart', cart)
+    const { cart, addToCart, removeFromCart } = useContext(CartContext);
     const [cartItems, setCartItems] = useState<any[]>([]);
-    const navigate = useNavigate(); // Hook for navigation
-
+    const navigate = useNavigate();
     useEffect(() => {
-        console.log('cartItems', cartItems)
-        setCartItems(cart_products)
-    }, [cart])
+        const fetchCartData = async () => {
+            console.log('cart18', cart)
+            console.log('cartItems', cartItems);
+            const cart_products = cart?.cart_products;
+            setCartItems(cart_products);
+        };
+        fetchCartData();
+    }, []);
 
     // Function to handle quantity change
     const handleQuantityChange = (id: number, value: number | null) => {
         if (value !== null) {
             let productData: any = null;
             setCartItems(prevItems => prevItems.map(item => {
-                if (item._id === id) {
-                    productData = item.product_id;
+                if (item?._id === id) {
+                    productData = item?.product_id;
                     return { ...item, quantity: value };
                 }
                 return item;
             }));
             addToCart({
-                product_id: productData._id,
+                product_id: productData?._id,
                 quantity: value,
             })
 
@@ -47,22 +49,22 @@ const CartPage: React.FC = () => {
                 productData = item.product_id;
             }
         });
-        // setCartItems(cartItems.filter(item => item._id !== id));
+        setCartItems(cartItems.filter(item => item._id !== id));
         removeFromCart(productData._id);
-
     };
 
     // Calculate total price
     const getTotalPrice = () => {
-        return cartItems.reduce((total, item) => {
-            const price = item.product_id?.price || 0;
-            return total + price * (item.quantity || 0);
-        }, 0);
+        if (cartItems) {
+            return cartItems?.reduce((total, item) => {
+                const price = item?.product_id?.price || 0;
+                return total + price * (item?.quantity || 0);
+            }, 0);
+        }
+        return 0;
     };
 
-    // Function to handle checkout
     const handleCheckout = () => {
-        // Navigate to the checkout page
         navigate('/checkout');
     };
 
@@ -81,7 +83,7 @@ const CartPage: React.FC = () => {
                     overflow: 'hidden',
                 }}>
                     <Image
-                        src={product_id.thumbnail}
+                        src={product_id?.thumbnail}
                         style={{
                             maxWidth: '100%',
                             maxHeight: '100%',
@@ -95,13 +97,13 @@ const CartPage: React.FC = () => {
             title: 'Tên sản phẩm',
             dataIndex: 'product_id',
             key: 'name',
-            render: (product_id: any) => <p>{product_id.name}</p>,
+            render: (product_id: any) => <p>{product_id?.name}</p>,
         },
         {
             title: 'Giá',
             dataIndex: 'product_id',
             key: 'price',
-            render: (product_id: any) => `${convertToVND(product_id.price)}`,
+            render: (product_id: any) => `${convertToVND(product_id?.price)}`,
         },
         {
             title: 'Số lượng',
@@ -111,7 +113,7 @@ const CartPage: React.FC = () => {
                 <InputNumber
                     min={1}
                     value={text}
-                    onChange={(value) => handleQuantityChange(record._id, value)}
+                    onChange={(value) => handleQuantityChange(record?._id, value)}
                 />
             ),
         },
@@ -119,7 +121,7 @@ const CartPage: React.FC = () => {
             title: 'Tổng',
             dataIndex: 'total',
             key: 'total',
-            render: (_: any, record: any) => `${convertToVND(record.product_id.price * record.quantity)}`,
+            render: (_: any, record: any) => `${convertToVND(record?.product_id?.price * record?.quantity)}`,
         },
         {
             title: '',

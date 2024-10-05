@@ -43,6 +43,11 @@ class BakeryService {
 
         return bakeries;
     }
+
+    static getBakeryByUserId = async (user_id: string) => {
+        const bakery = await bakeryRepo.getBakeryByUserId(user_id);
+        return bakery;
+    }
 }
 
 export default BakeryService;

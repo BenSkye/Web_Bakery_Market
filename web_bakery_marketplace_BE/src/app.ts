@@ -5,12 +5,16 @@ import morgan from 'morgan';
 import compression from 'compression';
 import mongoose from './dbs/init.mongodb';
 import dotenv from 'dotenv';
+import path from 'path';
 
 // Import routes
 import indexRouter from './routes/index';
 import userRouter from './routes/user';
 
 const app = express();
+
+app.set('views', path.join(__dirname, 'view'));
+app.set('view engine', 'ejs');
 
 // Middleware
 app.use(morgan('dev'));
