@@ -1,14 +1,16 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Canvas, useFrame, useLoader, useThree } from '@react-three/fiber';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
 import { PerspectiveCamera, OrbitControls } from '@react-three/drei';
-import { DragControls } from 'three/addons/controls/DragControls.js';
-import { Mesh, Object3D, Raycaster, Vector2, Intersection, Color, MeshBasicMaterial, MeshStandardMaterial, MeshPhongMaterial, MeshLambertMaterial } from 'three';
-import { Checkbox, Col, ColorPicker, InputNumber, Radio, RadioChangeEvent, Row, Select, Tooltip, TreeSelect, TreeSelectProps, Typography } from 'antd';
+import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter.js';
+import { Mesh, Object3D, Raycaster, Vector2, Intersection, Color, MeshStandardMaterial, MeshPhongMaterial, MeshLambertMaterial, Scene } from 'three';
+import { Button, Card, Checkbox, Col, Divider, message, Radio, RadioChangeEvent, Row, Select, Spin, Tooltip, TreeSelect, TreeSelectProps, Typography } from 'antd';
 import { TreeNode } from 'antd/es/tree-select';
-import { CheckboxChangeEvent } from 'antd/es/checkbox';
+import { convertToVND } from '../../utils';
+import { getCakeOptionByBakeryId } from '../../services/cakeoptionService';
+import { useAuth } from '../../stores/authContex';
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
 const FBXModel = ({ url, onClick,
   position = [0, 0, 0],
@@ -24,7 +26,7 @@ const FBXModel = ({ url, onClick,
     rotation: [number, number, number],
     scale: [number, number, number],
     modelColor?: string,
-    frostingColor: string,
+    frostingColor: object,
     DripSauce: string
   }) => {
   const fbx = useLoader(FBXLoader, url);
@@ -57,12 +59,12 @@ const FBXModel = ({ url, onClick,
         child.name = child.name || `Mesh_${child.id}`;
 
         if (child.name.includes("Cylinder") && child.name !== 'Cylinder002') {
-          const color = new Color(frostingColor);
+          const color = new Color(frostingColor?.hex);
           child.material.color = color;
           child.material.needsUpdate = true;
         }
         if (child.name.includes("Circle")) {
-          const color = new Color(DripSauce);
+          const color = new Color(DripSauce?.color);
           child.material.color = color;
           child.material.needsUpdate = true;
         }
@@ -132,7 +134,7 @@ const FBXModel = ({ url, onClick,
   );
 };
 
-const Scene = ({ onSelect }: { onSelect: (object: Object3D) => void }) => {
+const SceneInteraction = ({ onSelect }: { onSelect: (object: Object3D) => void }) => {
   const { camera, scene } = useThree();
   const raycaster = new Raycaster();
   const mouse = new Vector2();
@@ -164,16 +166,14 @@ const Scene = ({ onSelect }: { onSelect: (object: Object3D) => void }) => {
   return null;
 };
 
-
-
-const CakeModel = () => {
+const CakeModel = ({ bakeryId }: { bakeryId: string }) => {
   const [selectedObject, setSelectedObject] = useState<Object3D | null>(null);
   const [cameraPosition, setCameraPosition] = useState<[number, number, number]>([0, 500, 1000]);
   const [cakeSize, setCakeSize] = useState<number>(20);
   const [cakeColor, setCakeColor] = useState<Color>('#FFFFFF');
-  const [selectedFilling, setSelectedFilling] = useState<string>('');
-  const [frostingColor, setFrostingColor] = useState<string>(frostingColors[0].hex);
-  const [selectedDripSauce, setSelectedDripSauce] = useState<string>('');
+  const [selectedFilling, setSelectedFilling] = useState<object>({});
+  const [frostingColor, setFrostingColor] = useState<object>({});
+  const [selectedDripSauce, setSelectedDripSauce] = useState<object>({});
   const [isCandle, setIsCandle] = useState<boolean>(false);
   const [isWafer, setIsWafer] = useState<boolean>(false);
   const [isMacaron, setIsMacaron] = useState<boolean>(false);
@@ -182,9 +182,76 @@ const CakeModel = () => {
   const [isCherry, setIsCherry] = useState<boolean>(false);
   const [isChocolate, setIsChocolate] = useState<boolean>(false);
   const [decorations, setDecorations] = useState<CheckboxValueType[]>([]);
+  const [selectedDecorations, setSelectedDecorations] = useState<object[]>([]);
   const [disabledOptions, setDisabledOptions] = useState<CheckboxValueType[]>([]);
+  const [totalPrice, setTotalPrice] = useState<number>(0);
+
+  const [cakeFillings, setCakeFillings] = useState<object[]>([]);
+  const [frostingColors, setFrostingColors] = useState<object[]>([]);
+  const [dripSauces, setDripSauces] = useState<object[]>([]);
+  const [decorationOptions, setDecorationsOptions] = useState<object[]>([]);
+  const [basePrice, setBasePrice] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const sceneRef = useRef<Scene | null>(null);
+
+  const { user } = useAuth();
+
+
+  useEffect(() => {
+    const fetchCakeOption = async () => {
+      setLoading(true);
+      if (bakeryId) {
+        const cakeOption = await getCakeOptionByBakeryId(bakeryId);
+        console.log('Cake option:', cakeOption);
+        setCakeFillings(cakeOption.metadata.cakeFillings);
+        setFrostingColors(cakeOption.metadata.cakeFrosting);
+        setDripSauces(cakeOption.metadata.cakeDripSauce);
+        setDecorationsOptions(cakeOption.metadata.cakeDecoration);
+        setBasePrice(cakeOption.metadata.basePrice);
+        setTotalPrice(cakeOption.metadata.basePrice);
+      }
+    };
+    fetchCakeOption();
+    setLoading(false);
+  }, [bakeryId]);
+
+  useEffect(() => {
+    console.log('selectedFilling:', selectedFilling);
+    console.log('frostingColor:', frostingColor);
+    console.log('selectedDripSauce:', selectedDripSauce);
+    console.log('selectedDecorations:', selectedDecorations);
+    caculatePrice();
+  }, [selectedFilling, frostingColor, selectedDripSauce, selectedDecorations]);
+
+  const caculatePrice = () => {
+    let price = basePrice;
+    if (selectedFilling.price) {
+      price += selectedFilling.price;
+      console.log('selectedFillingprice:', selectedFilling.price)
+    }
+    if (frostingColor.price) {
+      price += frostingColor.price;
+      console.log('frostingColorprice:', frostingColor.price)
+    }
+    if (selectedDripSauce.price) {
+      price += selectedDripSauce.price;
+      console.log('selectedDripSauceprice:', selectedDripSauce.price)
+    }
+    if (selectedDecorations.length > 0) {
+      price += selectedDecorations.reduce((sum, decoration) => sum + decoration.price, 0);
+      console.log('selectedDecorationsprice:', selectedDecorations.reduce((sum, decoration) => sum + decoration.price, 0))
+    }
+    console.log('price:', price)
+    setTotalPrice(price);
+  }
+
 
   const handleDecorationChange = (checkedValues: CheckboxValueType[]) => {
+    const newSelectedDecorations = decorationOptions.filter(decoration =>
+      checkedValues.includes(decoration.value)
+    );
+    setSelectedDecorations(newSelectedDecorations);
     setDecorations(checkedValues);
     // Cập nhật các state tương ứng
     setIsCandle(checkedValues.includes('candle'));
@@ -205,24 +272,76 @@ const CakeModel = () => {
   };
 
 
-  const optionsWithDisabled = decorationOptions.map(option => ({
+  const optionsWithDisabled = decorationOptions?.map(option => ({
     ...option,
     disabled: disabledOptions.includes(option.value)
   }));
 
   const handleDripSauceChange = (value: string) => {
-    setSelectedDripSauce(value);
+    const selectedSauce = dripSauces.find(sauce => sauce.color === value);
+    if (selectedSauce) {
+      setSelectedDripSauce(selectedSauce);
+    }
   };
+
   const handleObjectClick = (object: Object3D) => {
     setSelectedObject(object);
     console.log('Selected object:', object);
   };
   const handleFillingChange: TreeSelectProps['onChange'] = (value, node) => {
-    setSelectedFilling(value as string);
+    const selectedBranch = cakeFillings.find(branch => branch.fillings.some(filling => filling.name === value));
+    if (selectedBranch) {
+      const selectedFilling = selectedBranch.fillings.find(filling => filling.name === value);
+      if (selectedFilling) {
+        setSelectedFilling(selectedFilling);
+      }
+    }
   };
 
   const handleFrostingColorChange = (e: RadioChangeEvent) => {
-    setFrostingColor(e.target.value);
+    const selectedColor = frostingColors.find(color => color.hex === e.target.value);
+    if (selectedColor) {
+      setFrostingColor(selectedColor);
+    }
+  };
+
+
+  const handleCanvasCreated = useCallback(({ scene }: { scene: Scene }) => {
+    sceneRef.current = scene;
+  }, []);
+
+
+  const handleSubmitRequest = async () => {
+    if (!sceneRef.current) {
+      message.error('Mô hình chưa được tạo');
+      return;
+    }
+
+    try {
+      // 1. Xuất mô hình
+      const exporter = new GLTFExporter();
+      const gltfData = await new Promise((resolve) => {
+        if (sceneRef.current) {
+          exporter.parse(sceneRef.current, (result) => resolve(result), { binary: true });
+        }
+      });
+
+      // 2. Tạo file
+      const blob = new Blob([gltfData as ArrayBuffer], { type: 'model/gltf-binary' });
+      const file = new File([blob], `${user?.username}custom_cake.glb`, { type: 'model/gltf-binary' });
+
+      // 3. Tải lên Firebase Storage
+      // const storage = getStorage();
+      // const storageRef = ref(storage, `custom_cakes/${Date.now()}_${file.name}`);
+      // const snapshot = await uploadBytes(storageRef, file);
+      // const downloadURL = await getDownloadURL(snapshot.ref);
+
+      //tạo order
+
+    } catch (error) {
+      console.error('Lỗi khi xử lý yêu cầu:', error);
+      message.error('Có lỗi xảy ra khi xử lý yêu cầu của bạn');
+    }
   };
 
 
@@ -230,10 +349,13 @@ const CakeModel = () => {
     console.log('Camera position:', cameraPosition);
   }, [cameraPosition]);
 
+  if (loading) {
+    return <Spin />;
+  }
   return (
-    <Row gutter={[16, 16]}>
-      <Col span={17}>
-        <Canvas style={{ height: '80vh' }}>
+    <Row gutter={[24, 24]}>
+      <Col span={16}>
+        <Canvas onCreated={handleCanvasCreated} style={{ height: '80vh' }}>
           <PerspectiveCamera makeDefault position={cameraPosition} />
           <OrbitControls />
           <ambientLight intensity={0.5} />
@@ -246,98 +368,128 @@ const CakeModel = () => {
           {isCream && <FBXModel url="/public/Cream.fbx" position={[0, -100, 0]} rotation={[0, 0, 0]} scale={[1, 1, 1]} onClick={(object) => setSelectedObject(object)} />}
           {isCherry && <FBXModel url="/public/Cherry.fbx" position={[0, -100, 0]} rotation={[0, 0, 0]} scale={[1, 1, 1]} modelColor='#e74c3c' onClick={(object) => setSelectedObject(object)} />}
           {isChocolate && <FBXModel url="/public/Chocolate.fbx" position={[0, 15, 0]} rotation={[0, 0, 0]} scale={[1, 1, 1]} modelColor='#b76732' onClick={(object) => setSelectedObject(object)} />}
-          <Scene onSelect={(object) => setSelectedObject(object)} />
+          <SceneInteraction onSelect={(object) => setSelectedObject(object)} />
         </Canvas>
       </Col>
 
 
-      <Col span={7} style={{ background: '#f1948a', borderRadius: '10px', padding: '10px' }}>
-        <h2>Tùy chỉnh bánh</h2>
-        <Row gutter={[16, 16]}>
-          <Col span={24} style={{ display: 'flex', alignItems: 'center', justifyContent: 'start' }}>
-            <label style={{ marginRight: '10px' }}>Nhân bánh: </label>
-            <TreeSelect
-              style={{ width: '50%' }}
-              // value={selectedFilling}
-              dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-              placeholder="Chọn nhân bánh"
-              treeDefaultExpandAll
-              onChange={handleFillingChange}
-            >
-              {cakeFillings.map((branch) => (
-                <TreeNode value={branch.branch} title={branch.branch} key={branch.branch} selectable={false}>
-                  {branch.fillings.map((filling) => (
-                    <TreeNode
-                      value={filling.name}
-                      title={filling.name}
-                      key={filling.name}
-                      description={filling.description as string}
-                    />
-                  ))}
-                </TreeNode>
-              ))}
-            </TreeSelect>
-          </Col>
-          <Col span={24} style={{ display: 'flex', alignItems: 'center', justifyContent: 'start' }}>
-            <label style={{ marginRight: '10px' }}>Màu kem phủ:</label>
-            <Radio.Group onChange={handleFrostingColorChange} value={frostingColor} style={{ width: '40%' }}>
-              {frostingColors.map((color) => (
-                <Tooltip title={color.name} key={color.hex}>
-                  <Radio.Button
-                    value={color.hex}
-                    style={{
-                      backgroundColor: color.hex,
-                      width: '30px',
-                      height: '30px',
-                      border: `2px solid ${frostingColor === color.hex ? '#1890ff' : '#d9d9d9'}`,
-                      marginRight: '10px',
-                      marginBottom: '10px',
-                      borderRadius: '50%',
-                      padding: 0,
-                      overflow: 'hidden',
-                    }}
-                  />
-                </Tooltip>
-              ))}
-            </Radio.Group>
-          </Col>
+      <Col span={8} style={{ background: '#f1948a', borderRadius: '10px', padding: '10px' }}>
+        <Card
+          title={<Title level={3}>Tùy chỉnh bánh</Title>}
+          style={{ height: '80vh', overflowY: 'auto' }}
+        >
+          <Row gutter={[0, 16]}>
+            <Col span={24} >
+              <Text strong>Nhân bánh:</Text>
+              <TreeSelect
+                style={{ width: '100%', marginTop: 8 }}
+                // value={selectedFilling}
+                dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                placeholder="Chọn nhân bánh"
+                treeDefaultExpandAll
+                onChange={handleFillingChange}
+              >
+                {cakeFillings?.map((branch) => (
+                  <TreeNode value={branch.branch} title={branch.branch} key={branch.branch} selectable={false}>
+                    {branch?.fillings?.map((filling) => (
+                      <TreeNode
+                        value={filling.name}
+                        title={`${filling.name} - ${convertToVND(filling.price)}`}
+                        key={filling.name}
+                        description={filling.description as string}
+                      >
 
-
-          <Col span={24} style={{ display: 'flex', alignItems: 'center', justifyContent: 'start' }}>
-            <label style={{ marginRight: '10px' }}>Sốt phủ:</label>
-            <Select
-              style={{ width: '50%' }}
-              placeholder="Chọn sốt phủ"
-              onChange={handleDripSauceChange}
-              value={selectedDripSauce}
-            >
-              {dripSauces.map((sauce) => (
-                <Select.Option key={sauce.name} value={sauce.color}>
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <div
+                      </TreeNode>
+                    ))}
+                  </TreeNode>
+                ))}
+              </TreeSelect>
+            </Col>
+            <Col span={24}>
+              <Text strong>Màu kem phủ:</Text>
+              <Radio.Group onChange={handleFrostingColorChange}
+                value={frostingColor}
+                style={{ width: '100%', marginTop: 8 }}>
+                {frostingColors?.map((color) => (
+                  <Tooltip title={`${color?.name}-${convertToVND(color?.price)}`} key={color.hex}>
+                    <Radio.Button
+                      value={color.hex}
                       style={{
-                        width: '20px',
-                        height: '20px',
+                        backgroundColor: color.hex,
+                        width: '30px',
+                        height: '30px',
+                        border: `2px solid ${frostingColor === color?.hex ? '#1890ff' : '#d9d9d9'}`,
+                        marginRight: '10px',
+                        marginBottom: '10px',
                         borderRadius: '50%',
-                        backgroundColor: sauce.color,
-                        marginRight: '8px',
+                        padding: 0,
+                        overflow: 'hidden',
                       }}
                     />
-                    {sauce.name}
-                  </div>
-                </Select.Option>
-              ))}
-            </Select>
+                  </Tooltip>
+                ))}
+              </Radio.Group>
+            </Col>
+
+            <Col span={24}>
+              <Text strong>Sốt phủ:</Text>
+              <Select
+                style={{ width: '100%', marginTop: 8 }}
+                placeholder="Chọn sốt phủ"
+                onChange={handleDripSauceChange}
+                value={selectedDripSauce?.name}
+              >
+                {dripSauces?.map((sauce) => (
+                  <Select.Option key={sauce.name} value={sauce.color}>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <div
+                        style={{
+                          width: '20px',
+                          height: '20px',
+                          borderRadius: '50%',
+                          backgroundColor: sauce.color,
+                          marginRight: '8px',
+                        }}
+                      />
+                      {sauce.name} - {convertToVND(sauce.price)}
+                    </div>
+                  </Select.Option>
+                ))}
+              </Select>
+            </Col>
+            <Col span={24} >
+              <Text strong>Trang trí:</Text>
+              <Checkbox.Group
+                options={optionsWithDisabled?.map(option => ({
+                  ...option,
+                  label: `${option.label} - ${convertToVND(option.price)}`
+                }))}
+                value={selectedDecorations?.map(d => d.value)}
+                onChange={handleDecorationChange}
+                style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: 8 }}
+              />
+            </Col>
+
+
+          </Row>
+        </Card>
+        <Divider />
+
+
+        <Row justify="space-between" align="middle">
+          <Col>
+            <Title level={4}>Tổng giá:</Title>
           </Col>
-          <Col span={24} >
-            <Title level={5}>Trang trí</Title>
-            <Checkbox.Group
-              options={optionsWithDisabled}
-              value={decorations}
-              onChange={handleDecorationChange}
-            />
+          <Col>
+            <Title level={3} type="danger">{convertToVND(totalPrice)}</Title>
           </Col>
         </Row>
+        <Row justify="end" align="middle">
+          <Col>
+            <Button type="primary" onClick={handleSubmitRequest}>Gửi yêu cầu</Button>
+          </Col>
+        </Row>
+
       </Col>
     </Row>
   );
@@ -345,149 +497,5 @@ const CakeModel = () => {
 
 export default CakeModel;
 
-const cakeFillings = [
-  {
-    branch: "Nhân Kem",
-    fillings: [
-      { name: "Kem Tươi Đánh Bông", description: "Kem nhẹ và mịn." },
-      { name: "Kem Bơ", description: "Kem béo và ngọt từ bơ." },
-      { name: "Kem Sữa Trứng", description: "Kem mịn và béo ngậy từ trứng và sữa." },
-      { name: "Kem Chantilly", description: "Kem tươi ngọt có thêm vani." }
-    ]
-  },
-  {
-    branch: "Nhân Phô Mai",
-    fillings: [
-      { name: "Phô Mai Kem", description: "Phô mai kem mềm và béo ngậy." },
-      { name: "Mascarpone", description: "Phô mai Ý nhẹ, ngọt dịu." },
-      { name: "Ricotta", description: "Phô mai mềm, béo nhẹ, thường kết hợp với hương chanh hoặc mật ong." }
-    ]
-  },
-  {
-    branch: "Nhân Socola",
-    fillings: [
-      { name: "Ganache", description: "Hỗn hợp socola và kem tươi, rất mịn." },
-      { name: "Chocolate Mousse", description: "Mousse socola, mịn và nhẹ." },
-      { name: "Nutella", description: "Socola phết béo ngậy từ hạt dẻ." }
-    ]
-  },
-  {
-    branch: "Nhân Custard",
-    fillings: [
-      { name: "Custard Vani", description: "Kem trứng vani mịn và béo." },
-      { name: "Custard Socola", description: "Kem trứng socola mềm mịn." },
-      { name: "Custard Trà Xanh", description: "Kem trứng vị matcha mịn." }
-    ]
-  },
-  {
-    branch: "Nhân Trái Cây Tươi",
-    fillings: [
-      { name: "Dâu Tây", description: "Dâu tây tươi cắt lát." },
-      { name: "Việt Quất", description: "Quả việt quất tươi nguyên." },
-      { name: "Trái Cây Hỗn Hợp", description: "Hỗn hợp các loại trái cây tươi." }
-    ]
-  },
-  {
-    branch: "Nhân Hạt",
-    fillings: [
-      { name: "Kem Hạnh Nhân", description: "Kem làm từ hạnh nhân nghiền nhỏ." },
-      { name: "Kem Hạt Dẻ", description: "Kem mịn làm từ hạt dẻ." },
-      { name: "Praline", description: "Hỗn hợp giòn từ caramel và hạt nghiền." }
-    ]
-  },
-  {
-    branch: "Nhân Caramel",
-    fillings: [
-      { name: "Caramel Muối", description: "Caramel ngọt và mặn, có độ dẻo." },
-      { name: "Dulce de Leche", description: "Caramel đặc trưng từ sữa, ngọt và mịn." }
-    ]
-  },
-  {
-    branch: "Nhân Bơ Đậu Phộng",
-    fillings: [
-      { name: "Kem Bơ Đậu Phộng", description: "Kem béo ngậy từ bơ đậu phộng." },
-      { name: "Mousse Bơ Đậu Phộng", description: "Mousse bơ đậu phộng, nhẹ và mịn." }
-    ]
-  },
-  {
-    branch: "Nhân Dừa",
-    fillings: [
-      { name: "Kem Dừa", description: "Kem dừa ngọt và béo." },
-      { name: "Dừa Nướng", description: "Dừa nướng giòn, thơm." }
-    ]
-  },
-  {
-    branch: "Nhân Mứt",
-    fillings: [
-      { name: "Mứt Dâu", description: "Mứt từ dâu tây tươi ngọt." },
-      { name: "Mứt Việt Quất", description: "Mứt từ quả việt quất." },
-      { name: "Mứt Mơ", description: "Mứt mơ với hương vị thanh nhẹ." },
-      { name: "Mứt Đào", description: "Mứt từ quả đào chín mọng." },
-      { name: "Mứt Cam", description: "Mứt từ cam, hơi ngọt và chua nhẹ." }
-    ]
-  }
-];
 
-const frostingColors = [
-  { name: "Trắng", hex: "#FFFFFF" },
-  { name: "Hồng", hex: "#ffabba" },
-  { name: "Xanh Dương", hex: "#95d6eb" },
-  { name: "Vàng", hex: "#FFFF00" },
-  { name: "Đỏ", hex: "#ff5959" },
-  { name: "Xanh Lá Cây", hex: "#90EE90" },
-  { name: "Nâu", hex: "#a06f4c" },
-  { name: "Tím", hex: "#cc69cc" }
-];
 
-const dripSauces = [
-  {
-    name: "Sốt Socola Đen",
-    color: "#3B2F2F",
-    description: "Làm từ socola đen, tạo ra lớp sốt chảy màu nâu đậm và hương vị đậm đà."
-  },
-  {
-    name: "Sốt Socola Trắng",
-    color: "#F4F1EB",
-    description: "Làm từ socola trắng, tạo hiệu ứng chảy với màu trắng kem."
-  },
-  {
-    name: "Sốt Socola Sữa",
-    color: "#D2A679",
-    description: "Sốt từ socola sữa, có màu nâu nhạt và hương vị ngọt ngào."
-  },
-  {
-    name: "Sốt Caramel",
-    color: "#C68C53",
-    description: "Sốt caramel ngọt ngào, có màu vàng nâu sáng bóng."
-  },
-  {
-    name: "Sốt Dâu",
-    color: "#FF4B5C",
-    description: "Làm từ dâu tươi hoặc siro dâu, có màu đỏ hồng và hương vị trái cây."
-  },
-  {
-    name: "Sốt Việt Quất",
-    color: "#4B0082",
-    description: "Làm từ việt quất, tạo ra lớp sốt màu tím xanh đặc trưng."
-  },
-  {
-    name: "Sốt Chanh",
-    color: "#F9E79F",
-    description: "Làm từ chanh, có màu vàng nhạt tươi sáng và vị chua nhẹ."
-  },
-  {
-    name: "Sốt Cam",
-    color: "#FFA500",
-    description: "Sốt cam có màu cam tươi sáng, thích hợp cho bánh vị cam."
-  }
-];
-
-const decorationOptions = [
-  { label: 'Thêm nến', value: 'candle' },
-  { label: 'Bánh Wafer', value: 'wafer' },
-  { label: 'Bánh Macaron', value: 'macaron' },
-  { label: 'Dâu Tây', value: 'strawberry' },
-  { label: 'Kem', value: 'cream' },
-  { label: 'Đào', value: 'cherry' },
-  { label: 'Socola', value: 'chocolate' },
-];

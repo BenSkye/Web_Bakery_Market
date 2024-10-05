@@ -13,7 +13,6 @@ const orderProductSchema = new Schema(
         product_id: {
             type: Schema.Types.ObjectId,
             ref: 'Product',
-            required: true,
         },
         bakery_id: {
             type: Schema.Types.ObjectId,
@@ -34,11 +33,19 @@ const orderProductSchema = new Schema(
         },
         payment_method: {
             type: String,
-            required: true,
+        },
+        customCake: {
+            type: {
+                cake3dUrl: { type: String },
+            },
+        },
+        isCustomCake: {
+            type: Boolean,
+            default: false,
         },
         status: {
             type: String,
-            enum: ['pending', 'confirmed', 'shipping', 'delivered', 'canceled'],
+            enum: ['pending', 'confirmed', 'success', 'shipping', 'delivered', 'canceled'],
             default: 'pending',
         },
 

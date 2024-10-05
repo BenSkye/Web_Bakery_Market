@@ -14,7 +14,6 @@ import Cart from '../pages/stores/Cart';
 import StorePage from '../pages/manager/StorePage';
 import ListStoreAcceptDesignPage from '../pages/listStoreAcceptDesign/StoreAcceptDesignPage';
 import ForgotPassword from '../pages/login/ForgotPassword';
-import SignUpManager from '../pages/manager/BakerySignupPage';
 import ResetPassword from '../pages/login/ResetPassword';
 import Checkout from '../pages/stores/Checkout';
 import OrderStatus from '../pages/stores/OrderStatus';
@@ -47,7 +46,7 @@ const AppRoutes: React.FC = () => {
                 <Route path="/checkout" element={<Checkout />} />
                 <Route path="/product/:id" element={<ProductDetail />} />
                 <Route path="/detail/:id" element={<Detail />} />
-                <Route path="/CakeDesigner" element={<CakeDesigner />} />
+                <Route path="/CakeDesigner/:id" element={<CakeDesigner />} />
                 <Route path="/listStoreAcceptDesign" element={<ListStoreAcceptDesignPage />} />
             </Route>
         </Routes>

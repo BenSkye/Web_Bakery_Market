@@ -18,6 +18,12 @@ class OrderProductController {
         }).send(res);
     });
 
+    getOrderProductById = asyncHandler(async (req: any, res: Response, next: NextFunction) => {
+        new SuccessResponse({
+            message: 'Get Order Product By Id successfully',
+            metadata: await OrderProductService.getOrderProductById(req.params.orderProductId),
+        }).send(res);
+    });
 }
 
 export default new OrderProductController();

@@ -1,3 +1,4 @@
+import { NotFoundError } from "../core/error.response";
 import order_product_repo from "../repositories/oder_product.repo";
 
 class OrderProductService {
@@ -7,6 +8,14 @@ class OrderProductService {
 
     static getOderProductByBakeryId = async (bakeryId: string) => {
         return await order_product_repo.getOderProductByBakeryId(bakeryId);
+    }
+
+    static getOrderProductById = async (orderProductId: string) => {
+        const order_product = await order_product_repo.getOrderProductById(orderProductId);
+        if (!order_product) {
+            throw new NotFoundError("Order product not found");
+        }
+        return order_product;
     }
 
 }

@@ -13,7 +13,7 @@ const { Header } = Layout;
 const HeaderComponent: React.FC = () => {
     const { user, logout } = useAuth();
     const { cart } = useContext(CartContext);
-
+    console.log('cart', cart)
     // Dropdown menu for user
     const userMenu = (
         <Menu>

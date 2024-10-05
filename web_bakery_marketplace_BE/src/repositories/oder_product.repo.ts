@@ -19,7 +19,7 @@ class OrderProductRepo {
     }
 
     async getPersonalOderProduct(userId: string) {
-        return await orderProductModel.find({ user_id: userId });
+        return await orderProductModel.find({ user_id: userId }).populate('product_id', 'name thumbnail');
     }
     async getOderProductByBakeryId(bakeryId: string) {
         return await orderProductModel.find({ bakery_id: bakeryId });
@@ -32,6 +32,9 @@ class OrderProductRepo {
     }
     async deleteOderProduct(oderProductId: string) {
         return await orderProductModel.findByIdAndDelete(oderProductId);
+    }
+    async getOrderProductById(orderProductId: string) {
+        return await orderProductModel.findById(orderProductId);
     }
 
 }
