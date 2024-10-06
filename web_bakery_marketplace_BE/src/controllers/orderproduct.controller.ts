@@ -11,6 +11,13 @@ class OrderProductController {
         }).send(res);
     });
 
+    getPersonalOderCakeDesign = asyncHandler(async (req: any, res: Response, next: NextFunction) => {
+        new SuccessResponse({
+            message: 'Get Personal Oder Cake Design successfully',
+            metadata: await OrderProductService.getPersonalOderCakeDesign(req.keyStore.user),
+        }).send(res);
+    });
+
     getOderProductByBakeryId = asyncHandler(async (req: any, res: Response, next: NextFunction) => {
         new SuccessResponse({
             message: 'Get Oder Product By Bakery Id successfully',
@@ -38,6 +45,14 @@ class OrderProductController {
             metadata: await OrderProductService.rejectOrderProduct(req.params.orderProductId),
         }).send(res);
     });
+
+    changeStatusOrderProduct = asyncHandler(async (req: any, res: Response, next: NextFunction) => {
+        new SuccessResponse({
+            message: 'Change Status Order Product successfully',
+            metadata: await OrderProductService.changeStatusOrderProduct(req.params.orderProductId, req.body.status),
+        }).send(res);
+    });
+
 }
 
 export default new OrderProductController();
