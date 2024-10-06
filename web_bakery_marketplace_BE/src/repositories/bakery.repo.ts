@@ -22,6 +22,10 @@ class BakeryRepository {
     async deleteBakery(id: string) {
         return await bakeryModel.findByIdAndDelete(id);
     }
+
+    async getBakeryByUserId(user_id: string) {
+        return await bakeryModel.findOne({ user_id });
+    }
 }
 
 export default new BakeryRepository();

@@ -8,6 +8,9 @@ import cartRouter from './cart';
 import checkoutRouter from './checkout';
 import inventoryRouter from './inventory';
 import workshopRouter from './workshop';
+import vnpayRouter from './vnpay';
+import oderProductRouter from './oderProduct';
+import cakeoptionRouter from './cakeoption';
 
 const router = Router();
 
@@ -21,7 +24,10 @@ router.use('/v1/api/bakery', bakeryRouter);
 router.use('/v1/api/product', productRouter);
 router.use('/v1/api/cart', cartRouter);
 router.use('/v1/api/checkout', checkoutRouter);
+router.use('/v1/api/order-product', oderProductRouter);
 router.use('/v1/api/user', accessRouter);
 router.use('/v1/api/workshop', workshopRouter);
+router.use('/v1/api/cakeoption', cakeoptionRouter);
+router.use('/v1/api/vnpay', vnpayRouter);
 
 export default router;

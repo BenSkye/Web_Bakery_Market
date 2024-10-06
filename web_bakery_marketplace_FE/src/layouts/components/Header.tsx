@@ -1,19 +1,19 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Layout, Menu, Button, Row, Col, Badge, Dropdown } from 'antd';
 import { ShoppingCartOutlined, UserOutlined, LogoutOutlined, ShareAltOutlined, SearchOutlined, HeartOutlined, HomeOutlined, InfoCircleOutlined, ShopOutlined, FundViewOutlined, QuestionCircleOutlined, ToolOutlined } from '@ant-design/icons';
 import logo from '../../assets/logoNobackground.png';
 import cakeIcon from '../../assets/pen_1324.png'
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../stores/authContex';
-import { useCart } from '../../stores/cartContext';
 import '../../styles/layoutSyles/headerComponent.css';
+import { CartContext } from '../../stores/cartContext';
 
 const { Header } = Layout;
 
 const HeaderComponent: React.FC = () => {
     const { user, logout } = useAuth();
-    const { cart } = useCart();
-
+    const { cart } = useContext(CartContext);
+    console.log('cart', cart)
     // Dropdown menu for user
     const userMenu = (
         <Menu>

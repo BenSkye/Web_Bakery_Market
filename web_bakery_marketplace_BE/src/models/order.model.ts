@@ -29,8 +29,6 @@ const orderSchema = new Schema(
         */
         payment_method: {
             type: String,
-            enum: ['cash', 'momo'],
-            default: 'cash',
         },
         shipping_address: {
             type: Object,

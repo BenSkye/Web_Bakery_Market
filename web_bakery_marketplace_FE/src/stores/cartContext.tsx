@@ -1,81 +1,97 @@
-import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import React, { createContext, useState, ReactNode, useEffect, useCallback } from 'react';
 import apiClient from '../services/apiClient';
 
+interface CartProduct {
+    product_id: {
+        _id: string,
+        name: string,
+        price: number,
+        thumbnail: string,
+    },
+    quantity: number,
+}
+
 interface CartItem {
-    id: string;
-    name: string;
-    cart_products: Array<{
-        product_id: {
-            _id: string;
-            name: string;
-            price: number;
-            thumbnail: string;
-        },
-        quantity: number;
-    }>;
-    cart_count_products: number;
+    id: string,
+    name: string,
+    cart_products: CartProduct[],
+    cart_count_products: number,
 }
 
 interface CartContextType {
-    cart: CartItem[];
-    addToCart: (item: CartItem) => void;
-    removeFromCart: (id: string) => void;
-    clearCart: () => void;
+    cart: CartItem | null;
+    isLoading: boolean;
+    error: string | null;
+    addToCart: (productData: { product_id: string, quantity: number }) => Promise<void>;
+    removeFromCart: (productId: string) => Promise<void>;
+    fetchCart: () => Promise<void>;
 }
 
-const CartContext = createContext<CartContextType | undefined>(undefined);
-
-export const useCart = () => {
-    const context = useContext(CartContext);
-    if (!context) {
-        throw new Error('useCart must be used within a CartProvider');
-    }
-    return context;
-};
+export const CartContext = createContext<CartContextType | undefined>(undefined);
 
 interface CartProviderProps {
     children: ReactNode;
 }
 
-
 export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
-    const [cart, setCart] = useState<CartItem[]>([]);
+    const [cart, setCart] = useState<CartItem | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
+    const fetchCart = useCallback(async () => {
+        setIsLoading(true);
+        setError(null);
+        console.log('cart1', cart)
+        try {
+            const response = await apiClient.get('/cart/get-cart');
+            console.log('response', response.data.metadata)
+            setCart(response.data.metadata);
+        } catch (error) {
+            console.error('Error fetching cart:', error);
+            setError('Failed to fetch cart. Please try again.');
+        } finally {
+            setIsLoading(false);
+        }
+    }, []);
 
     useEffect(() => {
-        const fetchCart = async () => {
-            try {
-                const respone = await apiClient.get('/cart/get-cart');
-                console.log(respone.data.metadata)
-                setCart(respone.data.metadata);
-            } catch (error) {
-                console.error('Error fetching cart:', error);
-            }
-        };
         fetchCart();
     }, []);
 
-    const addToCart = async (productData: {
-        product_id: string,
-        quantity: number,
-    }) => {
-        console.log('productData', productData)
-        const response = await apiClient.post('/cart/add-to-cart', { productData });
-        console.log(response.data.metadata);
-        setCart(response.data.metadata);
+    useEffect(() => {
+        console.log('cart2', cart)
+    }, [cart])
+
+    const addToCart = async (productData: { product_id: string, quantity: number }) => {
+        setIsLoading(true);
+        setError(null);
+        try {
+            const response = await apiClient.post('/cart/add-to-cart', { productData });
+            setCart(response.data.metadata);
+        } catch (error) {
+            console.error('Error adding to cart:', error);
+            setError('Failed to add item to cart. Please try again.');
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const removeFromCart = async (productId: string) => {
-        console.log('productData', productId)
-        const response = await apiClient.delete(`/cart/remove/${productId}`);
-        console.log(response.data.metadata);
-        setCart(response.data.metadata);
+        setIsLoading(true);
+        setError(null);
+        try {
+            const response = await apiClient.delete(`/cart/remove/${productId}`);
+            setCart(response.data.metadata);
+        } catch (error) {
+            console.error('Error removing from cart:', error);
+            setError('Failed to remove item from cart. Please try again.');
+        } finally {
+            setIsLoading(false);
+        }
     };
 
-    // const clearCart = () => {
-    //     setCart([]);
-    // };
     return (
-        <CartContext.Provider value={{ cart, addToCart, removeFromCart }}>
+        <CartContext.Provider value={{ cart, isLoading, error, addToCart, removeFromCart, fetchCart }}>
             {children}
         </CartContext.Provider>
     );
