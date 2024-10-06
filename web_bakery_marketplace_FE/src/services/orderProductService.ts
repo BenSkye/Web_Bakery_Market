@@ -10,7 +10,7 @@ export const getPersonalOrderProduct = async () => {
     }
 };
 
-export const getOrderProductById = async (id: string) => {
+export const getOrderProductById = async (id: any) => {
     try {
         const response = await apiClient.get(`/order-product/get-order-product-by-id/${id}`);
         return response.data;
@@ -19,5 +19,6 @@ export const getOrderProductById = async (id: string) => {
         throw error;
     }
 };
+
 
 

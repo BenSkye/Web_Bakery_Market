@@ -24,7 +24,7 @@ const OrderStatus = () => {
         const fetchOrderProducts = async () => {
             try {
                 const response = await getPersonalOrderProduct();
-                console.log('response', response.metadata)
+                console.log('responseeeeee', response.metadata)
                 setOrderProducts(response.metadata);
             } catch (error) {
                 console.error('Error fetching order products:', error);
@@ -75,7 +75,7 @@ const OrderStatus = () => {
                                     <h4>{convertToVND(order?.price)}</h4>
                                 </Col>
                             </Row>
-                            <Link to='/orderdetailstatus'>
+                            <Link to={`/orderdetailstatus/${order._id}`}>
                                 <Button type="primary" style={{ marginTop: '10px' }}>
                                     Xem Chi Tiết
                                 </Button>

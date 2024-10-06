@@ -1,11 +1,38 @@
-import React, { useState } from 'react';
-import { Card, Steps, Button, List, Avatar, Row, Col } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Card, Steps, List, Avatar, Row, Col } from 'antd';
 import { CheckCircleOutlined, SyncOutlined, ShoppingCartOutlined, SmileOutlined } from '@ant-design/icons';
+import { useParams } from 'react-router-dom';
+import { getOrderProductById } from '../../services/orderProductService';
 
 const { Step } = Steps;
 
 const OrderDetailStatus = () => {
-    const [currentStep, setCurrentStep] = useState(2); // Current order status step (for example, 2 means 'Shipped')
+    const { id } = useParams();
+    const [order, setOrder] = useState<any>(null);
+    const [currentStep, setCurrentStep] = useState(0); // Start at the first step
+
+    useEffect(() => {
+        const fetchOrder = async () => {
+            try {
+                const orderResponse = await getOrderProductById(id);
+                console.log('Order fetched:', orderResponse.metadata);
+                setOrder(orderResponse.metadata);
+                // Set current step based on the order status
+                const statusToStep = {
+                    pending: 1,
+                    success: 2,
+                    completed: 3,
+                };
+                setCurrentStep(statusToStep[orderResponse.metadata.status] || 0);
+            } catch (error) {
+                console.error('Error fetching order:', error);
+            }
+        };
+
+        if (id) {
+            fetchOrder();
+        }
+    }, [id]);
 
     const orderSteps = [
         {
@@ -26,15 +53,6 @@ const OrderDetailStatus = () => {
         },
     ];
 
-    const orderItems = [
-        {
-            title: 'Combo 10 Tất Vớ Nam Nữ Có Cổ Cao',
-            img: 'https://trangmoon.com.vn/storage/el/xx/elxx28cx6yh96ztiu7w46hkvtom2_BKM28052_2.jpg',
-            quantity: 1,
-            price: '₫82,000',
-        },
-    ];
-
     return (
         <div style={{ padding: '20px', backgroundColor: '#f5f5f5', display: 'flex', justifyContent: 'center' }}>
             <div style={{ maxWidth: '800px', width: '100%' }}>
@@ -51,26 +69,24 @@ const OrderDetailStatus = () => {
                             <h3>Mã đơn hàng:</h3>
                         </Col>
                         <Col>
-                            <h3>#123456789</h3>
+                            <h3>{order?._id || 'Loading...'}</h3>
                         </Col>
                     </Row>
-
-
                 </Card>
 
                 {/* Order Items List */}
                 <Card title="Sản Phẩm Trong Đơn Hàng" style={{ marginBottom: '20px' }}>
                     <List
                         itemLayout="horizontal"
-                        dataSource={orderItems}
+                        dataSource={order ? [order] : []} // Assuming the product is in order.product_id
                         renderItem={item => (
                             <List.Item>
                                 <List.Item.Meta
-                                    avatar={<Avatar src={item.img} shape="square" size={64} />}
-                                    title={item.title}
+                                    avatar={<Avatar src={item.product_id?.thumbnail} shape="square" size={64} />}
+                                    title={item.product_id?.name}
                                     description={`Số lượng: ${item.quantity}`}
                                 />
-                                <div>{item.price}</div>
+                                <div>₫{item.price?.toLocaleString()}</div>
                             </List.Item>
                         )}
                     />
@@ -83,7 +99,7 @@ const OrderDetailStatus = () => {
                             <h3>Tổng số tiền:</h3>
                         </Col>
                         <Col>
-                            <h3>₫94,800</h3>
+                            <h3>₫{order?.price?.toLocaleString() || 'Loading...'}</h3>
                         </Col>
                     </Row>
                 </Card>
