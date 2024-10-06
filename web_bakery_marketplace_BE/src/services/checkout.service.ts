@@ -88,6 +88,12 @@ class CheckoutService {
         };
     }
 
+    static oderByUserCakeDesign = async (userId: string, bakeryId: string, quantity: number, price: number, address: Object, customCake: any) => {
+        const newOderProduct = await orderProductRepo.createOrderCakeDesign(userId, bakeryId, quantity, price, address, customCake);
+        const newOder = await orderRepo.createOder(userId, [newOderProduct._id], { total_price: price * quantity }, address, '');
+        return newOderProduct;
+    }
+
     static getVnpayReturn = async (reqQuery: any) => {
         console.log('reqQuery:::', reqQuery);
         const order_products = [];

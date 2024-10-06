@@ -4,11 +4,13 @@ import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
 import { PerspectiveCamera, OrbitControls } from '@react-three/drei';
 import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter.js';
 import { Mesh, Object3D, Raycaster, Vector2, Intersection, Color, MeshStandardMaterial, MeshPhongMaterial, MeshLambertMaterial, Scene } from 'three';
-import { Button, Card, Checkbox, Col, Divider, message, Radio, RadioChangeEvent, Row, Select, Spin, Tooltip, TreeSelect, TreeSelectProps, Typography } from 'antd';
+import { Button, Card, Checkbox, Col, Divider, Form, Input, message, Modal, Radio, RadioChangeEvent, Row, Select, Spin, Tooltip, TreeSelect, TreeSelectProps, Typography } from 'antd';
 import { TreeNode } from 'antd/es/tree-select';
 import { convertToVND } from '../../utils';
 import { getCakeOptionByBakeryId } from '../../services/cakeoptionService';
 import { useAuth } from '../../stores/authContex';
+import { EditOutlined, EnvironmentOutlined } from '@ant-design/icons';
+import { createOrderCakeDesign } from '../../services/checkoutService';
 
 const { Title, Text } = Typography;
 
@@ -245,8 +247,6 @@ const CakeModel = ({ bakeryId }: { bakeryId: string }) => {
     console.log('price:', price)
     setTotalPrice(price);
   }
-
-
   const handleDecorationChange = (checkedValues: CheckboxValueType[]) => {
     const newSelectedDecorations = decorationOptions.filter(decoration =>
       checkedValues.includes(decoration.value)
@@ -271,19 +271,16 @@ const CakeModel = ({ bakeryId }: { bakeryId: string }) => {
     }
   };
 
-
   const optionsWithDisabled = decorationOptions?.map(option => ({
     ...option,
     disabled: disabledOptions.includes(option.value)
   }));
-
   const handleDripSauceChange = (value: string) => {
     const selectedSauce = dripSauces.find(sauce => sauce.color === value);
     if (selectedSauce) {
       setSelectedDripSauce(selectedSauce);
     }
   };
-
   const handleObjectClick = (object: Object3D) => {
     setSelectedObject(object);
     console.log('Selected object:', object);
@@ -297,51 +294,72 @@ const CakeModel = ({ bakeryId }: { bakeryId: string }) => {
       }
     }
   };
-
   const handleFrostingColorChange = (e: RadioChangeEvent) => {
     const selectedColor = frostingColors.find(color => color.hex === e.target.value);
     if (selectedColor) {
       setFrostingColor(selectedColor);
     }
   };
-
-
   const handleCanvasCreated = useCallback(({ scene }: { scene: Scene }) => {
     sceneRef.current = scene;
   }, []);
 
-
-  const handleSubmitRequest = async () => {
-    if (!sceneRef.current) {
-      message.error('Mô hình chưa được tạo');
-      return;
-    }
-
-    try {
-      // 1. Xuất mô hình
-      const exporter = new GLTFExporter();
-      const gltfData = await new Promise((resolve) => {
-        if (sceneRef.current) {
-          exporter.parse(sceneRef.current, (result) => resolve(result), { binary: true });
-        }
+  const [form] = Form.useForm();
+  const [order, setOrder] = useState<any>({});
+  const [newAddress, setNewAddress] = useState<any>({});
+  const [newAddressVisible, setNewAddressVisible] = useState(false);
+  const handleOk = () => {
+    form.validateFields()
+      .then((values) => {
+        console.log('New Address:', values);
+        setNewAddress(values)
+        setNewAddressVisible(false);
+        setOrder({
+          ...order,
+          user_address: values
+        })
+      })
+      .catch((info) => {
+        console.log('Validate Failed:', info);
       });
+  };
 
-      // 2. Tạo file
-      const blob = new Blob([gltfData as ArrayBuffer], { type: 'model/gltf-binary' });
-      const file = new File([blob], `${user?.username}custom_cake.glb`, { type: 'model/gltf-binary' });
+  const handleCancel = () => {
+    setNewAddressVisible(false);
+  };
 
-      // 3. Tải lên Firebase Storage
-      // const storage = getStorage();
-      // const storageRef = ref(storage, `custom_cakes/${Date.now()}_${file.name}`);
-      // const snapshot = await uploadBytes(storageRef, file);
-      // const downloadURL = await getDownloadURL(snapshot.ref);
 
-      //tạo order
+  const handleSubmitRequest = () => {
+    setOrder((prevOrder: any) => {
+      const newOrder = {
+        ...prevOrder,
+        bakery_id: bakeryId,
+        quantity: 1,
+        price: totalPrice,
+        customCake: { selectedFilling, frostingColor, selectedDripSauce, selectedDecorations }
+      };
 
-    } catch (error) {
-      console.error('Lỗi khi xử lý yêu cầu:', error);
-      message.error('Có lỗi xảy ra khi xử lý yêu cầu của bạn');
-    }
+      if (!newOrder.user_address) {
+        message.error('Vui lòng nhập địa chỉ nhận hàng');
+      } else {
+        console.log('order:', newOrder);
+        createOrderCakeDesign(newOrder)
+          .then(response => {
+            if (response.status === 200) {
+              message.success('Gửi yêu cầu thành công');
+            } else {
+              message.error('Gửi yêu cầu thất bại');
+            }
+            console.log('response:', response);
+          })
+          .catch(error => {
+            console.error('Error submitting order:', error);
+            message.error('Có lỗi xảy ra khi gửi yêu cầu');
+          });
+      }
+
+      return newOrder;
+    });
   };
 
 
@@ -483,6 +501,60 @@ const CakeModel = ({ bakeryId }: { bakeryId: string }) => {
           <Col>
             <Title level={3} type="danger">{convertToVND(totalPrice)}</Title>
           </Col>
+        </Row>
+        <Row justify="space-between" align="middle">
+          <Card style={{ width: '100%' }}>
+            <Row>
+              <Col>
+                <h3>
+                  <EnvironmentOutlined /> Địa Chỉ Nhận Hàng
+                </h3>
+              </Col>
+            </Row>
+            <Row align="middle" style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'nowrap' }}>
+              <Col>
+                <span style={{ marginRight: '10px' }}>{newAddress?.name} (+{newAddress?.phone})</span>
+                <span>{newAddress?.address}</span>
+              </Col>
+              <Col>
+                <Button type="link" onClick={() => setNewAddressVisible(true)} style={{ paddingLeft: '10px' }}>
+                  <EditOutlined /> Thay Đổi
+                </Button>
+              </Col>
+            </Row>
+          </Card>
+          <Modal
+            title="Thay Đổi Địa Chỉ"
+            visible={newAddressVisible}
+            onOk={handleOk}
+            onCancel={handleCancel}
+            okText="Lưu"
+            cancelText="Hủy"
+          >
+            <Form form={form} layout="vertical">
+              <Form.Item
+                label="Họ và Tên"
+                name="name"
+                rules={[{ required: true, message: 'Vui lòng nhập họ và tên' }]}
+              >
+                <Input placeholder="Nhập họ và tên" />
+              </Form.Item>
+              <Form.Item
+                label="Số điện thoại"
+                name="phone"
+                rules={[{ required: true, message: 'Vui lòng nhập số điện thoại' }]}
+              >
+                <Input placeholder="Nhập số điện thoại" />
+              </Form.Item>
+              <Form.Item
+                label="Địa chỉ"
+                name="address"
+                rules={[{ required: true, message: 'Vui lòng nhập địa chỉ' }]}
+              >
+                <Input placeholder="Nhập địa chỉ" />
+              </Form.Item>
+            </Form>
+          </Modal>
         </Row>
         <Row justify="end" align="middle">
           <Col>

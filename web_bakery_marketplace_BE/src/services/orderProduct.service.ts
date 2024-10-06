@@ -18,5 +18,14 @@ class OrderProductService {
         return order_product;
     }
 
+    static acceptOrderProduct = async (orderProductId: string) => {
+        return await order_product_repo.changeStatusOrderProduct(orderProductId, 'confirmed');
+    }
+
+    static rejectOrderProduct = async (orderProductId: string) => {
+        return await order_product_repo.changeStatusOrderProduct(orderProductId, 'rejected');
+    }
+
+
 }
 export default OrderProductService;

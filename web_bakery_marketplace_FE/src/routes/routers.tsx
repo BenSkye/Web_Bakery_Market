@@ -20,6 +20,7 @@ import OrderStatus from '../pages/stores/OrderStatus';
 import OrderDetailStatus from '../pages/stores/OrderDetailStatus';
 import Profile from '../pages/profile/Profile';
 import ProductDetail from '../pages/detail/ProductDetail';
+import ViewCustomCake from '../pages/3D/ViewCustomCake';
 
 const AppRoutes: React.FC = () => {
     return (
@@ -47,6 +48,7 @@ const AppRoutes: React.FC = () => {
                 <Route path="/product/:id" element={<ProductDetail />} />
                 <Route path="/detail/:id" element={<Detail />} />
                 <Route path="/CakeDesigner/:id" element={<CakeDesigner />} />
+                <Route path="/view-order-cake-design/:id" element={<ViewCustomCake />} />
                 <Route path="/listStoreAcceptDesign" element={<ListStoreAcceptDesignPage />} />
             </Route>
         </Routes>

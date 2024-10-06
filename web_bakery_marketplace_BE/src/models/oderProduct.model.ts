@@ -35,9 +35,13 @@ const orderProductSchema = new Schema(
             type: String,
         },
         customCake: {
-            type: {
-                cake3dUrl: { type: String },
-            },
+            type: Object,
+            // {
+            // fillings:{type:object},
+            // frosting: { type: object },
+            // dripSauce: { type: object },
+            // decoration: [{type:object}],
+            //  }
         },
         isCustomCake: {
             type: Boolean,
@@ -45,7 +49,7 @@ const orderProductSchema = new Schema(
         },
         status: {
             type: String,
-            enum: ['pending', 'confirmed', 'success', 'shipping', 'delivered', 'canceled'],
+            enum: ['pending', 'confirmed', 'rejected', 'success', 'shipping', 'delivered', 'canceled'],
             default: 'pending',
         },
 

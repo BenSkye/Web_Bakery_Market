@@ -12,4 +12,6 @@ oderProductRouter.use(apiKey)
 oderProductRouter.get('/get-personal-order-product', permission('member'), OrderProductController.getPersonalOderProduct);
 oderProductRouter.get('/get-order-product-by-bakery-id/:bakeryId', permission('shop'), OrderProductController.getOderProductByBakeryId);
 oderProductRouter.get('/get-order-product-by-id/:orderProductId', OrderProductController.getOrderProductById);
+oderProductRouter.put('/accept-order-product/:orderProductId', permission('shop'), OrderProductController.acceptOrderProduct);
+oderProductRouter.put('/reject-order-product/:orderProductId', permission('shop'), OrderProductController.rejectOrderProduct);
 export default oderProductRouter;
