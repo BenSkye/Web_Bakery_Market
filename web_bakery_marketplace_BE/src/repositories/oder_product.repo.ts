@@ -17,9 +17,22 @@ class OrderProductRepo {
 
         return await orderProductModel.create(newOder);
     }
+    async createOrderCakeDesign(userId: string, bakeryId: string, quantity: number, price: number, address: Object, customCake: any) {
+        const newOder = {
+            user_id: userId,
+            bakery_id: bakeryId,
+            quantity: quantity,
+            price: price,
+            address: address,
+            customCake: customCake,
+            isCustomCake: true,
+            status: 'pending',
+        }
+        return await orderProductModel.create(newOder);
+    }
 
     async getPersonalOderProduct(userId: string) {
-        return await orderProductModel.find({ user_id: userId });
+        return await orderProductModel.find({ user_id: userId }).populate('product_id', 'name thumbnail');
     }
     async getOderProductByBakeryId(bakeryId: string) {
         return await orderProductModel.find({ bakery_id: bakeryId });
@@ -32,6 +45,12 @@ class OrderProductRepo {
     }
     async deleteOderProduct(oderProductId: string) {
         return await orderProductModel.findByIdAndDelete(oderProductId);
+    }
+    async getOrderProductById(orderProductId: string) {
+        return await orderProductModel.findById(orderProductId);
+    }
+    async changeStatusOrderProduct(orderProductId: string, status: string) {
+        return await orderProductModel.findByIdAndUpdate(orderProductId, { status: status }, { new: true });
     }
 
 }

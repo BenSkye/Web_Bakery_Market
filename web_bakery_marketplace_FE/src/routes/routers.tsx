@@ -14,13 +14,13 @@ import Cart from '../pages/stores/Cart';
 import StorePage from '../pages/manager/StorePage';
 import ListStoreAcceptDesignPage from '../pages/listStoreAcceptDesign/StoreAcceptDesignPage';
 import ForgotPassword from '../pages/login/ForgotPassword';
-import SignUpManager from '../pages/manager/BakerySignupPage';
 import ResetPassword from '../pages/login/ResetPassword';
 import Checkout from '../pages/stores/Checkout';
 import OrderStatus from '../pages/stores/OrderStatus';
 import OrderDetailStatus from '../pages/stores/OrderDetailStatus';
 import Profile from '../pages/profile/Profile';
 import ProductDetail from '../pages/detail/ProductDetail';
+import ViewCustomCake from '../pages/3D/ViewCustomCake';
 
 const AppRoutes: React.FC = () => {
     return (
@@ -47,7 +47,8 @@ const AppRoutes: React.FC = () => {
                 <Route path="/checkout" element={<Checkout />} />
                 <Route path="/product/:id" element={<ProductDetail />} />
                 <Route path="/detail/:id" element={<Detail />} />
-                <Route path="/CakeDesigner" element={<CakeDesigner />} />
+                <Route path="/CakeDesigner/:id" element={<CakeDesigner />} />
+                <Route path="/view-order-cake-design/:id" element={<ViewCustomCake />} />
                 <Route path="/listStoreAcceptDesign" element={<ListStoreAcceptDesignPage />} />
             </Route>
         </Routes>

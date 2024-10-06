@@ -11,7 +11,7 @@ const Checkout: React.FC = () => {
 
     const { cart } = useContext(CartContext);
     console.log('cart', cart)
-    const cart_products = cart.cart_products
+
 
     const [newAddressVisible, setNewAddressVisible] = useState(false);
     const [cartItems, setCartItems] = useState<any[]>([]);
@@ -50,10 +50,10 @@ const Checkout: React.FC = () => {
     };
 
     useEffect(() => {
-        console.log('cartItems', cartItems)
-        setCartItems(cart_products)
+        console.log('cartUpdate', cartItems)
+        setCartItems(cart?.cart_products || [])
         const product_list = []
-        for (const cart_product of cart_products) {
+        for (const cart_product of cart?.cart_products || []) {
             product_list.push({
                 product_id: cart_product.product_id._id,
                 quantity: cart_product.quantity
@@ -116,27 +116,27 @@ const Checkout: React.FC = () => {
             title: 'Tên sản phẩm',
             dataIndex: 'product_id',
             key: 'name',
-            render: (product_id: any) => <p>{product_id.name}</p>,
+            render: (product_id: any) => <p>{product_id?.name}</p>,
         },
         {
             title: 'Giá',
             dataIndex: 'product_id',
             key: 'price',
-            render: (product_id: any) => `${convertToVND(product_id.price)}`,
+            render: (product_id: any) => `${convertToVND(product_id?.price)}`,
         },
         {
             title: 'Số lượng',
             dataIndex: 'quantity',
             key: 'quantity',
             render: (text: number, record: any) => (
-                <p>{text}</p>
+                <p>{record?.quantity}</p>
             ),
         },
         {
             title: 'Tổng',
             dataIndex: 'total',
             key: 'total',
-            render: (_: any, record: any) => `${convertToVND(record.product_id.price * record.quantity)}`,
+            render: (_: any, record: any) => `${convertToVND(record?.product_id?.price * record?.quantity)}`,
         }
     ];
     return (

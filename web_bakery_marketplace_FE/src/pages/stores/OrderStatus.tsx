@@ -1,78 +1,78 @@
-import React from 'react';
-import { Card, List, Avatar, Button, Row, Col } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Card, List, Avatar, Button, Row, Col, Space, Typography } from 'antd';
 import { Link } from 'react-router-dom';
 import { CheckCircleOutlined, SyncOutlined, ShoppingCartOutlined, SmileOutlined } from '@ant-design/icons';
+import { getPersonalOrderProduct } from '../../services/orderProductService';
+import { convertToVND } from '../../utils';
+const { Text } = Typography;
 
-const orders = [
-    {
-        orderId: '#123456789',
-        status: 'Đã giao hàng',
-        statusStep: 2,
-        items: [
-            {
-                title: 'Combo 10 Tất Vớ Nam Nữ Có Cổ Cao',
-                img: 'https://trangmoon.com.vn/storage/el/xx/elxx28cx6yh96ztiu7w46hkvtom2_BKM28052_2.jpg',
-                quantity: 1,
-                price: '₫82,000',
-            },
-        ],
-        totalAmount: '₫94,800',
-    },
-    {
-        orderId: '#987654321',
-        status: 'Đang xử lý',
-        statusStep: 1,
-        items: [
-            {
-                title: 'Áo Sơ Mi Nam Cổ Điển',
-                img: 'https://example.com/shirt.jpg',
-                quantity: 2,
-                price: '₫150,000',
-            },
-        ],
-        totalAmount: '₫300,000',
-    },
-    // Add more orders as needed
-];
+//['pending', 'confirmed', 'success', 'shipping', 'delivered', 'canceled'],
+const status = {
+    pending: 'Đang xử lý',
+    confirmed: 'Đã được xác nhận',
+    success: 'Đã Thanh Toán',
+    shipping: 'Đang Giao Hàng',
+    delivered: 'Đã Giao Hàng',
+    canceled: 'Đã Hủy',
+}
 
 const OrderStatus = () => {
+
+    const [orderProducts, setOrderProducts] = useState<any[]>([]);
+
+    useEffect(() => {
+        const fetchOrderProducts = async () => {
+            try {
+                const response = await getPersonalOrderProduct();
+                console.log('response', response.metadata)
+                setOrderProducts(response.metadata);
+            } catch (error) {
+                console.error('Error fetching order products:', error);
+            }
+        };
+        fetchOrderProducts();
+    }, []);
+
+
     return (
         <div style={{ padding: '20px', backgroundColor: '#f5f5f5', display: 'flex', justifyContent: 'center' }}>
             <div style={{ maxWidth: '800px', width: '100%' }}>
                 <h2>Danh Sách Đơn Hàng</h2>
                 <List
                     itemLayout="horizontal"
-                    dataSource={orders}
+                    dataSource={orderProducts}
                     renderItem={order => (
-                        <Card style={{ marginBottom: '20px' }} key={order.orderId}>
+                        <Card style={{ marginBottom: '20px' }} key={order?._id}>
                             <Row justify="space-between" align="middle">
                                 <Col>
-                                    <h3>{order.orderId}</h3>
+                                    <h3>{order?._id}</h3>
                                 </Col>
                                 <Col>
-                                    <h3>{order.status}</h3>
+                                    <h3>{status[order?.status as keyof typeof status]}</h3>
                                 </Col>
                             </Row>
-                            <List
-                                itemLayout="horizontal"
-                                dataSource={order.items}
-                                renderItem={item => (
-                                    <List.Item>
-                                        <List.Item.Meta
-                                            avatar={<Avatar src={item.img} shape="square" size={64} />}
-                                            title={item.title}
-                                            description={`Số lượng: ${item.quantity}`}
-                                        />
-                                        <div>{item.price}</div>
-                                    </List.Item>
-                                )}
-                            />
+                            <Row gutter={[16, 16]} align="middle">
+                                <Col xs={24} sm={8} md={6} lg={4}>
+                                    <Avatar src={order?.product_id?.thumbnail} shape="square" size={96} />
+                                </Col>
+                                <Col xs={24} sm={16} md={12} lg={14}>
+                                    <Space direction="vertical" size="small" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                                        <Text strong>{order?.product_id?.name}</Text>
+                                        <Text>Hình thức thanh toán: {order?.payment_method}</Text>
+                                    </Space>
+                                </Col>
+                                <Col xs={24} sm={24} md={6} lg={6} style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                                    <Text strong>Số lượng: {order?.quantity}</Text>
+                                </Col>
+                            </Row>
+
+
                             <Row justify="space-between" align="middle">
                                 <Col>
                                     <h4>Tổng số tiền:</h4>
                                 </Col>
                                 <Col>
-                                    <h4>{order.totalAmount}</h4>
+                                    <h4>{convertToVND(order?.price)}</h4>
                                 </Col>
                             </Row>
                             <Link to='/orderdetailstatus'>

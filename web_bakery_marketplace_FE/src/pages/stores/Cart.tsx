@@ -8,19 +8,16 @@ import { convertToVND } from '../../utils';
 
 const { Title } = Typography;
 
-const CartPage: React.FC = () => {
+const Cart: React.FC = () => {
     const { cart, addToCart, removeFromCart } = useContext(CartContext);
+    console.log('cart13', cart)
     const [cartItems, setCartItems] = useState<any[]>([]);
     const navigate = useNavigate();
+
     useEffect(() => {
-        const fetchCartData = async () => {
-            console.log('cart18', cart)
-            console.log('cartItems', cartItems);
-            const cart_products = cart?.cart_products;
-            setCartItems(cart_products);
-        };
-        fetchCartData();
-    }, []);
+        setCartItems(cart?.cart_products || []);
+        console.log('cart update')
+    }, [cart]);
 
     // Function to handle quantity change
     const handleQuantityChange = (id: number, value: number | null) => {
@@ -161,4 +158,4 @@ const CartPage: React.FC = () => {
     );
 };
 
-export default CartPage;
+export default Cart;

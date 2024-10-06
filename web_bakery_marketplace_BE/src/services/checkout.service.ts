@@ -88,6 +88,12 @@ class CheckoutService {
         };
     }
 
+    static oderByUserCakeDesign = async (userId: string, bakeryId: string, quantity: number, price: number, address: Object, customCake: any) => {
+        const newOderProduct = await orderProductRepo.createOrderCakeDesign(userId, bakeryId, quantity, price, address, customCake);
+        const newOder = await orderRepo.createOder(userId, [newOderProduct._id], { total_price: price * quantity }, address, '');
+        return newOderProduct;
+    }
+
     static getVnpayReturn = async (reqQuery: any) => {
         console.log('reqQuery:::', reqQuery);
         const order_products = [];
@@ -99,11 +105,12 @@ class CheckoutService {
                 for (const orderProductID of order.order_products) {
                     const orderProduct = await orderProductRepo.getOderProductById(orderProductID.toString());
                     if (orderProduct) {
-                        const updateOderProduct = await orderProductRepo.updateOderProduct(orderProduct._id.toString(), { status: 'confirmed' });
-                        console.log("updateOderProduct", updateOderProduct)
+                        const updateOderProduct = await orderProductRepo.updateOderProduct(orderProduct._id.toString(), { status: 'success' });
                         order_products.push(updateOderProduct);
                         //payment success, remove product in cart
-                        await cartRepo.removeProductFromCart(order.user_id.toString(), orderProduct.product_id.toString());
+                        if (!orderProduct.isCustomCake && orderProduct.product_id) {
+                            await cartRepo.removeProductFromCart(order.user_id.toString(), orderProduct.product_id.toString());
+                        }
                     }
                 }
 
@@ -120,8 +127,10 @@ class CheckoutService {
                     const orderProduct = await orderProductRepo.getOderProductById(orderProductID.toString());
                     if (orderProduct) {
                         const quantity = orderProduct.quantity;
-                        const updateInventory = await inventoryRepo.updateInventory(orderProduct.product_id.toString(), quantity);
-                        console.log("updateInventory", updateInventory)
+                        if (!orderProduct.isCustomCake && orderProduct.product_id) {
+                            const updateInventory = await inventoryRepo.updateInventory(orderProduct.product_id.toString(), quantity);
+                            console.log("updateInventory", updateInventory)
+                        }
                         await orderProductRepo.deleteOderProduct(orderProduct._id.toString());
                     }
                 }
