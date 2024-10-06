@@ -5,6 +5,8 @@ import morgan from 'morgan';
 import compression from 'compression';
 import mongoose from './dbs/init.mongodb';
 import dotenv from 'dotenv';
+import cron from 'node-cron';
+import { userModel } from './models/user.model';
 import path from 'path';
 
 // Import routes
@@ -44,6 +46,15 @@ app.use((error: any, req: Request, res: Response, next: NextFunction) => {
     code: statusCode,
     message: error.message || 'Internal Server Error'
   });
+});
+
+cron.schedule('* * * * *', async () => {
+  const now = new Date();
+  await userModel.deleteMany({
+    verify: false,
+    verificationTokenExpire: { $lt: now },
+  });
+  console.log('Deleted unverified accounts that expired');
 });
 
 export default app;

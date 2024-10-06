@@ -108,6 +108,7 @@ class AccessService {
       email,
       password: passwordHash,
       roles: [role],
+      verify: false,
     });
 
     if (newUser) {
@@ -118,10 +119,8 @@ class AccessService {
       if (!keyStore) {
         throw new BadRequestError('keyStore not found');
       }
-
-
-      //create token pair
       const tokens = await createTokenPair({ userId: newUser._id, email }, publicKey.toString(), privateKey.toString());
+
       console.log('Create Token Success', tokens);
       console.log('role', newUser.roles);
       const apiKey = await createKey(newUser.roles, newUser._id);
@@ -131,6 +130,38 @@ class AccessService {
       if (newUser.roles.includes(RoleUser.MEMBER)) {
         const userCart = await CartService.createCart(newUser._id.toString());//create cart for new user when signup
       }
+
+
+      const verificationToken = crypto.randomBytes(32).toString('hex');
+      const verificationTokenHash = crypto.createHash('sha256').update(verificationToken).digest('hex');
+      const verificationTokenExpire = new Date(Date.now() + 10 * 60 * 1000); // Token expires in 10 minutes
+
+      newUser.verificationToken = verificationTokenHash;
+      newUser.verificationTokenExpire = verificationTokenExpire;
+      await newUser.save();
+
+      // Step 8: Send verification email
+      const verificationUrl = `http://localhost:2709/verify-email?token=${verificationToken}`;
+      const transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: {
+          user: 'khanhhgse173474@fpt.edu.vn',
+          pass: 'zkoawauogcjlccfg',
+        },
+      });
+
+      const mailOptions = {
+        from: 'khanhhgse173474@fpt.edu.vn',
+        to: email,
+        subject: 'Email Verification',
+        html: `
+          <p>Thank you for signing up! Please verify your email by clicking the link below:</p>
+          <a href="${verificationUrl}" target="_blank">Verify Email</a>
+          <p>This link will expire in 10 minutes.</p>
+        `,
+      };
+
+      await transporter.sendMail(mailOptions);
       return {
         user: getInfoData({ fields: ['_id', 'name', 'email', 'roles'], object: newUser }),
         tokens,
@@ -145,24 +176,66 @@ class AccessService {
   };
 
 
+  static verifyEmail = async (token: string) => {
+    try {
+      const verificationTokenHash = crypto.createHash('sha256').update(token).digest('hex');
+
+      const user = await userModel.findOne({
+        verificationToken: verificationTokenHash,
+        verificationTokenExpire: { $gt: Date.now() },
+      });
+
+      if (!user) {
+        throw new BadRequestError('Invalid or expired verification token');
+      } else {
+        user.verify = true;
+        user.verificationToken = '';
+        user.verificationTokenExpire = undefined;
+        await user.save();
+      }
+
+      return {
+        message: 'Email verified successfully',
+        status: 200,
+      };
+    } catch (error) {
+      // Handle different types of errors accordingly
+      if (error instanceof BadRequestError) {
+        return {
+          message: error.message,
+          status: 400,
+        };
+      } else {
+        // Log the error or handle unexpected errors
+        console.error(error);
+        return {
+          message: 'An error occurred while verifying the email',
+          status: 500,
+        };
+      }
+    }
+  };
+
+
+
+
   static forgotPassword = async (email: string) => {
     console.log('forgotPassword', email);
-    // 1. Find the user based on the email provided
+
     const foundUser = await userModel.findOne({ email });
     if (!foundUser) {
       throw new NotFoundError('User not found');
     }
 
-    // 2. Generate a reset token (32 bytes random)
     const token = crypto.randomBytes(32).toString('hex');
 
-    // 3. Hash the token for secure storage
+
     const resetPasswordTokenHash = crypto.createHash('sha256').update(token).digest('hex');
 
-    // 4. Set token expiration (e.g., 10 minutes)
+
     const resetPasswordExpire = new Date(Date.now() + 10 * 60 * 1000);
 
-    // 5. Update the user with the hashed token and expiration
+
     await userModel.findOneAndUpdate(
       { email },
       {
@@ -217,10 +290,9 @@ class AccessService {
   }
 
   static resetPassword = async (token: string, newPassword: string) => {
-    // 1. Hash the reset token for comparison
+
     const resetPasswordTokenHash = crypto.createHash('sha256').update(token).digest('hex');
 
-    // 2. Find the user with the hashed token and expiration
     const user = await userModel.findOne({
       passwordResetToken: resetPasswordTokenHash,
       passwordResetExpire: { $gt: Date.now() }
@@ -230,10 +302,10 @@ class AccessService {
       throw new BadRequestError('Invalid or expired reset token');
     }
 
-    // 3. Update the user's password
+
     user.password = await bcrypt.hash(newPassword, 10);
-    user.passwordResetToken = ''; // Clear the reset token
-    user.passwordResetExpire = undefined; // Clear the expiration
+    user.passwordResetToken = '';
+    user.passwordResetExpire = undefined;
     await user.save();
 
     return {
@@ -241,6 +313,7 @@ class AccessService {
       status: 200
     };
   }
+
 
 
 }
