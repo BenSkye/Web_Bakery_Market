@@ -10,6 +10,16 @@ export const getPersonalOrderProduct = async () => {
     }
 };
 
+export const getPersonalOrderCustomCake = async () => {
+    try {
+        const response = await apiClient.get(`/order-product/get-personal-order-cake-design`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching bakeries:', error);
+        throw error;
+    }
+};
+
 export const getOrderProductById = async (id: string) => {
     try {
         const response = await apiClient.get(`/order-product/get-order-product-by-id/${id}`);
