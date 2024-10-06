@@ -32,8 +32,12 @@ class OrderProductRepo {
     }
 
     async getPersonalOderProduct(userId: string) {
-        return await orderProductModel.find({ user_id: userId }).populate('product_id', 'name thumbnail');
+        return await orderProductModel.find({ user_id: userId, isCustomCake: false }).populate('product_id', 'name thumbnail');
     }
+    async getPersonalOderCakeDesign(userId: string) {
+        return await orderProductModel.find({ user_id: userId, isCustomCake: true }).populate('bakery_id', 'name');
+    }
+
     async getOderProductByBakeryId(bakeryId: string) {
         return await orderProductModel.find({ bakery_id: bakeryId });
     }

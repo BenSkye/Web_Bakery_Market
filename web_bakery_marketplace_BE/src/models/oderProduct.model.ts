@@ -36,12 +36,6 @@ const orderProductSchema = new Schema(
         },
         customCake: {
             type: Object,
-            // {
-            // fillings:{type:object},
-            // frosting: { type: object },
-            // dripSauce: { type: object },
-            // decoration: [{type:object}],
-            //  }
         },
         isCustomCake: {
             type: Boolean,
