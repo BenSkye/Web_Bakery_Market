@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { getPersonalOrderCustomCake } from '../../services/orderProductService';
-import { Button, Card, Col, List, Row, Space, Spin, Tooltip, Typography } from 'antd';
+import { Button, Card, Col, List, message, Row, Space, Spin, Tooltip, Typography } from 'antd';
 import { convertToVND } from '../../utils';
 import { Link } from 'react-router-dom';
 import ViewCustomCake from '../3D/ViewCustomCake';
 import CakeVisualization from '../3D/CakeVisualizationProps';
 import { CreditCardOutlined, EyeOutlined } from '@ant-design/icons';
+import { checkOutCakeDesign } from '../../services/checkoutService';
 const { Text } = Typography;
 
 const status = {
@@ -40,10 +41,18 @@ export default function OrderCustomCake() {
     const checkselectedDecorations = (decorations: any[], value: string) => {
         return decorations.some(d => d.value === value);
     }
+    const handleSubmit = async (orderProductId: any) => {
+        const result = await checkOutCakeDesign(orderProductId)
+        console.log('result', result)
+        if (result.metadata && result.metadata.paymentUrl) {
+            window.open(result.metadata.paymentUrl, '_blank');
+        } else {
+            message.error('Không thể tạo URL thanh toán');
+        }
+        console.log('order', orderProductId)
 
-    useEffect(() => {
-        console.log('orderCustomCakes', orderCustomCakes);
-    }, [orderCustomCakes]);
+    }
+
 
     if (loading) {
         return <Spin />;
@@ -128,6 +137,7 @@ export default function OrderCustomCake() {
                                         borderRadius: '8px',
                                         boxShadow: '0 2px 0 rgba(0, 0, 0, 0.045)',
                                     }}
+                                    onClick={() => handleSubmit(order?._id)}
                                 >
                                     Thanh Toán
                                 </Button>

@@ -24,9 +24,19 @@ class CheckoutController {
             metadata: await CheckoutService.oderByUserCakeDesign(req.keyStore.user, req.body.bakery_id, req.body.quantity, req.body.price, req.body.user_address, req.body.customCake),
         }).send(res);
     });
+    chekoutCakeDesign = asyncHandler(async (req: any, res: any, next: NextFunction) => {
+        new SuccessResponse({
+            message: 'Order cake design successfully',
+            metadata: await CheckoutService.checkOutCakeDesign(req.keyStore.user, req.params.orderCakeDesignId, req),
+        }).send(res);
+    });
     getVnpayReturn = asyncHandler(async (req: any, res: any, next: NextFunction) => {
-        await CheckoutService.getVnpayReturn(req.query)
-        res.render('success', { code: req.query.vnp_ResponseCode });
+        const result = await CheckoutService.getVnpayReturn(req.query)
+        res.render('success', { code: req.query.vnp_ResponseCode, result: result });
+    });
+    getVnpayCakeDesignReturn = asyncHandler(async (req: any, res: any, next: NextFunction) => {
+        const result = await CheckoutService.getVnpayCakeDesignReturn(req.query)
+        res.render('success', { code: req.query.vnp_ResponseCode, result: result });
     });
 
 }

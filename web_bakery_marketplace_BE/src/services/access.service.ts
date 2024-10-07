@@ -134,7 +134,7 @@ class AccessService {
 
       const verificationToken = crypto.randomBytes(32).toString('hex');
       const verificationTokenHash = crypto.createHash('sha256').update(verificationToken).digest('hex');
-      const verificationTokenExpire = new Date(Date.now() + 10 * 60 * 1000); // Token expires in 10 minutes
+      const verificationTokenExpire = new Date(Date.now() + 1 * 60 * 1000); // Token expires in 10 minutes
 
       newUser.verificationToken = verificationTokenHash;
       newUser.verificationTokenExpire = verificationTokenExpire;

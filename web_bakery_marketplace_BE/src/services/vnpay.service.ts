@@ -18,6 +18,7 @@ interface PaymentInfo {
     orderDescription: string;
     language: string;
     ipAddr: string;
+    returnUrl: string;
 }
 
 class VnpayService {
@@ -47,7 +48,7 @@ class VnpayService {
             vnp_OrderInfo: paymentInfo.orderDescription,
             vnp_OrderType: this.config.orderType,
             vnp_Amount: paymentInfo.amount * 100,
-            vnp_ReturnUrl: this.config.returnUrl + '/return-product-payment',
+            vnp_ReturnUrl: this.config.returnUrl + paymentInfo.returnUrl,
             vnp_IpAddr: paymentInfo.ipAddr,
             vnp_CreateDate: createDate
         };
