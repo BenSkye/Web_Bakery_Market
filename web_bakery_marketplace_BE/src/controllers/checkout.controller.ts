@@ -26,7 +26,12 @@ class CheckoutController {
     });
     getVnpayReturn = asyncHandler(async (req: any, res: any, next: NextFunction) => {
         await CheckoutService.getVnpayReturn(req.query)
-        res.render('success', { code: req.query.vnp_ResponseCode });
+
+        const redirectUrl = new URL('http://localhost:2709/bill');
+        Object.keys(req.query).forEach(key => {
+            redirectUrl.searchParams.append(key, req.query[key]);
+        });
+        res.redirect(redirectUrl.toString());
     });
 
 }

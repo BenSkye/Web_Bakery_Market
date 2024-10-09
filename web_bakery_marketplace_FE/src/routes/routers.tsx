@@ -22,6 +22,7 @@ import Profile from '../pages/profile/Profile';
 import ProductDetail from '../pages/detail/ProductDetail';
 import VerifyEmail from '../pages/signup/VerifyEmail';
 import ViewCustomCake from '../pages/3D/ViewCustomCake';
+import Bill from '../pages/bill/Bill';
 
 const AppRoutes: React.FC = () => {
     return (
@@ -31,7 +32,7 @@ const AppRoutes: React.FC = () => {
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/verify-email" element={<VerifyEmail />} />
-
+            <Route path="/bill" element={<Bill />} />
 
             <Route element={<MainLayout />}>
 
@@ -43,7 +44,7 @@ const AppRoutes: React.FC = () => {
                 <Route path="/storepage" element={<StorePage />} />
                 <Route path="/orderstatus" element={<OrderStatus />} />
 
-                <Route path="/orderdetailstatus" element={<OrderDetailStatus />} />
+                <Route path="/orderdetailstatus/:id" element={<OrderDetailStatus />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/checkout" element={<Checkout />} />

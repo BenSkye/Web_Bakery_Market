@@ -51,7 +51,7 @@ class OrderProductRepo {
         return await orderProductModel.findByIdAndDelete(oderProductId);
     }
     async getOrderProductById(orderProductId: string) {
-        return await orderProductModel.findById(orderProductId);
+        return await orderProductModel.findById(orderProductId).populate('product_id', 'name thumbnail');
     }
     async changeStatusOrderProduct(orderProductId: string, status: string) {
         return await orderProductModel.findByIdAndUpdate(orderProductId, { status: status }, { new: true });
