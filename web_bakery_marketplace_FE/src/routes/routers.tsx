@@ -32,7 +32,7 @@ const AppRoutes: React.FC = () => {
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/verify-email" element={<VerifyEmail />} />
-
+            <Route path="/bill" element={<Bill />} />
 
             <Route element={<MainLayout />}>
 
@@ -44,7 +44,7 @@ const AppRoutes: React.FC = () => {
                 <Route path="/storepage" element={<StorePage />} />
                 <Route path="/orderstatus" element={<OrderStatus />} />
                 <Route path="/bill" element={<Bill />} />
-                <Route path="/orderdetailstatus" element={<OrderDetailStatus />} />
+                <Route path="/orderdetailstatus/:id" element={<OrderDetailStatus />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/checkout" element={<Checkout />} />
