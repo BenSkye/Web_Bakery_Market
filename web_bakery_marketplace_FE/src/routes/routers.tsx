@@ -22,6 +22,7 @@ import Profile from '../pages/profile/Profile';
 import ProductDetail from '../pages/detail/ProductDetail';
 import VerifyEmail from '../pages/signup/VerifyEmail';
 import ViewCustomCake from '../pages/3D/ViewCustomCake';
+import Bill from '../pages/bill/Bill';
 
 const AppRoutes: React.FC = () => {
     return (
@@ -42,7 +43,7 @@ const AppRoutes: React.FC = () => {
                 <Route path="/workshop" element={<WorkshopPage />} />
                 <Route path="/storepage" element={<StorePage />} />
                 <Route path="/orderstatus" element={<OrderStatus />} />
-
+                <Route path="/bill" element={<Bill />} />
                 <Route path="/orderdetailstatus" element={<OrderDetailStatus />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/dashboard" element={<Dashboard />} />

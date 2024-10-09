@@ -107,7 +107,7 @@ const Detail: React.FC = () => {
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '20px 0' }}>
                     <h2 style={{ textAlign: 'center', marginBottom: '10px' }}>Thiết Kế Bánh</h2>
                     <Card>
-                        <Render3D />
+                        <Render3D bakeryId={bakery._id} />
                     </Card>
 
                 </div>

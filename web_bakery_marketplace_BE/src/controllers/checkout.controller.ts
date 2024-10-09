@@ -31,12 +31,22 @@ class CheckoutController {
         }).send(res);
     });
     getVnpayReturn = asyncHandler(async (req: any, res: any, next: NextFunction) => {
-        const result = await CheckoutService.getVnpayReturn(req.query)
-        res.render('success', { code: req.query.vnp_ResponseCode, result: result });
+        await CheckoutService.getVnpayReturn(req.query)
+
+        const redirectUrl = new URL('http://localhost:2709/bill');
+        Object.keys(req.query).forEach(key => {
+            redirectUrl.searchParams.append(key, req.query[key]);
+        });
+        res.redirect(redirectUrl.toString());
     });
+
     getVnpayCakeDesignReturn = asyncHandler(async (req: any, res: any, next: NextFunction) => {
-        const result = await CheckoutService.getVnpayCakeDesignReturn(req.query)
-        res.render('success', { code: req.query.vnp_ResponseCode, result: result });
+        await CheckoutService.getVnpayCakeDesignReturn(req.query)
+        const redirectUrl = new URL('http://localhost:2709/bill');
+        Object.keys(req.query).forEach(key => {
+            redirectUrl.searchParams.append(key, req.query[key]);
+        });
+        res.redirect(redirectUrl.toString());
     });
 
 }
