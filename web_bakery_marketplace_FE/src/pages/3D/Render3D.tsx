@@ -20,7 +20,7 @@ const FBXModel: React.FC<FBXModelProps> = ({ url }) => {
     return <primitive object={fbx} />;
 };
 
-const Render3D: React.FC = () => {
+const Render3D: React.FC = ({ bakeryId }: { bakeryId: string }) => {
     return (
 
         <>
@@ -34,7 +34,7 @@ const Render3D: React.FC = () => {
                 <FBXModel url="/Cake1.fbx" />
 
             </Canvas>
-            <Link to='/CakeDesigner'>
+            <Link to={`/CakeDesigner/${bakeryId}`}>
                 <Button
                     type="primary"
                     style={{

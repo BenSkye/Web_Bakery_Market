@@ -77,7 +77,8 @@ class CheckoutService {
             amount: checkout_info.checkout_oder.total_price,
             orderDescription: 'thanh toan don hang ' + newOder._id.toString(),
             language: 'vn',
-            ipAddr: ipAddr
+            ipAddr: ipAddr,
+            returnUrl: '/return-product-payment'
         }
         const vnpayService = new VnpayService();
         const paymentUrl = await vnpayService.createPaymentUrl(paymentInfo);
@@ -94,6 +95,51 @@ class CheckoutService {
         return newOderProduct;
     }
 
+    static checkOutCakeDesign = async (userId: string, orderProductId: string, req: any) => {
+        const orderProduct = await orderProductRepo.getOrderProductById(orderProductId);
+        if (!orderProduct || !orderProduct.isCustomCake || orderProduct.status !== 'confirmed') {
+            throw new BadRequestError('Order product not found');
+        }
+
+        const ipAddr = req.headers['x-forwarded-for'] ||
+            req.connection.remoteAddress ||
+            req.socket.remoteAddress ||
+            req.connection.socket.remoteAddress;
+        console.log('ipAddr:::', ipAddr);
+        const paymentInfo = {
+            orderId: orderProduct._id.toString(),
+            amount: orderProduct.price,
+            orderDescription: 'thanh toan thiet ke banh ' + orderProduct._id.toString(),
+            language: 'vn',
+            ipAddr: ipAddr,
+            returnUrl: '/return-cake-design-payment'
+        }
+        const vnpayService = new VnpayService();
+        const paymentUrl = await vnpayService.createPaymentUrl(paymentInfo);
+
+        return {
+            paymentUrl,
+            orderProduct
+        };
+    }
+
+    static getVnpayCakeDesignReturn = async (reqQuery: any) => {
+        console.log('reqQuery:::', reqQuery);
+        const order_products = [];
+        if (reqQuery.vnp_ResponseCode === '00') {
+            const orderProduct = await orderProductRepo.getOrderProductById(reqQuery.vnp_TxnRef);
+            if (orderProduct) {
+                const updateOderProduct = await orderProductRepo.updateOderProduct(orderProduct._id.toString(), { status: 'success' });
+                order_products.push(updateOderProduct);
+            }
+        } else {
+            throw new BadRequestError('Payment failed');
+        }
+        return {
+            order_products
+        }
+    }
+
     static getVnpayReturn = async (reqQuery: any) => {
         console.log('reqQuery:::', reqQuery);
         const order_products = [];
@@ -103,17 +149,16 @@ class CheckoutService {
             console.log(order)
             if (order) {
                 for (const orderProductID of order.order_products) {
-                    const orderProduct = await orderProductRepo.getOderProductById(orderProductID.toString());
+                    const orderProduct = await orderProductRepo.getOrderProductById(orderProductID.toString());
                     if (orderProduct) {
                         const updateOderProduct = await orderProductRepo.updateOderProduct(orderProduct._id.toString(), { status: 'success' });
                         order_products.push(updateOderProduct);
                         //payment success, remove product in cart
                         if (!orderProduct.isCustomCake && orderProduct.product_id) {
-                            await cartRepo.removeProductFromCart(order.user_id.toString(), orderProduct.product_id.toString());
+                            await cartRepo.removeProductFromCart(order.user_id.toString(), orderProduct.product_id._id.toString());
                         }
                     }
                 }
-
             }
             else {
                 throw new BadRequestError('Order not found');
@@ -124,11 +169,11 @@ class CheckoutService {
             const order = await orderRepo.getOderById(reqQuery.vnp_TxnRef);
             if (order) {
                 for (const orderProductID of order.order_products) {
-                    const orderProduct = await orderProductRepo.getOderProductById(orderProductID.toString());
+                    const orderProduct = await orderProductRepo.getOrderProductById(orderProductID.toString());
                     if (orderProduct) {
                         const quantity = orderProduct.quantity;
                         if (!orderProduct.isCustomCake && orderProduct.product_id) {
-                            const updateInventory = await inventoryRepo.updateInventory(orderProduct.product_id.toString(), quantity);
+                            const updateInventory = await inventoryRepo.updateInventory(orderProduct.product_id._id.toString(), quantity);
                             console.log("updateInventory", updateInventory)
                         }
                         await orderProductRepo.deleteOderProduct(orderProduct._id.toString());

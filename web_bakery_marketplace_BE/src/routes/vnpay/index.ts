@@ -8,6 +8,8 @@ import checkoutController from '../../controllers/checkout.controller';
 const vnpayRouter = Router();
 
 vnpayRouter.get('/return-product-payment', checkoutController.getVnpayReturn);
+vnpayRouter.get('/return-cake-design-payment', checkoutController.getVnpayCakeDesignReturn);
+
 
 
 export default vnpayRouter;

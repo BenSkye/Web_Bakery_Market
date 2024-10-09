@@ -1,46 +1,55 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import { Card, Typography } from 'antd';
+import { Card, Typography, Row, Col, Divider, Layout } from 'antd';
+import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
 
 const { Title, Text } = Typography;
+const { Content } = Layout;
 
 const Bill: React.FC = () => {
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
 
-    // Extract relevant information from the query parameters
-    const amount = queryParams.get('vnp_Amount');
-    const bankCode = queryParams.get('vnp_BankCode');
-    const bankTranNo = queryParams.get('vnp_BankTranNo');
-    const cardType = queryParams.get('vnp_CardType');
-    const orderInfo = queryParams.get('vnp_OrderInfo');
-    const payDate = queryParams.get('vnp_PayDate');
-    const responseCode = queryParams.get('vnp_ResponseCode');
-    const tmnCode = queryParams.get('vnp_TmnCode');
-    const transactionNo = queryParams.get('vnp_TransactionNo');
-    const transactionStatus = queryParams.get('vnp_TransactionStatus');
-    const txnRef = queryParams.get('vnp_TxnRef');
+    const billData = [
+        { label: 'Số Tiền', value: `${parseInt(queryParams.get('vnp_Amount') || '0') / 100} VND` },
+        { label: 'Mã Ngân Hàng', value: queryParams.get('vnp_BankCode') },
+        { label: 'Thông Tin Đơn Hàng', value: queryParams.get('vnp_OrderInfo') },
+        { label: 'Ngày Thanh Toán', value: queryParams.get('vnp_PayDate') },
+        { label: 'Trạng Thái Giao Dịch', value: queryParams.get('vnp_TransactionStatus') },
+        { label: 'Mã Đơn Hàng', value: queryParams.get('vnp_TxnRef') },
+    ];
+
+    const isSuccessful = queryParams.get('vnp_ResponseCode') === '00';
 
     return (
-        <div style={{ padding: '20px' }}>
-            <Title level={2}>Hóa Đơn</Title>
-            <Card>
-                <Text strong>Thông Tin Giao Dịch:</Text>
-                <div>
-                    <Text> - Số Tiền: {amount} VND</Text><br />
-                    <Text> - Mã Ngân Hàng: {bankCode}</Text><br />
-                    <Text> - Số Giao Dịch Ngân Hàng: {bankTranNo}</Text><br />
-                    <Text> - Loại Thẻ: {cardType}</Text><br />
-                    <Text> - Thông Tin Đơn Hàng: {orderInfo}</Text><br />
-                    <Text> - Ngày Thanh Toán: {payDate}</Text><br />
-                    <Text> - Mã Phản Hồi: {responseCode}</Text><br />
-                    <Text> - Mã Tmn: {tmnCode}</Text><br />
-                    <Text> - Số Giao Dịch: {transactionNo}</Text><br />
-                    <Text> - Trạng Thái Giao Dịch: {transactionStatus}</Text><br />
-                    <Text> - Mã Đơn Hàng: {txnRef}</Text><br />
-                </div>
-            </Card>
-        </div>
+        <Layout>
+            <Content style={{ padding: '50px', maxWidth: '800px', margin: '0 auto' }}>
+                <Card
+                    title={<Title level={2}>Hóa Đơn Thanh Toán</Title>}
+                    extra={isSuccessful ?
+                        <CheckCircleOutlined style={{ fontSize: '24px', color: '#52c41a' }} /> :
+                        <CloseCircleOutlined style={{ fontSize: '24px', color: '#f5222d' }} />
+                    }
+                    headStyle={{ backgroundColor: '#f0f2f5', textAlign: 'center' }}
+                    bodyStyle={{ backgroundColor: '#ffffff' }}
+                >
+                    <Divider />
+                    <Row gutter={[16, 16]}>
+                        {billData.map((item, index) => (
+                            <React.Fragment key={index}>
+                                <Col span={12}>
+                                    <Text strong>{item.label}:</Text>
+                                </Col>
+                                <Col span={12}>
+                                    <Text>{item.value || 'N/A'}</Text>
+                                </Col>
+                                {index < billData.length - 1 && <Divider style={{ margin: '12px 0' }} />}
+                            </React.Fragment>
+                        ))}
+                    </Row>
+                </Card>
+            </Content>
+        </Layout>
     );
 };
 

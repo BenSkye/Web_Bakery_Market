@@ -43,7 +43,7 @@ const AppRoutes: React.FC = () => {
                 <Route path="/workshop" element={<WorkshopPage />} />
                 <Route path="/storepage" element={<StorePage />} />
                 <Route path="/orderstatus" element={<OrderStatus />} />
-
+                <Route path="/bill" element={<Bill />} />
                 <Route path="/orderdetailstatus/:id" element={<OrderDetailStatus />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/dashboard" element={<Dashboard />} />

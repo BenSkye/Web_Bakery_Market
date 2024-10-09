@@ -10,6 +10,16 @@ export const createOrder = async (order: any) => {
         throw error;
     }
 };
+export const checkOutCakeDesign = async (orderCakeDesignId: any) => {
+    try {
+        const response = await apiClient.post(`/checkout/check-out-cake-design/${orderCakeDesignId}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error check out cake design:', error);
+        throw error;
+    }
+};
+
 
 export const createOrderCakeDesign = async (orderCakeDesign: any) => {
     try {
@@ -20,4 +30,5 @@ export const createOrderCakeDesign = async (orderCakeDesign: any) => {
         throw error;
     }
 };
+
 
