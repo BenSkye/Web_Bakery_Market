@@ -15,9 +15,8 @@ bakeryRouter.get('/get-by-id/:id', bakeryController.getBakeryById);
 bakeryRouter.use(authentication);
 ////////////////////////////
 bakeryRouter.use(apiKey)
-bakeryRouter.use(permission('shop'));
-bakeryRouter.post('/create', bakeryController.createBakery);
-bakeryRouter.get('/get-by-user-id/:user_id', bakeryController.getBakeryByUserId);
+bakeryRouter.post('/create', permission('shop'), bakeryController.createBakery);
+bakeryRouter.get('/get-by-user-id/:user_id', permission('shop'), bakeryController.getBakeryByUserId);
 
 
 export default bakeryRouter;

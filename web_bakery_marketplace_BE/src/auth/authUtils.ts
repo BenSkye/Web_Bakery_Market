@@ -62,10 +62,10 @@ const authentication = asyncHandler(async (req: any, res: any, next: any) => {
             throw error
         }
     }
-    const accessToken = req.headers[HEADER.AUTHORIZATION]
+    const accessToken = req.headers[HEADER.AUTHORIZATION] as string;
     if (!accessToken) throw new AuthFailureError('Invalid accessToken')
     try {
-console.log('accessToken::', accessToken)
+        console.log('accessToken::', accessToken)
         const decodeUser: JwtPayload = jwt.verify(accessToken, keyStore.publicKey) as JwtPayload;
         if (userId !== decodeUser.userId) throw new AuthFailureError('Invalid UserId')
         req.keyStore = keyStore;

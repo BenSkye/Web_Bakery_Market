@@ -15,6 +15,7 @@ interface AuthContextType {
     login: (user: User) => void;
     logout: () => void;
     isAuthenticated: boolean;
+    isLoading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -34,15 +35,20 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        const accessToken = Cookies.get('authorization');
-        if (accessToken) {
-            const decodedUser = jwtDecode(accessToken) as User;
-            if (decodedUser) {
-                setUser(decodedUser);
+        const checkAuth = async () => {
+            const accessToken = Cookies.get('authorization');
+            if (accessToken) {
+                const decodedUser = jwtDecode(accessToken) as User;
+                if (decodedUser) {
+                    setUser(decodedUser);
+                }
             }
+            setIsLoading(false);
         }
+        checkAuth();
     }, []);
 
     const login = async (data: unknown) => {
@@ -80,7 +86,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const isAuthenticated = user !== null;
 
     return (
-        <AuthContext.Provider value={{ user, login, logout, isAuthenticated }}>
+        <AuthContext.Provider value={{ user, login, logout, isAuthenticated, isLoading }}>
             {children}
         </AuthContext.Provider>
     );

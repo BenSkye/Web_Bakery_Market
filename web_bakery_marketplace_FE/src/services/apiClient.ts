@@ -1,14 +1,22 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
+
 const apiClient = axios.create({
   baseURL: 'http://localhost:2024/v1/api',
   headers: {
     'Content-Type': 'application/json',
-    'x-api-key': Cookies.get('x-api-key') || '',
-    'x-client-id': Cookies.get('x-client-id') || '',
-    'authorization': Cookies.get('authorization') || '',
-    'x-refresh-token': Cookies.get('x-refresh-token') || '',
   },
+});
+
+apiClient.interceptors.request.use(function (config) {
+  config.headers['x-api-key'] = Cookies.get('x-api-key') || '';
+  config.headers['x-client-id'] = Cookies.get('x-client-id') || '';
+  config.headers['authorization'] = Cookies.get('authorization') || '';
+  config.headers['x-refresh-token'] = Cookies.get('x-refresh-token') || '';
+
+  return config;
+}, function (error) {
+  return Promise.reject(error);
 });
 
 export default apiClient;
