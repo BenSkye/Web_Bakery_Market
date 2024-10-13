@@ -54,6 +54,7 @@ export default function OrderProduct() {
                             <Space direction="vertical" size="small" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
                                 <Text strong>{order?.product_id?.name}</Text>
                                 <Text>Hình thức thanh toán: {order?.payment_method}</Text>
+                                <Text>Ngày đặt: {new Date(order?.createdAt).toLocaleDateString()}</Text>
                             </Space>
                         </Col>
                         <Col xs={24} sm={24} md={6} lg={6} style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
@@ -68,7 +69,7 @@ export default function OrderProduct() {
                             <h4>{convertToVND(order?.price)}</h4>
                         </Col>
                     </Row>
-                    <Link to='/orderdetailstatus'>
+                    <Link to={`/orderdetailstatus/${order?._id}`}>
                         <Button
                             type="primary"
                             icon={<EyeOutlined />}

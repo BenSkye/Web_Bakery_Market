@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import { Card, Typography, Row, Col, Divider, Layout } from 'antd';
+import { Card, Typography, Row, Col, Divider, Layout, Button } from 'antd';
 import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
 
 const { Title, Text } = Typography;
@@ -48,6 +48,7 @@ const Bill: React.FC = () => {
                         ))}
                     </Row>
                 </Card>
+                <Button type="primary" onClick={() => window.location.href = '/'}>Trở Về Trang Chủ</Button>
             </Content>
         </Layout>
     );

@@ -36,6 +36,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);
 
     useEffect(() => {
+        checkToken();
+    }, []);
+
+    const checkToken = async () => {
         const accessToken = Cookies.get('authorization');
         if (accessToken) {
             const decodedUser = jwtDecode(accessToken) as User;
@@ -43,7 +47,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 setUser(decodedUser);
             }
         }
-    }, []);
+    }
 
     const login = async (data: unknown) => {
         try {

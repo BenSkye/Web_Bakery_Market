@@ -43,7 +43,7 @@ const orderProductSchema = new Schema(
         },
         status: {
             type: String,
-            enum: ['pending', 'confirmed', 'rejected', 'success', 'shipping', 'delivered', 'canceled'],
+            enum: ['pending', 'confirmed', 'rejected', 'success', 'processing', 'shipping', 'delivered', 'canceled'],//processing: người bán đang chuẩn bị hàng
             default: 'pending',
         },
 
