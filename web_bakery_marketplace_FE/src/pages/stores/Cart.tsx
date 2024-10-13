@@ -1,25 +1,21 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Table, InputNumber, Button, Typography, Space, Image } from 'antd';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
+import { Table, InputNumber, Button, Typography, Space, Image, Card, Empty } from 'antd';
+import { useNavigate } from 'react-router-dom';
 import { CartContext } from '../../stores/cartContext';
 import { convertToVND } from '../../utils';
-
-
+import { DeleteOutlined, ShoppingCartOutlined, MinusOutlined, PlusOutlined } from '@ant-design/icons';
 
 const { Title } = Typography;
 
 const Cart: React.FC = () => {
     const { cart, addToCart, removeFromCart } = useContext(CartContext);
-    console.log('cart13', cart)
     const [cartItems, setCartItems] = useState<any[]>([]);
     const navigate = useNavigate();
 
     useEffect(() => {
         setCartItems(cart?.cart_products || []);
-        console.log('cart update')
     }, [cart]);
 
-    // Function to handle quantity change
     const handleQuantityChange = (id: number, value: number | null) => {
         if (value !== null) {
             let productData: any = null;
@@ -33,12 +29,10 @@ const Cart: React.FC = () => {
             addToCart({
                 product_id: productData?._id,
                 quantity: value,
-            })
-
+            });
         }
     };
 
-    // Function to remove item from cart
     const handleRemoveItem = (id: number) => {
         let productData: any = null;
         cartItems.forEach(item => {
@@ -50,7 +44,6 @@ const Cart: React.FC = () => {
         removeFromCart(productData._id);
     };
 
-    // Calculate total price
     const getTotalPrice = () => {
         if (cartItems) {
             return cartItems?.reduce((total, item) => {
@@ -67,34 +60,21 @@ const Cart: React.FC = () => {
 
     const columns = [
         {
-            title: 'Hình ảnh',
+            title: 'Sản phẩm',
             dataIndex: 'product_id',
-            key: 'thumbnail',
+            key: 'product',
             render: (product_id: any) => (
-                <div style={{
-                    width: '100px',
-                    height: '100px',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    overflow: 'hidden',
-                }}>
+                <Space>
                     <Image
                         src={product_id?.thumbnail}
-                        style={{
-                            maxWidth: '100%',
-                            maxHeight: '100%',
-                            objectFit: 'cover',
-                        }}
+                        width={80}
+                        height={80}
+                        style={{ objectFit: 'cover' }}
+                        preview={false}
                     />
-                </div>
+                    <span>{product_id?.name}</span>
+                </Space>
             ),
-        },
-        {
-            title: 'Tên sản phẩm',
-            dataIndex: 'product_id',
-            key: 'name',
-            render: (product_id: any) => <p>{product_id?.name}</p>,
         },
         {
             title: 'Giá',
@@ -107,11 +87,22 @@ const Cart: React.FC = () => {
             dataIndex: 'quantity',
             key: 'quantity',
             render: (text: number, record: any) => (
-                <InputNumber
-                    min={1}
-                    value={text}
-                    onChange={(value) => handleQuantityChange(record?._id, value)}
-                />
+                <Space>
+                    <Button
+                        icon={<MinusOutlined />}
+                        onClick={() => handleQuantityChange(record?._id, Math.max(1, text - 1))}
+                    />
+                    <InputNumber
+                        min={1}
+                        value={text}
+                        onChange={(value) => handleQuantityChange(record?._id, value)}
+                        style={{ width: '50px' }}
+                    />
+                    <Button
+                        icon={<PlusOutlined />}
+                        onClick={() => handleQuantityChange(record?._id, text + 1)}
+                    />
+                </Space>
             ),
         },
         {
@@ -124,7 +115,12 @@ const Cart: React.FC = () => {
             title: '',
             key: 'actions',
             render: (_: any, record: any) => (
-                <Button type="primary" danger onClick={() => handleRemoveItem(record._id)}>
+                <Button
+                    type="text"
+                    danger
+                    icon={<DeleteOutlined />}
+                    onClick={() => handleRemoveItem(record._id)}
+                >
                     Xóa
                 </Button>
             ),
@@ -132,29 +128,38 @@ const Cart: React.FC = () => {
     ];
 
     return (
-        <div style={{ padding: '24px' }}>
-            <Title level={2}>Giỏ hàng của bạn</Title>
-
-            <Table
-                dataSource={cartItems}
-                columns={columns}
-                // rowKey="id"
-                pagination={false}
-                style={{ marginBottom: '24px' }}
-            />
-            <Space direction="vertical" size="large" style={{ float: 'right' }}>
-                <Title level={3}>Tổng tiền: {convertToVND(getTotalPrice())}</Title>
-                <Button
-                    type="primary"
-                    size="large"
-                    onClick={handleCheckout}
-                    style={{ marginTop: '16px' }}
-                >
-                    Thanh Toán
-                </Button>
-            </Space>
-
-        </div>
+        <Card
+            title={<Title level={2}><ShoppingCartOutlined /> Giỏ hàng của bạn</Title>}
+            style={{ margin: '24px' }}
+        >
+            {cartItems.length > 0 ? (
+                <>
+                    <Table
+                        dataSource={cartItems}
+                        columns={columns}
+                        pagination={false}
+                        style={{ marginBottom: '24px' }}
+                        rowKey="_id"
+                    />
+                    <Space direction="vertical" size="large" style={{ float: 'right' }}>
+                        <Title level={3}>Tổng tiền: {convertToVND(getTotalPrice())}</Title>
+                        <Button
+                            type="primary"
+                            size="large"
+                            onClick={handleCheckout}
+                            icon={<ShoppingCartOutlined />}
+                        >
+                            Thanh Toán
+                        </Button>
+                    </Space>
+                </>
+            ) : (
+                <Empty
+                    description="Giỏ hàng của bạn đang trống"
+                    image={Empty.PRESENTED_IMAGE_SIMPLE}
+                />
+            )}
+        </Card>
     );
 };
 

@@ -2,7 +2,8 @@ import React from 'react';
 import { Form, Input, Button, Row, Col, Typography, message } from 'antd';
 import { signup } from '../../services/authenService';
 import { useNavigate, Link } from 'react-router-dom';
-import logo from '../../assets/logo.png'; // Import your logo
+import logo from '../../assets/logo.png';
+import '../../styles/signup/signup.css';
 
 const { Title } = Typography;
 
@@ -33,74 +34,31 @@ const SignUp: React.FC = () => {
         console.log('Received values of form: ', values);
     };
 
-    // Handle form failure
     const onFinishFailed = (errorInfo: any) => {
         console.log("Failed:", errorInfo);
     };
 
     return (
-        <div
-            style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                height: "100vh",
-                backgroundColor: "#f0f2f5",
-            }}
-        >
+        <div className="signup-container">
             {contextHolder}
-            <Row style={{ height: "100vh", width: "100%" }}>
-                {/* Left section with logo and welcome message */}
-                <Col
-                    span={8}
-                    style={{
-                        background: 'linear-gradient(to left, rgba(253, 222, 222, 1), rgba(253, 222, 222, 0.1))',
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        padding: "2rem",
-                    }}
-                >
-                    <div style={{ textAlign: "center", color: "#1e88e5" }}>
-                        <h2 className="typing-effect" style={{ color: '#594b47', fontSize: "1.5rem", fontWeight: "bold", marginBottom: "1rem" }}>
-                            Đăng ký để bắt đầu
-                        </h2>
-                        <p style={{ fontSize: "1rem", color: '#594b47' }}>
-                            Chào mừng đến với Merci!
-                        </p>
-                        <img
-                            src={logo}
-                            alt="Logo"
-                            style={{ width: "200px", marginBottom: "2rem", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)", borderRadius: "10px" }}
-                        />
+            <Row className="signup-row">
+                <Col xs={24} md={12} className="left-section">
+                    <div className="logo-container">
+                        <img src={logo} alt="Logo" className="logo" />
+                        <h2 className="welcome-text fade-in ">Đăng ký để bắt đầu</h2>
+                        <p className="sub-text fade-in">Chào mừng đến với Merci!</p>
                     </div>
                 </Col>
 
-                {/* Right section with signup form */}
-                <Col
-                    span={16}
-                    style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        backgroundColor: "white",
-                    }}
-                >
-                    <div
-                        style={{
-                            width: "80%",
-                            padding: "2rem",
-                            backgroundColor: "#fff",
-                            boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-                            borderRadius: "10px",
-                        }}
-                    >
-                        <Title level={2} style={{ textAlign: "center", marginBottom: "1rem" }}>Đăng Ký</Title>
+                <Col xs={24} md={12} className="right-section">
+                    <div className="form-container">
+                        <Title level={2} className="form-title">Đăng Ký</Title>
                         <Form
                             name="signup"
                             layout="vertical"
                             onFinish={onFinish}
                             onFinishFailed={onFinishFailed}
+                            className="signup-form"
                         >
                             <Form.Item
                                 name="username"
@@ -113,7 +71,10 @@ const SignUp: React.FC = () => {
                             <Form.Item
                                 name="email"
                                 label="Email"
-                                rules={[{ required: true, message: 'Vui lòng nhập email!' }, { type: 'email', message: 'Email không hợp lệ!' }]}
+                                rules={[
+                                    { required: true, message: 'Vui lòng nhập email!' },
+                                    { type: 'email', message: 'Email không hợp lệ!' }
+                                ]}
                             >
                                 <Input placeholder="Email" />
                             </Form.Item>
@@ -148,16 +109,14 @@ const SignUp: React.FC = () => {
                             </Form.Item>
 
                             <Form.Item>
-                                <Button type="primary" htmlType="submit" block>
+                                <Button type="primary" htmlType="submit" className="submit-button">
                                     Đăng Ký
                                 </Button>
                             </Form.Item>
 
-                            <Form.Item>
-                                <div style={{ textAlign: 'center' }}>
-                                    <span>Bạn đã có tài khoản? </span>
-                                    <Link to="/login">Đăng nhập tại đây</Link>
-                                </div>
+                            <Form.Item className="login-link">
+                                <span>Bạn đã có tài khoản? </span>
+                                <Link to="/login">Đăng nhập tại đây</Link>
                             </Form.Item>
                         </Form>
                     </div>
