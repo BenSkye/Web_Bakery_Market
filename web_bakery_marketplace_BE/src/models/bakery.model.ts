@@ -35,8 +35,8 @@ const bakerySchema = new Schema(
         },
         status: {
             type: String,
-            enum: ['active', 'inactive'],
-            default: 'inactive',
+            enum: ['pending', 'active', 'inactive'],
+            default: 'pending',
         },
         image: {
             type: [String]
