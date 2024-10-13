@@ -1,9 +1,15 @@
-import redis, { createClient } from 'redis';
-import { promisify } from 'util';
+import dotenv from 'dotenv';
+dotenv.config();
+import { createClient } from 'redis';
 import inventoryRepo from '../repositories/inventory.repo';
 
+console.log('REDIS_URL:', process.env.REDIS_URL);
 const redisClient = createClient({
-    url: 'redis://127.0.0.1:6380'
+    url: process.env.REDIS_URL,
+    socket: {
+        tls: true,
+        rejectUnauthorized: false
+    }
 });
 
 redisClient.on('error', (err) => console.log('Redis Client Error', err));
@@ -12,8 +18,6 @@ redisClient.on('error', (err) => console.log('Redis Client Error', err));
     await redisClient.connect();
 })();
 
-const pexpire = promisify(redisClient.pExpire).bind(redisClient);
-const setnxAsync = promisify(redisClient.setNX).bind(redisClient);
 
 const acquireLock = async (productId: string, quantity: number) => {
     const key = `lock_v2024:${productId}`;

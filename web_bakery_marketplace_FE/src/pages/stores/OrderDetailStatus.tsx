@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Steps, List, Avatar, Row, Col } from 'antd';
-import { CheckCircleOutlined, SyncOutlined, ShoppingCartOutlined, SmileOutlined } from '@ant-design/icons';
+import { CheckCircleOutlined, SyncOutlined, ShoppingCartOutlined, SmileOutlined, CarOutlined } from '@ant-design/icons';
 import { useParams } from 'react-router-dom';
 import { getOrderProductById } from '../../services/orderProductService';
 
@@ -19,9 +19,10 @@ const OrderDetailStatus = () => {
                 setOrder(orderResponse.metadata);
                 // Set current step based on the order status
                 const statusToStep = {
-                    pending: 1,
-                    success: 2,
-                    completed: 3,
+                    success: 0,
+                    processing: 1,
+                    shipping: 2,
+                    delivered: 3,
                 };
                 setCurrentStep(statusToStep[orderResponse.metadata.status] || 0);
             } catch (error) {
@@ -38,19 +39,23 @@ const OrderDetailStatus = () => {
         {
             title: 'Đặt hàng thành công',
             icon: <ShoppingCartOutlined />,
+            status: 'success'
         },
         {
-            title: 'Đang xử lý',
-            icon: <SyncOutlined />,
+            title: 'Đang chuẩn bị hàng',
+            icon: <SyncOutlined spin />,
+            status: 'processing'
+        },
+        {
+            title: 'Đang giao hàng',
+            icon: <CarOutlined />,
+            status: 'shipping'
         },
         {
             title: 'Đã giao hàng',
             icon: <CheckCircleOutlined />,
-        },
-        {
-            title: 'Hoàn thành',
-            icon: <SmileOutlined />,
-        },
+            status: 'delivered'
+        }
     ];
 
     return (

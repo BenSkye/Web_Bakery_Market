@@ -71,7 +71,7 @@ const Checkout: React.FC = () => {
             const result = await createOrder(order)
             console.log('result', result)
             if (result.metadata && result.metadata.paymentUrl) {
-                window.open(result.metadata.paymentUrl, '_blank');
+                window.location.href = result.metadata.paymentUrl;
             } else {
                 message.error('Không thể tạo URL thanh toán');
             }
