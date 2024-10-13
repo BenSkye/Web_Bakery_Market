@@ -33,5 +33,11 @@ class BakeryController {
             metadata: await BakeryService.getBakeryByUserId(req.keyStore.user),
         }).send(res);
     });
+    updateStatusBakery = asyncHandler(async (req: any, res: Response, next: NextFunction) => {
+        new SuccessResponse({
+            message: 'Update status bakery successfully',
+            metadata: await BakeryService.updateStatusBakery(req.params.id, req.body.status),
+        }).send(res);
+    });
 }
 export default new BakeryController();

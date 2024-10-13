@@ -53,6 +53,13 @@ class OrderProductController {
         }).send(res);
     });
 
+    getOrderProduct = asyncHandler(async (req: any, res: Response, next: NextFunction) => {
+        new SuccessResponse({
+            message: 'Get Order Product successfully',
+            metadata: await OrderProductService.getOrderProduct(req.query),
+        }).send(res);
+    });
+
 }
 
 export default new OrderProductController();

@@ -48,6 +48,10 @@ class BakeryService {
         const bakery = await bakeryRepo.getBakeryByUserId(user_id);
         return bakery;
     }
+
+    static updateStatusBakery = async (id: string, status: string) => {
+        return await bakeryRepo.updateBakery(id, { status });
+    }
 }
 
 export default BakeryService;

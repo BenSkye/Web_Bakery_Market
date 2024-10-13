@@ -53,6 +53,9 @@ class OrderProductRepo {
     async changeStatusOrderProduct(orderProductId: string, status: string) {
         return await orderProductModel.findByIdAndUpdate(orderProductId, { status: status }, { new: true });
     }
+    async getOrderProduct(query: any) {
+        return await orderProductModel.find(query).sort({ createdAt: -1 });
+    }
 
 }
 
