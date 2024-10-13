@@ -316,5 +316,10 @@ class AccessService {
 
 
 
+  static getUser = async (query: any) => {
+    return await userModel.find(query);
+  }
+
+
 }
 export default AccessService;

@@ -17,6 +17,7 @@ accessRouter.use(authentication);
 
 accessRouter.post('/logout', accessController.logout);
 accessRouter.post('/handleRefreshToken', accessController.handleRefreshToken);
+accessRouter.get('/get-user', accessController.getUser);
 
 
 export default accessRouter;
