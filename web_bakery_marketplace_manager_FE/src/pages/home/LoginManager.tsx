@@ -1,80 +1,58 @@
 import React from "react";
 import { Form, Input, Button, Col, Row, message } from "antd";
-import { useNavigate, Link } from "react-router-dom"; // Import Link
+import { useNavigate, Link } from "react-router-dom";
 import { login } from "../../services/authenService";
-import logo from "../../assets/logo.png";
+import { UserOutlined, LockOutlined, CrownOutlined } from '@ant-design/icons';
 
 const LoginManager: React.FC = () => {
-  const navigate = useNavigate(); // Initialize navigate
+  const navigate = useNavigate();
 
-  // Handle form submission
   const onFinish = async (values: any) => {
     try {
-
-      // Call the login function to send login data to the backend
       const result = await login({
         email: values.email,
         password: values.password,
       });
 
-      // Check for success
-      console.log('r1', result)
       if (result.status === 200) {
         message.success("Đăng nhập thành công!");
-
-        // Redirect to another page after successful login
-        navigate("/statistics"); // Change '/dashboard' to the desired route
+        navigate("/statistics");
       } else {
         message.error(result?.message || "Đăng nhập thất bại, vui lòng thử lại.");
-        // Redirect to the login page
       }
     } catch (error) {
       message.error("Đăng nhập thất bại, vui lòng thử lại.");
     }
   };
 
-  // Handle form failure
   const onFinishFailed = (errorInfo: any) => {
     console.log("Failed:", errorInfo);
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh",
-      }}
-    >
-      <Row style={{ height: "100vh", width: "100%" }}>
+    <div style={{ height: "100vh", background: "#fad0c4" }}>
+      <Row style={{ height: "100%", width: "100%" }}>
         <Col
-          span={8}
+          span={12}
           style={{
-            background: 'linear-gradient(to left, rgba(253, 222, 222, 1), rgba(253, 222, 222, 0.1))',
+            background: 'linear-gradient(135deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%)',
             display: "flex",
+            flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
             padding: "2rem",
           }}
         >
-          <div style={{ textAlign: "center", color: "#1e88e5" }}>
-            <h2 className="typing-effect" style={{ color: '#594b47', fontSize: "1.5rem", fontWeight: "bold", marginBottom: "1rem" }}>
-              Đăng nhập để vào shop của bạn
-            </h2>
-            <p style={{ fontSize: "1rem", color: '#594b47' }}>
-              Chào mừng đến với Merci!
-            </p>
-            <img
-              src={logo}
-              alt="Logo"
-              style={{ width: "200px", marginBottom: "2rem", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)", borderRadius: "10px" }}
-            />
-          </div>
+          <CrownOutlined style={{ fontSize: '64px', color: 'white', marginBottom: '2rem' }} />
+          <h1 style={{ color: 'white', fontSize: '2.5rem', marginBottom: '1rem', textShadow: '2px 2px 4px rgba(0,0,0,0.1)' }}>Quản lý Merci</h1>
+          <p style={{ color: 'white', fontSize: '1.2rem', textAlign: 'center', textShadow: '1px 1px 2px rgba(0,0,0,0.1)' }}>
+            Chào mừng đến với hệ thống quản lý Merci! <br />
+            Đăng nhập để truy cập bảng điều khiển của bạn.
+          </p>
         </Col>
 
         <Col
-          span={16}
+          span={12}
           style={{
             display: "flex",
             justifyContent: "center",
@@ -85,47 +63,44 @@ const LoginManager: React.FC = () => {
           <div
             style={{
               width: "80%",
-              padding: "2rem",
+              padding: "3rem",
               backgroundColor: "#fff",
-              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-              borderRadius: "10px",
+              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+              borderRadius: "8px",
             }}
           >
-            <h1 style={{ textAlign: "center", marginBottom: "1rem" }}>
-              Đăng Nhập
-            </h1>
+            <h2 style={{ textAlign: "center", marginBottom: "2rem", fontSize: "2rem", color: "#ff9a9e" }}>
+              Đăng Nhập Quản Lý
+            </h2>
             <Form
               name="login"
               layout="vertical"
               onFinish={onFinish}
               onFinishFailed={onFinishFailed}
+              size="large"
             >
               <Form.Item
-                label="Email"
                 name="email"
                 rules={[{ required: true, message: "Vui lòng nhập email!" }]}
               >
-                <Input placeholder="Nhập email" />
+                <Input prefix={<UserOutlined style={{ color: '#ff9a9e' }} />} placeholder="Email quản lý" />
               </Form.Item>
 
               <Form.Item
-                label="Mật khẩu"
                 name="password"
                 rules={[{ required: true, message: "Vui lòng nhập mật khẩu!" }]}
               >
-                <Input.Password placeholder="Nhập mật khẩu" />
+                <Input.Password prefix={<LockOutlined style={{ color: '#ff9a9e' }} />} placeholder="Mật khẩu" />
               </Form.Item>
 
               <Form.Item>
-                <Button type="primary" htmlType="submit" style={{ width: "100%" }}>
+                <Button type="primary" htmlType="submit" style={{ width: "100%", height: "40px", backgroundColor: "#ff9a9e", borderColor: "#ff9a9e" }}>
                   Đăng Nhập
                 </Button>
               </Form.Item>
 
-              {/* Add "Register" link */}
               <div style={{ textAlign: "center" }}>
-                <span>Bạn chưa có tài khoản? </span>
-                <Link to="/signup">Đăng ký tại đây</Link>
+                <Link to="/forgot-password" style={{ color: '#ff9a9e' }}>Quên mật khẩu?</Link>
               </div>
             </Form>
           </div>

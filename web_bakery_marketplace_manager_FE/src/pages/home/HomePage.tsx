@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button, Table, message } from "antd";
-import { getBakeries } from "../../services/bakeriesService";
+import { getBakeryByUserId } from "../../services/bakeriesService";
 import "../../styles/ManagePageStyles/BakeryManager.css";
 import { StarOutlined, StarFilled, PlusCircleOutlined } from '@ant-design/icons';
 import AddBakeryModal from '../../components/modal/AddBakeryModal'; // Import modal mới
 import { createBakery } from '../../services/bakeriesService';
+import { useAuth } from '../../stores/authContex';
 
 
 interface Bakery {
@@ -28,13 +29,16 @@ interface Bakery {
 const BakeryManager: React.FC = () => {
     const [bakeries, setBakeries] = useState<Bakery[]>([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const { user } = useAuth();
 
     useEffect(() => {
         const fetchBakeries = async () => {
             try {
-                const data = await getBakeries();
-                const mappedBakeries = data.metadata.map((bakery: any) => ({
-                    key: bakery._id,
+                console.log(user?.userId);
+                const data = await getBakeryByUserId(user?.userId || '');
+                console.log(data);
+                const mappedBakeries = data.metadata.map((bakery: Bakery) => ({
+                    key: bakery.key,
                     name: bakery.name,
                     address: bakery.address,
                     rating: bakery.rating,
@@ -42,10 +46,11 @@ const BakeryManager: React.FC = () => {
                     openingHours: bakery.openingHours,
                     image: bakery.image,
                     customCake: bakery.customCake,
-                }));
+                })
+                );
                 setBakeries(mappedBakeries);
             } catch (error) {
-                message.error("Lấy danh sách tiệm bánh thất bại!");
+                message.error("Lấy danh sách tiệm bánh thất bại!", (error as Error).message);
             }
         };
         fetchBakeries();

@@ -29,11 +29,21 @@ export const getBakeries = async () => {
 
 export const getBakeryById = async (id: string) => {
   try {
-    const response = await apiClient.get<Bakery>(`/bakery/get-by-id/${id}`);
+    const response = await apiClient.get<Bakery>(`bakery/get-by-user-id/${id}`);
     return response.data;
 
   } catch (error) {
     console.error(`Error fetching bakery with id ${id}:`, error);
+    throw error;
+  }
+};
+
+export const getBakeryByUserId = async (userId: string) => {
+  try {
+    const response = await apiClient.get(`bakery/get-by-user-id/${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching bakery with user id ${userId}:`, error);
     throw error;
   }
 };
