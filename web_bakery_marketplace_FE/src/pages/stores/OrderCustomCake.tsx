@@ -96,6 +96,7 @@ export default function OrderCustomCake() {
                                     : <></>
                                 }
                                 <Text>Cửa hàng: <Text strong> {order?.bakery_id?.name}</Text></Text>
+                                <Text>Ngày đặt: {new Date(order?.createdAt).toLocaleDateString()}</Text>
                             </Space>
                         </Col>
                         <Col xs={24} sm={6} md={6} lg={6} style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
