@@ -24,7 +24,7 @@ class BakeryRepository {
     }
 
     async getBakeryByUserId(user_id: string) {
-        return await bakeryModel.findOne({ user_id });
+        return await bakeryModel.find({ user_id });
     }
 }
 
