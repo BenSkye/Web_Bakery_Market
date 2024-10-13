@@ -1,17 +1,60 @@
-const About: React.FC = () => {
-    return (
-        <p>
-            Chào mừng bạn đến với trang web của chúng tôi! Được khởi nguồn từ
-            niềm đam mê với nghệ thuật bánh ngọt, chúng tôi tin rằng mỗi chiếc
-            bánh sinh nhật không chỉ là một món ăn mà còn là một tác phẩm nghệ
-            thuật chứa đựng tình cảm và sáng tạo. Tại đây, bạn có thể tự tay
-            thiết kế những chiếc bánh sinh nhật độc đáo, từ việc chọn màu sắc,
-            hương vị đến trang trí, tạo nên những chiếc bánh mang dấu ấn cá
-            nhân. Hợp tác với các tiệm bánh uy tín, chúng tôi mang đến cho bạn
-            sự đa dạng và chất lượng. Hãy cùng chúng tôi biến mỗi chiếc bánh
-            thành một kiệt tác và một kỷ niệm đáng nhớ!
-        </p >
+// /pages/AboutUs.tsx
+import React from 'react';
+import { Button } from 'antd';
+import { Link } from 'react-router-dom';
+import imgIntro from "../../assets/pexels-jill-wellington-1638660-433527.jpg";
 
+const About: React.FC = () => {
+    const aboutContainerStyle: React.CSSProperties = {
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: "2rem",
+        borderRadius: "10px",
+        boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
+        backgroundColor: "#fefefe",
+        marginTop: "2rem",
+        animation: "fadeIn 1s ease-in-out",
+        fontFamily: "'Roboto', sans-serif", // Ensure consistent font-family
+    };
+
+    const aboutTextStyle: React.CSSProperties = {
+        flex: 9,
+        padding: "1rem",
+        textAlign: "justify",
+        fontSize: 18,
+        fontFamily: "'Roboto', sans-serif", // Add font-family explicitly here
+        lineHeight: 1.8,
+        color: "#333",
+    };
+
+    const aboutImageStyle: React.CSSProperties = {
+        flex: 3,
+        height: 250,
+        borderRadius: "10px",
+    };
+
+    return (
+        <div style={aboutContainerStyle}>
+            <div style={aboutTextStyle}>
+                <h2>Giới thiệu về chúng tôi</h2>
+                <p>
+                    Chúng tôi tự hào mang đến cho bạn những chiếc bánh ngọt ngon
+                    nhất, được làm từ những nguyên liệu tinh túy nhất và tình yêu
+                    thương dành cho nghề làm bánh.
+                </p>
+                <Link to="/about">
+                    <Button type="primary">Tìm hiểu thêm</Button>
+                </Link>
+            </div>
+            <img
+                src={imgIntro}
+                alt="Introduction"
+                style={aboutImageStyle}
+            />
+        </div>
     );
 };
+
 export default About;

@@ -1,0 +1,52 @@
+.cake-designer-container {
+  background-color: #f1cbbf;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  height: 500px;
+}
+.cake-preview {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60%;
+}
+
+.cake-controls {
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.cake-controls h3,
+.cake-controls h4 {
+  color: #1890ff;
+  margin-bottom: 15px;
+}
+
+.cake-controls label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.color-picker {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.decoration-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.ant-checkbox-wrapper {
+  margin-right: 0 !important;
+}
+
+.ant-progress-text {
+  font-weight: bold;
+}

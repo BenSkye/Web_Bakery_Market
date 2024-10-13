@@ -20,8 +20,13 @@ const FBXModel: React.FC<FBXModelProps> = ({ url }) => {
     return <primitive object={fbx} />;
 };
 
-const Render3D: React.FC = ({ bakeryId }: { bakeryId: string }) => {
+interface Render3DProps {
+    bakeryId: string;
+}
+
+const Render3D: React.FC<Render3DProps> = ({ bakeryId }) => {
     return (
+        // Adjust the height and width of the Canvas as necessary
 
         <>
             <Canvas

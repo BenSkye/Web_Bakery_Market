@@ -6,8 +6,16 @@ export interface Bakery {
   name: string;
   address: string;
   rating: number;
-  image: string;
-
+  openingHours: {
+    [key: string]: { open: string; close: string };
+  };
+  description: string;
+  images: string[];
+  contact: {
+    phone: string,
+    facebook: string,
+    instagram: string,
+  }
 }
 
 export const getBakeries = async () => {

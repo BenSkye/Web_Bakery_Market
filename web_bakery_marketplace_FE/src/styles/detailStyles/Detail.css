@@ -1,0 +1,30 @@
+.detail-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.design-section {
+  margin: 3rem 0;
+  text-align: center;
+}
+
+.design-card {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.ant-card-body {
+  padding: 0;
+}
+
+.ant-typography {
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .detail-page {
+    padding: 1rem;
+  }
+}

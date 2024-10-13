@@ -1,44 +1,55 @@
 import React from 'react';
-import { Layout, Row, Col } from 'antd';
-import { FacebookOutlined, InstagramOutlined } from '@ant-design/icons';
+import { Layout, Row, Col, Typography } from 'antd';
+import { FacebookOutlined, InstagramOutlined, MailOutlined, PhoneOutlined } from '@ant-design/icons';
 import logo from '../../assets/logo.png';
-import '../../styles/layoutSyles/footerComponent.css'; // Thêm tệp CSS cho footer
+import '../../styles/layoutSyles/footerComponent.css';
 
 const { Footer } = Layout;
+const { Title, Text, Link } = Typography;
 
 const FooterComponent: React.FC = () => {
     return (
-        <Footer style={{ backgroundColor: '#857777', color: '#fff', padding: '40px 0' }}>
-            <Row gutter={16} justify="center">
-                <Col xs={24} sm={12} md={6} style={{ textAlign: 'center' }}>
-                    <h3>Chúng tôi</h3>
-                    <p>Mô tả về công ty hoặc dự án của bạn.</p>
-                    <img src={logo} alt="logo" style={{ width: 100, height: 100, borderRadius: 10 }} />
+        <Footer className="custom-footer">
+            <Row gutter={[32, 32]} justify="center">
+                <Col xs={24} sm={12} md={6}>
+                    <div className="footer-section">
+                        <Title level={4}>Chúng tôi</Title>
+                        {/* <Text>Mô tả về công ty hoặc dự án của bạn.</Text> */}
+                        <img src={logo} alt="logo" className="footer-logo" />
+                    </div>
                 </Col>
-                <Col xs={24} sm={12} md={6} style={{ textAlign: 'center' }}>
-                    <h3>Liên kết</h3>
-                    <ul style={{ listStyleType: 'none', padding: 0 }}>
-                        <li><a href="#" style={{ color: '#fff', textDecoration: 'none' }}>Facebook <FacebookOutlined /></a></li>
-                        <li><a href="#" style={{ color: '#fff', textDecoration: 'none' }}>Instagram <InstagramOutlined /></a></li>
-                    </ul>
+                <Col xs={24} sm={12} md={6}>
+                    <div className="footer-section">
+                        <Title level={4}>Liên kết</Title>
+                        <ul className="footer-links">
+                            <li><Link href="#"><FacebookOutlined /> Facebook</Link></li>
+                            <li><Link href="#"><InstagramOutlined /> Instagram</Link></li>
+                        </ul>
+                    </div>
                 </Col>
-                <Col xs={24} sm={12} md={6} style={{ textAlign: 'center' }}>
-                    <h3>Thông tin</h3>
-                    <ul style={{ listStyleType: 'none', padding: 0 }}>
-                        <li><a href="#" style={{ color: '#fff', textDecoration: 'none' }}>Về chúng tôi</a></li>
-                        <li><a href="#" style={{ color: '#fff', textDecoration: 'none' }}>Điều khoản dịch vụ</a></li>
-                        <li><a href="#" style={{ color: '#fff', textDecoration: 'none' }}>Chính sách bảo mật</a></li>
-                    </ul>
+                <Col xs={24} sm={12} md={6}>
+                    <div className="footer-section">
+                        <Title level={4}>Thông tin</Title>
+                        <ul className="footer-links">
+                            <li><Link href="#">Về chúng tôi</Link></li>
+                            <li><Link href="#">Điều khoản dịch vụ</Link></li>
+                            <li><Link href="#">Chính sách bảo mật</Link></li>
+                        </ul>
+                    </div>
                 </Col>
-                <Col xs={24} sm={12} md={6} style={{ textAlign: 'center' }}>
-                    <h3>Liên hệ</h3>
-                    <p>Email: <a href="mailto:contact@example.com" style={{ color: '#fff', textDecoration: 'none' }}>contact@example.com</a></p>
-                    <p>Điện thoại: <span style={{ color: '#fff' }}>+123 456 789</span></p>
+                <Col xs={24} sm={12} md={6}>
+                    <div className="footer-section">
+                        <Title level={4}>Liên hệ</Title>
+                        <p><MailOutlined /> <Link href="mailto:contact@example.com">contact@example.com</Link></p>
+                        <p><PhoneOutlined /> <Text>+123 456 789</Text></p>
+                    </div>
                 </Col>
             </Row>
-            <p style={{ marginTop: 16, textAlign: 'center' }}>© {new Date().getFullYear()} Your Company. All rights reserved.</p>
+            <div className="footer-bottom">
+                <Text>© {new Date().getFullYear()} Your Company. All rights reserved.</Text>
+            </div>
         </Footer>
     );
 };
 
-export default FooterComponent;
+export default FooterComponent; 
