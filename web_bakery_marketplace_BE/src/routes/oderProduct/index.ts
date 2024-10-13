@@ -16,4 +16,6 @@ oderProductRouter.get('/get-order-product-by-id/:orderProductId', OrderProductCo
 oderProductRouter.put('/accept-order-product/:orderProductId', permission('shop'), OrderProductController.acceptOrderProduct);
 oderProductRouter.put('/reject-order-product/:orderProductId', permission('shop'), OrderProductController.rejectOrderProduct);
 oderProductRouter.put('/change-status-order-product/:orderProductId', permission('shop'), OrderProductController.changeStatusOrderProduct);
+
+oderProductRouter.put('/get-order-product', permission('admin'), OrderProductController.getOrderProduct);
 export default oderProductRouter;

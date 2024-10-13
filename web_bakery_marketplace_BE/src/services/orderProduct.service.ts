@@ -33,7 +33,9 @@ class OrderProductService {
     static changeStatusOrderProduct = async (orderProductId: string, status: string) => {
         return await order_product_repo.changeStatusOrderProduct(orderProductId, status);
     }
-
+    static getOrderProduct = async (query: any) => {
+        return await order_product_repo.getOrderProduct(query);
+    }
 
 }
 export default OrderProductService;

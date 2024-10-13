@@ -64,5 +64,12 @@ class AccessController {
     }).send(res);
   });
 
+  getUser = asyncHandler(async (req: any, res: Response, next: NextFunction) => {
+    new SuccessResponse({
+      message: 'Get user successfully',
+      metadata: await AccessService.getUser(req.query),
+    }).send(res);
+  });
+
 }
 export default new AccessController();
