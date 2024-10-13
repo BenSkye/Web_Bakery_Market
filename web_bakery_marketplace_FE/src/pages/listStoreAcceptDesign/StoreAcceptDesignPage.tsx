@@ -1,14 +1,76 @@
 import React, { useState, useEffect } from 'react';
-import { Input, Menu, Dropdown, Rate, Tag, Button } from 'antd';
+import { Input, Menu, Dropdown, Rate, Tag, Button, Layout, Typography, Space } from 'antd';
 import { FilterOutlined } from '@ant-design/icons';
 import { animated, useSpring } from "@react-spring/web";
+import styled from 'styled-components';
 import StoreCard from '../../components/card/CardStore';
 import { getBakeries, Bakery } from "../../services/bakeriesService";
 import SpinLoading from '../../components/loading/SpinLoading';
 
 const { Search } = Input;
+const { Title } = Typography;
+const { Content } = Layout;
 
 const provinces = ["Hồ Chí Minh", "Hà Nội", "Đà Nẵng", "Cần Thơ"];
+
+// Styled components
+const StyledLayout = styled(Layout)`
+  min-height: 100vh;
+  background-color: transparent;
+`;
+
+const StyledContent = styled(Content)`
+  max-width: 100%;
+  margin: 0 auto;
+`;
+
+const FilterContainer = styled.div`
+  display: flex;
+  align-items: center;
+  margin: 2rem 0;
+  flex-wrap: wrap;
+  gap: 1rem;
+`;
+
+const TagContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+`;
+
+
+const GridContainer = styled.div`
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+  
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  @media (max-width: 992px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const CardWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  height: 100%;
+`;
+
+const StyledStoreCard = styled(StoreCard)`
+  width: 100%;
+  height: 100%;
+  max-height: 400px; // Hoặc bất kỳ giá trị nào bạn muốn
+  max-width: 300px;
+  display: flex;
+  flex-direction: column;
+`;
 
 const ListStoreAcceptDesignPage: React.FC = () => {
     const [searchQuery, setSearchQuery] = useState('');
@@ -22,7 +84,6 @@ const ListStoreAcceptDesignPage: React.FC = () => {
                 setLoading(true);
                 const data = await getBakeries();
 
-                // Check if data is an array
                 if (Array.isArray(data.metadata)) {
                     setBakeries(data.metadata);
                 } else {
@@ -31,7 +92,7 @@ const ListStoreAcceptDesignPage: React.FC = () => {
                 }
             } catch (error) {
                 console.error("Failed to fetch bakeries:", error);
-                setBakeries([]); // Reset to an empty array in case of error
+                setBakeries([]);
             } finally {
                 setLoading(false);
             }
@@ -49,6 +110,7 @@ const ListStoreAcceptDesignPage: React.FC = () => {
 
     const handleSearch = () => {
         console.log('Searching for:', searchQuery);
+        // Implement search logic here
     };
 
     const addFilter = (label: string, value: any, type: string) => {
@@ -81,7 +143,7 @@ const ListStoreAcceptDesignPage: React.FC = () => {
     );
 
     const orderCountMenu = (
-        <Menu onClick={() => addFilter('Lượt đặt hàng', 'Nhiều nhất', 'orderCount')}>
+        <Menu onClick={(e) => addFilter('Lượt đặt hàng', e.key, 'orderCount')}>
             <Menu.Item key="most">
                 Nhiều nhất
             </Menu.Item>
@@ -106,51 +168,54 @@ const ListStoreAcceptDesignPage: React.FC = () => {
     );
 
     return (
-        <div>
-            <animated.h1 style={springPropsH1}>Chọn cửa hàng để thiết kế chiếc bánh cho riêng bạn</animated.h1>
+        <StyledLayout>
+            <StyledContent>
+                <animated.div style={springPropsH1}>
+                    <Title level={2}>Chọn cửa hàng để thiết kế chiếc bánh cho riêng bạn</Title>
+                </animated.div>
 
-            <div style={{ display: 'flex', alignItems: 'center', margin: '2rem 0' }}>
-                {/* <Search
-                    placeholder="Tên tiệm bánh"
-                    onSearch={handleSearch}
-                    style={{ marginRight: '0.5rem', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)', borderRadius: '5px', width: '200px', display: 'flex', flex: 'start' }}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                /> */}
-                <Dropdown overlay={filterMenu} trigger={['click']} placement="bottomLeft">
-                    <Button icon={<FilterOutlined />}>
-                        Bộ lọc
-                    </Button>
-                </Dropdown>
+                <FilterContainer>
+                    <Space>
+                        <Search
+                            placeholder="Tên tiệm bánh"
+                            onSearch={handleSearch}
+                            style={{ width: 250 }}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                        <Dropdown overlay={filterMenu} trigger={['click']} placement="bottomLeft">
+                            <Button icon={<FilterOutlined />}>
+                                Bộ lọc
+                            </Button>
+                        </Dropdown>
+                    </Space>
 
-                <div >
-                    {appliedFilters.map((filter, index) => (
-                        <Tag
-                            key={index}
-                            closable
-                            onClose={() => removeFilter(index)}
-                            style={{ margin: '0.2rem' }}
-                        >
-                            {filter.label}: {filter.value}
-                        </Tag>
-                    ))}
-                </div>
-            </div>
+                    <TagContainer>
+                        {appliedFilters.map((filter, index) => (
+                            <Tag
+                                key={index}
+                                closable
+                                onClose={() => removeFilter(index)}
+                                color="blue"
+                            >
+                                {filter.label}: {filter.value}
+                            </Tag>
+                        ))}
+                    </TagContainer>
+                </FilterContainer>
 
-            <div >
                 {loading ? (
                     <SpinLoading />
                 ) : (
-
-                    <div className="grid-container">
-                        {bakeries.map((bakery, index) => (
-                            <div key={index} >
-                                <StoreCard key={bakery.id} bakery={bakery} />
-                            </div>
+                    <GridContainer>
+                        {bakeries.map((bakery) => (
+                            <CardWrapper key={bakery.id}>
+                                <StyledStoreCard bakery={bakery} />
+                            </CardWrapper>
                         ))}
-                    </div>
+                    </GridContainer>
                 )}
-            </div>
-        </div>
+            </StyledContent>
+        </StyledLayout>
     );
 }
 

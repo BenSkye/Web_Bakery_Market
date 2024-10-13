@@ -21,10 +21,7 @@ import WorkShopCard from '../../components/card/CardWorkshop';
 import About from './AboutUs';
 import TryCake3D from '../3D/Try3D';
 
-
-
 const HomePage: React.FC = () => {
-
   const [bakeries, setBakeries] = useState<Bakery[]>([]);
   const [workshops, setWorkshops] = useState<Workshop[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -41,7 +38,6 @@ const HomePage: React.FC = () => {
         setLoading(false);
       }
     };
-
     fetchBakeries();
   }, []);
 
@@ -57,7 +53,6 @@ const HomePage: React.FC = () => {
         setLoading(false);
       }
     };
-
     fetchWorkshops();
   }, []);
 
@@ -78,6 +73,7 @@ const HomePage: React.FC = () => {
     width: "100%",
     height: "500px",
     objectFit: "cover",
+    filter: "brightness(70%)",
   };
 
   const overlayContainerStyle: React.CSSProperties = {
@@ -91,13 +87,15 @@ const HomePage: React.FC = () => {
   };
 
   const sloganStyle: React.CSSProperties = {
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
     padding: "10px 20px",
-    borderRadius: "5px",
+    borderRadius: "10px",
     fontSize: "20px",
     fontFamily: "monospace",
     fontWeight: "bold",
-    fontStyle: "italic", // Italicize the text
+    fontStyle: "italic",
+    color: "#fff", // Enhance text contrast
+    textShadow: "2px 2px 5px rgba(0, 0, 0, 0.5)",
   };
 
   // Spring animation for the text
@@ -124,6 +122,11 @@ const HomePage: React.FC = () => {
 
   const buttonStyle: React.CSSProperties = {
     marginTop: "20px",
+    backgroundColor: "#ff6347", // Bright and bold color
+    border: "none",
+    borderRadius: "8px",
+    boxShadow: "0px 4px 6px rgba(0,0,0,0.2)",
+    transition: "background-color 0.3s ease",
   };
 
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -140,89 +143,47 @@ const HomePage: React.FC = () => {
     }
   };
 
-  const workshopBannerStyle: React.CSSProperties = {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    height: "300px",
-    width: "100%",
-    borderRadius: "10px",
-    overflow: "hidden",
-    position: "relative",
-    marginBottom: "20px",
-    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
-  };
-
-  const workshopImageStyle: React.CSSProperties = {
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
-    position: "absolute",
-    top: 0,
-    left: 0,
-    zIndex: 1,
-  };
-
-  const workshopInfoStyle: React.CSSProperties = {
-    position: "relative",
-    zIndex: 2,
-    color: "white",
-    textAlign: "center",
-    padding: "20px",
-    backgroundColor: "rgba(0, 0, 0, 0.6)",
-    borderRadius: "10px",
-  };
-
   const introductionContainerStyle: React.CSSProperties = {
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    padding: "1rem",
+    padding: "2rem",
     borderRadius: "10px",
     boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
-    backgroundColor: "#f9f9f9",
-  };
-
-  const introductionTextStyle: React.CSSProperties = {
-    flex: 9,
-    padding: "2rem",
-    textAlign: "justify",
-    fontSize: 18,
-    fontFamily: "revert-layer",
-    lineHeight: 1.8,
-  };
-
-  const introductionImageStyle: React.CSSProperties = {
-    flex: 3,
-    height: 250,
-    borderRadius: "10px",
+    backgroundColor: "#fefefe",
+    marginTop: "2rem",
+    animation: "fadeIn 1s ease-in-out",
   };
 
   return (
     <div style={homeContainerStyle}>
-      <Row>
-
-        <Col span={12}><Card style={{ background: 'none', border: 'none' }}><TryCake3D /></Card></Col>
-        <Col span={12}> <animated.div style={{ ...overlayContainerStyle }}>
-          <div style={sloganStyle}>
-            <animated.h1 style={springPropsH1}>TỰ DO SÁNG TẠO</animated.h1>
-            <animated.h4 style={springPropsH4}>
-              Thiết kế chiếc bánh của bạn
-            </animated.h4>
-          </div>
-          <Link to="/listStoreAcceptDesign">
-            <Button
-              type="primary"
-              size="large"
-              className="button-hover"
-              style={buttonStyle}
-            >
-              Bắt tay vào làm
-            </Button>
-          </Link>
-        </animated.div><Carousel autoplay style={bannerCarouselStyle}>
+      <Row gutter={[32, 32]} align="middle">
+        <Col xs={24} md={12}>
+          <Card style={{ background: 'none', border: 'none' }}>
+            <TryCake3D />
+          </Card>
+        </Col>
+        <Col xs={24} md={12}>
+          <animated.div style={{ ...overlayContainerStyle }}>
+            <div style={sloganStyle}>
+              <animated.h1 style={springPropsH1}>TỰ DO SÁNG TẠO</animated.h1>
+              <animated.h4 style={springPropsH4}>
+                Thiết kế chiếc bánh của bạn
+              </animated.h4>
+            </div>
+            <Link to="/listStoreAcceptDesign">
+              <Button
+                type="primary"
+                size="large"
+                className="button-hover"
+                style={buttonStyle}
+              >
+                Bắt tay vào làm
+              </Button>
+            </Link>
+          </animated.div>
+          <Carousel autoplay style={bannerCarouselStyle}>
             <div>
               <img src={banner1} alt="Banner 1" style={bannerImageStyle} />
             </div>
@@ -232,10 +193,11 @@ const HomePage: React.FC = () => {
             <div>
               <img src={banner1} alt="Banner 3" style={bannerImageStyle} />
             </div>
-          </Carousel></Col>
+          </Carousel>
+        </Col>
       </Row>
 
-
+      {/* Bakeries Section */}
       <Col style={{ marginTop: "4rem" }}>
         <animated.h1
           style={{
@@ -271,10 +233,7 @@ const HomePage: React.FC = () => {
         </Row>
       </Col>
 
-      <Col style={{ marginTop: "1.2rem" }}>
-        <Map address="Hồ Chí Minh" />
-      </Col>
-
+      {/* Workshop Section */}
       <Col style={{ marginTop: "2rem" }}>
         <animated.h1
           style={{
@@ -285,22 +244,29 @@ const HomePage: React.FC = () => {
             ...springPropsContainer,
           }}
         >
-          Workshop đang diễn ra
+          Hội thảo
           <BulbOutlined style={{ marginLeft: "8px" }} />
         </animated.h1>
-        <Row gutter={[16, 16]} justify="center">
+        <Row gutter={[16, 16]}>
           {loading ? (
             <SpinLoading />
           ) : (
             workshops.map((workshop, index) => (
-              <div key={index} className="card-wrapper">
-                <WorkShopCard key={index} workshop={workshop} /></div>
+              <Col key={index} xs={24} sm={12} md={8}>
+                <WorkShopCard key={index} workshop={workshop} />
+              </Col>
             ))
           )}
         </Row>
       </Col>
 
-      <Col style={{ marginTop: "2rem" }}>
+      {/* Introduction Section */}
+      <Col style={{ marginTop: "4rem" }}>
+        <About />
+      </Col>
+
+      {/* Map Section */}
+      <Col style={{ marginTop: "4rem" }}>
         <animated.h1
           style={{
             textAlign: "start",
@@ -310,15 +276,10 @@ const HomePage: React.FC = () => {
             ...springPropsContainer,
           }}
         >
-          Giới thiệu về chúng tôi
+          Địa điểm các cửa hàng
           <ClockCircleOutlined style={{ marginLeft: "8px" }} />
         </animated.h1>
-        <div style={introductionContainerStyle}>
-          <div style={introductionTextStyle}>
-            <About />
-          </div>
-          <img src={imgIntro} alt="" style={introductionImageStyle} />
-        </div>
+        <Map address={''} />
       </Col>
     </div>
   );

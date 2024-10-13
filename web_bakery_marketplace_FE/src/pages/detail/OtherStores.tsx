@@ -1,20 +1,15 @@
 // OtherStores.tsx
 import React, { useEffect, useState } from 'react';
-import { Card, Row, Col } from 'antd';
+import { Row, Col } from 'antd';
 import { getBakeries } from '../../services/bakeriesService';
+import StoreCard from '../../components/card/CardStore';
 
-const otherStores = [
-    { id: 1, name: "Tiệm bánh ngọt XYZ", address: "456 Đường Nguyễn Trãi, Quận 5, TP. Hồ Chí Minh", image: 'path/to/other-store-image.jpg' },
-    { id: 2, name: "Tiệm bánh mì ABC", address: "789 Đường CMT8, Quận 10, TP. Hồ Chí Minh", image: 'path/to/other-store-image.jpg' },
-    { id: 3, name: "Tiệm bánh quy DEF", address: "101 Đường Lê Duẩn, Quận 3, TP. Hồ Chí Minh", image: 'path/to/other-store-image.jpg' },
-];
 
-const OtherStores: React.FC = ({ bakeryId }: { bakeryId: string }) => {
+const OtherStores: React.FC<{ bakeryId: string }> = ({ bakeryId }) => {
 
 
     const [bakeries, setBakeries] = useState([]);
-    const [workshops, setWorkshops] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchBakeries = async () => {
@@ -44,12 +39,6 @@ const OtherStores: React.FC = ({ bakeryId }: { bakeryId: string }) => {
         fontWeight: 'bold',
     };
 
-    const cakeImageStyle: React.CSSProperties = {
-        width: '100%',
-        height: '200px',
-        objectFit: 'cover',
-        borderRadius: '10px',
-    };
 
     return (
         <div>
@@ -57,9 +46,7 @@ const OtherStores: React.FC = ({ bakeryId }: { bakeryId: string }) => {
             <Row gutter={[16, 16]}>
                 {bakeries.map((store: any) => (
                     <Col key={store._id} span={8}>
-                        <Card className="card-hover" cover={<img src={store.image[0]} alt={store.name} style={cakeImageStyle} />}>
-                            <Card.Meta title={store.name} description={store.address} />
-                        </Card>
+                        <StoreCard bakery={store} />
                     </Col>
                 ))}
             </Row>
