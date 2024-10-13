@@ -11,6 +11,7 @@ import workshopRouter from './workshop';
 import vnpayRouter from './vnpay';
 import oderProductRouter from './oderProduct';
 import cakeoptionRouter from './cakeoption';
+import orderRouter from './order';
 
 const router = Router();
 
@@ -25,6 +26,7 @@ router.use('/v1/api/product', productRouter);
 router.use('/v1/api/cart', cartRouter);
 router.use('/v1/api/checkout', checkoutRouter);
 router.use('/v1/api/order-product', oderProductRouter);
+router.use('/v1/api/order', orderRouter);
 router.use('/v1/api/user', accessRouter);
 router.use('/v1/api/workshop', workshopRouter);
 router.use('/v1/api/cakeoption', cakeoptionRouter);

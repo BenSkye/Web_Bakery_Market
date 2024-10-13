@@ -116,7 +116,7 @@ const BakeryManager: React.FC = () => {
             dataIndex: "name",
             key: "name",
             render: (text: string, record: Bakery) => {
-                return <Link to={`/bakery/${record.key}`}>{text}</Link>;
+                return <Link to={`/getOrdersByBakeryId/${record.key}`}>{text}</Link>;
             },
         },
         {

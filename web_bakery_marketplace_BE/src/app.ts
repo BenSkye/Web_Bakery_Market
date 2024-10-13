@@ -12,6 +12,21 @@ import path from 'path';
 // Import routes
 import indexRouter from './routes/index';
 import userRouter from './routes/user';
+  // import { ordersModel } from './models/order.model';
+
+  // const addNullBakeryId = async () => {
+  //     try {
+  //         const result = await ordersModel.updateMany(
+  //             { bakery_id: { $exists: false } }, // Find documents without `bakery_id`
+  //             { $set: { bakery_id: null } } // Set `bakery_id` to `null`
+  //         );
+  //         console.log(`Updated ${result.modifiedCount} documents.`);
+  //     } catch (error) {
+  //         console.error('Error updating documents:', error);
+  //     } 
+  // };
+
+  // addNullBakeryId();
 
 const app = express();
 

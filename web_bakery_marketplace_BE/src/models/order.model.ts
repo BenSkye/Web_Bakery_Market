@@ -1,5 +1,5 @@
 import e from 'express';
-import { model, Schema } from 'mongoose';
+import mongoose, { model, Schema } from 'mongoose';
 
 const DOCUMENT_NAME = 'Order';
 const COLLECTION_NAME = 'Orders';
@@ -18,6 +18,17 @@ const orderSchema = new Schema(
         checkout: {
             type: Object,
             default: {},
+        },
+        bakery_id: {
+            type: Schema.Types.ObjectId,
+            ref: 'Bakery',
+            // default: null,
+             default: new mongoose.Types.ObjectId('66e5b9b9881b3fab9433beaf'), // Đặt ObjectId mặc định
+            // required: true,
+        },
+        status: {
+            type: String,
+            default: 'pending',
         },
         /*
         checkout={

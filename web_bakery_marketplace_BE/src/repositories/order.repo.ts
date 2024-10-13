@@ -31,6 +31,12 @@ class OrderRepo {
     async deleteOder(oderId: string) {
         return await ordersModel.findByIdAndDelete(oderId);
     }
+    async getOrderByBakeryId(bakeryId: string) {
+        return await ordersModel.find({ bakery_id: bakeryId }).populate('order_products');
+    }
+    async getOrderByStatus(status: string) {
+        return await ordersModel.find({ status: status });
+    }
 
 }
 
