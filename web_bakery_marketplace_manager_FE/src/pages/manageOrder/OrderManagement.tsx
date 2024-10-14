@@ -1,272 +1,211 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Tag, Space, Button, Modal, Descriptions, List, Typography, Image, Select, message, Row, Col, Card, Statistic } from 'antd';
-import { getOrdersByBakeryId, updateOrderProductStatus, updateOrderStatus } from '../../services/ordersBillService';
-import { CheckCircleOutlined, DollarOutlined, ShoppingCartOutlined, SyncOutlined } from '@ant-design/icons';
-import { formatCurrency } from '../../utils/format/formatCurrency';
+import { Table, Select, message, Tabs, Spin, Card, Space, Typography, Input, Tag, Row, Col, Statistic } from 'antd';
+import { getOrdersProductByBakeryId, changeStatusOrderProduct } from '../../services/ordersProductService';
 import { useParams } from 'react-router-dom';
-import { changeStatusOrderProduct } from '../../services/ordersProductService';
+import { formatCurrency } from '../../utils/format/formatCurrency';
+import { SearchOutlined, ClockCircleOutlined, SyncOutlined, CheckCircleOutlined, CloseCircleOutlined, CarOutlined, GiftOutlined, StopOutlined, DollarCircleOutlined, ShoppingCartOutlined } from '@ant-design/icons';
 
-const { Title, Text } = Typography;
 const { Option } = Select;
+const { TabPane } = Tabs;
+const { Title } = Typography;
 
 const OrderManagement: React.FC = () => {
-    const [orders, setOrders] = useState([]);
-    const [isModalVisible, setIsModalVisible] = useState(false);
-    const [selectedOrder, setSelectedOrder] = useState(null);
+    const [orders, setOrders] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [searchText, setSearchText] = useState('');
     const { bakeryId } = useParams();
 
     useEffect(() => {
+        const fetchOrders = async () => {
+            try {
+                const data = await getOrdersProductByBakeryId(bakeryId as string);
+                setOrders(data.metadata);
+                setLoading(false);
+            } catch (err) {
+                message.error('Failed to fetch orders');
+                setLoading(false);
+            }
+        };
+
         fetchOrders();
-    }, []);
+    }, [bakeryId]);
 
-    const fetchOrders = async () => {
-        const response = await getOrdersByBakeryId(bakeryId as string);
-        setOrders(response.metadata);
-    };
-
-    const showOrderDetails = (order) => {
-        setSelectedOrder(order);
-        setIsModalVisible(true);
-    };
-
-    const handleProductStatusChange = async (productId, status) => {
+    const handleStatusChange = async (orderId: string, newStatus: string) => {
         try {
-            await changeStatusOrderProduct(productId, status);
-            message.success('Product status updated successfully');
-            fetchOrders(); // Refresh orders after update
-        } catch (error) {
-            message.error('Failed to update product status');
+            await changeStatusOrderProduct(orderId, newStatus);
+            setOrders(orders.map(order =>
+                order._id === orderId ? { ...order, status: newStatus } : order
+            ));
+            message.success('Order status updated successfully');
+        } catch (err) {
+            message.error('Failed to update order status');
         }
     };
 
-    // const handleOrderStatusChange = async (orderId, newStatus) => {
-    //     try {
-    //         await updateOrderStatus(orderId, newStatus);
-    //         message.success('Order status updated successfully');
-    //         fetchOrders(); // Refresh orders after update
-    //     } catch (error) {
-    //         message.error('Failed to update order status');
-    //     }
-    // };
+    const getStatusInfo = (status: string) => {
+        switch (status) {
+            case 'pending':
+                return { color: 'orange', icon: <ClockCircleOutlined />, text: 'Pending' };
+            case 'processing':
+                return { color: 'blue', icon: <SyncOutlined spin />, text: 'Processing' };
+            case 'success':
+                return { color: 'green', icon: <CheckCircleOutlined />, text: 'Success' };
+            case 'confirmed':
+                return { color: 'cyan', icon: <CheckCircleOutlined />, text: 'Confirmed' };
+            case 'rejected':
+                return { color: 'red', icon: <CloseCircleOutlined />, text: 'Rejected' };
+            case 'shipping':
+                return { color: 'geekblue', icon: <CarOutlined />, text: 'Shipping' };
+            case 'delivered':
+                return { color: 'purple', icon: <GiftOutlined />, text: 'Delivered' };
+            case 'canceled':
+                return { color: 'magenta', icon: <StopOutlined />, text: 'Canceled' };
+            default:
+                return { color: 'default', icon: <ClockCircleOutlined />, text: 'Unknown' };
+        }
+    };
 
-    const getStatusColor = (status) => {
-        const colorMap = {
-            'pending': 'gold',
-            'confirmed': 'green',
-            'rejected': 'red',
-            'success': 'green',
-            'processing': 'blue',
-            'shipping': 'cyan',
-            'delivered': 'green',
-            'canceled': 'red'
-        };
-        return colorMap[status] || 'default';
+    const getDashboardStats = () => {
+        const pendingOrders = orders.filter(order => order.status === 'pending').length;
+        const totalRevenue = orders.reduce((sum, order) => sum + order.price, 0);
+        const totalOrders = orders.length;
+        const completedOrders = orders.filter(order => ['success', 'delivered'].includes(order.status)).length;
+
+        return { pendingOrders, totalRevenue, totalOrders, completedOrders };
     };
 
     const columns = [
-        { title: 'Order ID', dataIndex: '_id', key: '_id' },
         {
-            title: 'Order Status',
+            title: 'Order ID',
+            dataIndex: '_id',
+            key: '_id',
+            render: (text: string) => <a href={`/order/${text}`}>{text}</a>,
+        },
+        {
+            title: 'Quantity',
+            dataIndex: 'quantity',
+            key: 'quantity',
+        },
+        {
+            title: 'Price',
+            dataIndex: 'price',
+            key: 'price',
+            render: (price: number) => formatCurrency(price),
+        },
+        {
+            title: 'Status',
             dataIndex: 'status',
-            key: 'orderStatus',
-            render: (status, record) => (
+            key: 'status',
+            render: (status: string) => {
+                const { color, icon, text } = getStatusInfo(status);
+                return (
+                    <Tag color={color} icon={icon}>
+                        {text}
+                    </Tag>
+                );
+            },
+        },
+        {
+            title: 'Actions',
+            key: 'actions',
+            render: (text: string, record: any) => (
                 <Select
-                    defaultValue={status}
+                    defaultValue={record.status}
                     style={{ width: 120 }}
-                // onChange={(value) => handleOrderStatusChange(record._id, value)}
+                    onChange={(value) => handleStatusChange(record._id, value)}
                 >
                     <Option value="pending">Pending</Option>
-                    <Option value="confirmed">Confirmed</Option>
                     <Option value="processing">Processing</Option>
+                    <Option value="success">Success</Option>
+                    <Option value="confirmed">Confirmed</Option>
+                    <Option value="rejected">Rejected</Option>
                     <Option value="shipping">Shipping</Option>
                     <Option value="delivered">Delivered</Option>
                     <Option value="canceled">Canceled</Option>
                 </Select>
-            )
-        },
-        // {
-        //     title: 'Product Statuses',
-        //     dataIndex: 'order_products',
-        //     key: 'productStatuses',
-        //     render: (products) => (
-        //         <Space>
-        //             {products.map((product, index) => (
-        //                 <Tag key={index} color={getStatusColor(product.status)}>
-        //                     {product.status.toUpperCase()}
-        //                 </Tag>
-        //             ))}
-        //         </Space>
-        //     )
-        // },
-        {
-            title: 'Total Price',
-            dataIndex: ['checkout', 'total_price'],
-            key: 'total_price',
-            render: price => `$${(price / 1000).toFixed(2)}`
-        },
-        { title: 'Payment Method', dataIndex: 'payment_method', key: 'payment_method' },
-        {
-            title: 'Action',
-            key: 'action',
-            render: (_, record) => (
-                <Button onClick={() => showOrderDetails(record)}>View Details</Button>
             ),
         },
     ];
 
-    const renderProductDetails = (product, orderId) => {
-        const commonDetails = (
-            <Space direction="vertical">
-                <Image
-                    width={200}
-                    src={product.image || 'https://via.placeholder.com/200x200?text=No+Image'}
-                    alt={product.product_name || 'Product'}
-                />
-                <Text strong>Quantity:</Text> {product.quantity}
-                <Text strong>Price:</Text> ${(product.price / 1000).toFixed(2)}
-                <Text strong>Status:</Text>
-                <Tag color={getStatusColor(product.status)}>{product.status.toUpperCase()}</Tag>
-            </Space>
-        );
+    const filteredOrders = orders.filter(order =>
+        order._id.toLowerCase().includes(searchText.toLowerCase()) ||
+        order.status.toLowerCase().includes(searchText.toLowerCase())
+    );
 
-        if (product.isCustomCake) {
-            return (
-                <List.Item>
-                    <List.Item.Meta
-                        title={<Title level={4}>Custom Cake</Title>}
-                        description={
-                            <Space direction="vertical">
-                                {commonDetails}
-                                <Text strong>Filling:</Text> {product.customCake.selectedFilling.name}
-                                <Text strong>Frosting Color:</Text> {product.customCake.frostingColor.name}
-                                <Text strong>Drip Sauce:</Text> {product.customCake.selectedDripSauce.name}
-                                <Text strong>Decorations:</Text> {product.customCake.selectedDecorations.map(d => d.label).join(', ')}
-                                <Select
-                                    defaultValue={product.status}
-                                    style={{ width: 120 }}
-                                    onChange={(value) => handleProductStatusChange(product._id, value)}
-                                >
-                                    <Option value="pending">Chờ</Option>
-                                    <Option value="confirmed">Nhận</Option>
-                                    <Option value="rejected">Từ chối</Option>
-                                </Select>
-                            </Space>
-                        }
-                    />
-                </List.Item>
-            );
-        } else {
-            return (
-                <List.Item>
-                    <List.Item.Meta
-                        title={<Title level={4}>{product.product_name || `Product ID: ${product.product_id}`}</Title>}
-                        description={commonDetails}
-                    />
-                </List.Item>
-            );
-        }
-    };
+    const renderOrderTable = (isCustom: boolean) => (
+        <Table
+            dataSource={filteredOrders.filter(order => order.isCustomCake === isCustom)}
+            columns={columns}
+            rowKey="_id"
+            pagination={{ pageSize: 10 }}
+        />
+    );
 
-    const getOrderStatistics = () => {
-        const totalOrders = orders.length;
-        const totalRevenue = orders.reduce((sum, order) => sum + order.checkout.total_price, 0) / 1000;
-        const completedOrders = orders.filter(order => order.status === 'delivered').length;
-        const pendingOrders = orders.filter(order => order.status === 'pending').length;
+    if (loading) return <Spin size="large" />;
 
-        return { totalOrders, totalRevenue, completedOrders, pendingOrders };
-    };
-
-    const { totalOrders, totalRevenue, completedOrders, pendingOrders } = getOrderStatistics();
+    const { pendingOrders, totalRevenue, totalOrders, completedOrders } = getDashboardStats();
 
     return (
-        <div style={{ padding: '24px', background: '#f0f2f5', minHeight: '100vh' }}>
-            <Title level={2} style={{ marginBottom: '24px' }}>Order Management</Title>
+        <Card style={{ margin: '24px' }}>
+            <Space direction="vertical" size="large" style={{ width: '100%' }}>
+                <Title level={2}>Order Management</Title>
 
-            <Row gutter={16} style={{ marginBottom: '24px' }}>
-                <Col span={6}>
-                    <Card>
-                        <Statistic
-                            title="Total Orders"
-                            value={totalOrders}
-                            prefix={<ShoppingCartOutlined />}
-                        />
-                    </Card>
-                </Col>
-                <Col span={6}>
-                    <Card>
-                        <Statistic
-                            title="Total Revenue"
-                            value={totalRevenue}
-                            precision={2}
-                            prefix={<DollarOutlined />}
-                            suffix="$"
-                        />
-                    </Card>
-                </Col>
-                <Col span={6}>
-                    <Card>
-                        <Statistic
-                            title="Completed Orders"
-                            value={completedOrders}
-                            prefix={<CheckCircleOutlined />}
-                        />
-                    </Card>
-                </Col>
-                <Col span={6}>
-                    <Card>
-                        <Statistic
-                            title="Pending Orders"
-                            value={pendingOrders}
-                            prefix={<SyncOutlined spin />}
-                        />
-                    </Card>
-                </Col>
-            </Row>
+                <Row gutter={16}>
+                    <Col span={6}>
+                        <Card>
+                            <Statistic
+                                title="Pending Orders"
+                                value={pendingOrders}
+                                prefix={<ClockCircleOutlined />}
+                            />
+                        </Card>
+                    </Col>
+                    <Col span={6}>
+                        <Card>
+                            <Statistic
+                                title="Total Revenue"
+                                value={formatCurrency(totalRevenue)}
+                                prefix={<DollarCircleOutlined />}
+                            />
+                        </Card>
+                    </Col>
+                    <Col span={6}>
+                        <Card>
+                            <Statistic
+                                title="Total Orders"
+                                value={totalOrders}
+                                prefix={<ShoppingCartOutlined />}
+                            />
+                        </Card>
+                    </Col>
+                    <Col span={6}>
+                        <Card>
+                            <Statistic
+                                title="Completed Orders"
+                                value={completedOrders}
+                                prefix={<CheckCircleOutlined />}
+                            />
+                        </Card>
+                    </Col>
+                </Row>
 
-            <Card>
-                <Table
-                    columns={columns}
-                    dataSource={orders}
-                    rowKey="_id"
-                    pagination={{ pageSize: 10 }}
-                    scroll={{ x: true }}
+                <Input
+                    placeholder="Search orders..."
+                    prefix={<SearchOutlined />}
+                    onChange={(e) => setSearchText(e.target.value)}
+                    style={{ width: 300 }}
                 />
-            </Card>
 
-            <Modal
-                title={<Title level={3}>Order Details</Title>}
-                visible={isModalVisible}
-                onOk={() => setIsModalVisible(false)}
-                onCancel={() => setIsModalVisible(false)}
-                width={800}
-                footer={null}
-            >
-                {selectedOrder && (
-                    <Card>
-                        <Descriptions bordered column={1}>
-                            <Descriptions.Item label="Order ID">{selectedOrder._id}</Descriptions.Item>
-                            <Descriptions.Item label="Order Status">
-                                <Tag color={getStatusColor(selectedOrder.status)}>{selectedOrder.status.toUpperCase()}</Tag>
-                            </Descriptions.Item>
-                            <Descriptions.Item label="Total Price">
-                                ${(selectedOrder.checkout.total_price / 1000).toFixed(2)}
-                            </Descriptions.Item>
-                            <Descriptions.Item label="Payment Method">{selectedOrder.payment_method}</Descriptions.Item>
-                            <Descriptions.Item label="Shipping Address">
-                                {selectedOrder.shipping_address.name}, {selectedOrder.shipping_address.phone}, {selectedOrder.shipping_address.address}
-                            </Descriptions.Item>
-                            <Descriptions.Item label="Products">
-                                <List
-                                    dataSource={selectedOrder.order_products}
-                                    renderItem={(product) => renderProductDetails(product, selectedOrder._id)}
-                                    itemLayout="vertical"
-                                />
-                            </Descriptions.Item>
-                        </Descriptions>
-                    </Card>
-                )}
-            </Modal>
-        </div>
+                <Tabs defaultActiveKey="1">
+                    <TabPane tab="Custom Cake Orders" key="1">
+                        {renderOrderTable(true)}
+                    </TabPane>
+                    <TabPane tab="Regular Product Orders" key="2">
+                        {renderOrderTable(false)}
+                    </TabPane>
+                </Tabs>
+            </Space>
+        </Card>
     );
 };
 
