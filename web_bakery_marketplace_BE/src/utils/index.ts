@@ -17,4 +17,10 @@ const getUnSelectData = (fields: string[]) => {
     return fields.map(field => `-${field}`).join(' ')
 }
 
-export { getInfoData, convertObjectId, getSelectData, getUnSelectData }
+const generateOrderCode = (): number => {
+    const timestamp = new Date().getTime();
+    const random = Math.floor(Math.random() * 1000);
+    return parseInt(`${timestamp}${random.toString().padStart(3, '0')}`);
+}
+
+export { getInfoData, convertObjectId, getSelectData, getUnSelectData, generateOrderCode }

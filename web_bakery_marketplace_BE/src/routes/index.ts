@@ -11,6 +11,7 @@ import workshopRouter from './workshop';
 import vnpayRouter from './vnpay';
 import oderProductRouter from './oderProduct';
 import cakeoptionRouter from './cakeoption';
+import payosRouter from './payos';
 
 const router = Router();
 
@@ -29,5 +30,6 @@ router.use('/v1/api/user', accessRouter);
 router.use('/v1/api/workshop', workshopRouter);
 router.use('/v1/api/cakeoption', cakeoptionRouter);
 router.use('/v1/api/vnpay', vnpayRouter);
+router.use('/v1/api/payos', payosRouter);
 
 export default router;

@@ -228,6 +228,10 @@ const Checkout: React.FC = () => {
                                     style={{ marginRight: '10px' }}
                                 />
                             </Radio>
+                            <Radio value="payos">
+                                payos
+                            </Radio>
+
                             <Radio value="cash">Tiền mặt <DollarOutlined /></Radio>
                         </Radio.Group>
                     </Row>

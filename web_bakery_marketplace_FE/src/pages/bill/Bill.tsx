@@ -9,6 +9,7 @@ const { Content } = Layout;
 const Bill: React.FC = () => {
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
+    console.log('queryParams', queryParams)
 
     const billData = [
         { label: 'Số Tiền', value: `${parseInt(queryParams.get('vnp_Amount') || '0') / 100} VND` },
