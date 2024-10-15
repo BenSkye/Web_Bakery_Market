@@ -23,7 +23,7 @@ class OrderProductService {
     }
 
     static acceptOrderProduct = async (orderProductId: string) => {
-        return await order_product_repo.changeStatusOrderProduct(orderProductId, 'confirmed');
+        return await order_product_repo.changeStatusOrderProduct(orderProductId, 'confir    med');
     }
 
     static rejectOrderProduct = async (orderProductId: string) => {
