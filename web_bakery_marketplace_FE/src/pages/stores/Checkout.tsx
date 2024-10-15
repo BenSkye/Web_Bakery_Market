@@ -1,9 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Row, Col, Input, Button, Checkbox, Card, List, Avatar, Divider, Modal, Form, Radio, Image, Table, message } from 'antd';
+import { Row, Col, Input, Button, Card, Avatar, Divider, Modal, Form, Radio, Image, Table, message } from 'antd';
 import { EnvironmentOutlined, EditOutlined, DollarOutlined } from '@ant-design/icons';
 import { convertToVND } from '../../utils';
 import { createOrder } from '../../services/checkoutService';
-import { redirect } from 'react-router-dom';
 import { CartContext } from '../../stores/cartContext';
 
 const Checkout: React.FC = () => {
