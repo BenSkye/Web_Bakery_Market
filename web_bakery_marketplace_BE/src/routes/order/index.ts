@@ -8,7 +8,7 @@ const orderRouter = Router();
 orderRouter.use(authentication);
 orderRouter.use(apiKey);
 
-orderRouter.get('/get-order-by-bakery-id/:bakeryId', permission('shop'), OrderController.getOrderByBakeryId);
+// orderRouter.get('/get-order-by-bakery-id/:bakeryId', permission('shop'), OrderController.getOrderByBakeryId);
 
 export default orderRouter;
 

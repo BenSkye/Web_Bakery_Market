@@ -19,17 +19,10 @@ const orderSchema = new Schema(
             type: Object,
             default: {},
         },
-        bakery_id: {
-            type: Schema.Types.ObjectId,
-            ref: 'Bakery',
-            // default: null,
-             default: new mongoose.Types.ObjectId('66e5b9b9881b3fab9433beaf'), // Đặt ObjectId mặc định
-            // required: true,
-        },
-        status: {
-            type: String,
-            default: 'pending',
-        },
+        // status: {
+        //     type: String,
+        //     default: 'pending',
+        // },
         /*
         checkout={
             total_price: number;
