@@ -38,7 +38,7 @@ const OrderDetailStatus = () => {
     const orderSteps = [
         {
             title: 'Đặt hàng thành công',
-            icon: <ShoppingCartOutlined />,
+            icon: <ShoppingCartOutlined spin />,
             status: 'success'
         },
         {
@@ -48,12 +48,12 @@ const OrderDetailStatus = () => {
         },
         {
             title: 'Đang giao hàng',
-            icon: <CarOutlined />,
+            icon: <CarOutlined spin />,
             status: 'shipping'
         },
         {
             title: 'Đã giao hàng',
-            icon: <CheckCircleOutlined />,
+            icon: <CheckCircleOutlined spin />,
             status: 'delivered'
         }
     ];
