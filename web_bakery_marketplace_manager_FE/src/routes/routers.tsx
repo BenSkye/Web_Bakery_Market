@@ -9,6 +9,7 @@ import MainLayout from '../layouts/DefaultLayout';
 import StatisticsPage from '../components/chart/ChartStatic';
 import OrderManagement from '../pages/manageOrder/OrderManagement';
 import ProtectedRoute from './ProtectedRoute';
+import ManageProducts from '../pages/manageProduct/ManageProducts';
 import { useAuth } from '../stores/authContex';
 
 const AppRoutes: React.FC = () => {
@@ -23,6 +24,7 @@ const AppRoutes: React.FC = () => {
                 <Route path="/bakery/:id" element={<BakeryDetail />} />
                 <Route path='/statistics' element={<StatisticsPage />} />
                 <Route path='/getOrdersByBakeryId/:bakeryId' element={<OrderManagement />} />
+                <Route path='/getAllProductsByBakeryId/:bakeryId' element={<ManageProducts />} />
             </Route>
             <Route path="/" element={user ? <Navigate to="/home" /> : <Navigate to="/login" />} />
 

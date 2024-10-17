@@ -2,6 +2,7 @@ import React from "react";
 import { Form, Input, Button, Col, Row, message } from "antd";
 import { useNavigate, Link } from "react-router-dom";
 import { login } from "../../services/authenService";
+import logo from "../../assets/logo.png";
 import { UserOutlined, LockOutlined, CrownOutlined } from '@ant-design/icons';
 
 const LoginManager: React.FC = () => {
@@ -42,8 +43,7 @@ const LoginManager: React.FC = () => {
             alignItems: "center",
             padding: "2rem",
           }}
-        >
-          <CrownOutlined style={{ fontSize: '64px', color: 'white', marginBottom: '2rem' }} />
+        ><img style={{ boxShadow: '10px', borderRadius: '20px', width: '100px', height: '100px', marginBottom: '2rem' }} src={logo}></img>
           <h1 style={{ color: 'white', fontSize: '2.5rem', marginBottom: '1rem', textShadow: '2px 2px 4px rgba(0,0,0,0.1)' }}>Quản lý Merci</h1>
           <p style={{ color: 'white', fontSize: '1.2rem', textAlign: 'center', textShadow: '1px 1px 2px rgba(0,0,0,0.1)' }}>
             Chào mừng đến với hệ thống quản lý Merci! <br />
@@ -101,6 +101,9 @@ const LoginManager: React.FC = () => {
 
               <div style={{ textAlign: "center" }}>
                 <Link to="/forgot-password" style={{ color: '#ff9a9e' }}>Quên mật khẩu?</Link>
+              </div>
+              <div style={{ textAlign: "center" }}>
+                <Link to="/signup" style={{ color: '#ff9a9e' }}>Đăng kí tài khoản?</Link>
               </div>
             </Form>
           </div>

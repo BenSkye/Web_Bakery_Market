@@ -1,8 +1,9 @@
 import React from "react";
-import { Form, Input, Button, Col, Row, notification } from "antd"; // Import notification
+import { Form, Input, Button, notification, Col, Row } from "antd"; // Import notification
 import { signup } from "../../services/authenService";
 import logo from "../../assets/logo.png";
 import { Link } from 'react-router-dom';
+import { HomeOutlined, LockOutlined, MailOutlined, PhoneOutlined, ShopOutlined, UserOutlined } from '@ant-design/icons';
 
 const SignUp: React.FC = () => {
   // Handle form submission
@@ -50,44 +51,29 @@ const SignUp: React.FC = () => {
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#f0f2f5",
-        height: "100vh",
-      }}
-    >
-      <Row style={{ height: "100vh", width: "100%" }}>
-        {/* 1/3 - Left section with logo and color theme */}
+    <div style={{ height: "100vh", background: "#fad0c4" }}>
+      <Row style={{ height: "100%", width: "100%" }}>
         <Col
-          span={8}
+          span={12}
           style={{
-            background: 'linear-gradient(to left, rgba(253, 222, 222, 1), rgba(253, 222, 222, 0.1))',
+            background: 'linear-gradient(135deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%)',
             display: "flex",
+            flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
+            padding: "2rem",
           }}
         >
-          <div style={{ textAlign: "center", color: "#1e88e5" }}>
-            <h2 className="typing-effect" style={{ color: '#594b47', fontSize: "1.5rem", fontWeight: "bold", marginBottom: "1rem" }}>
-              Đăng kí đối tác để bán hàng
-            </h2>
-            <p style={{ fontSize: "1rem", color: '#594b47' }}>
-              Chào mừng đến với Merci!
-            </p>
-            <img
-              src={logo}
-              alt="Logo"
-              style={{ width: "200px", marginBottom: "2rem", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)", borderRadius: "10px" }}
-            />
-          </div>
+          <img src={logo} alt="logo" style={{ boxShadow: '10px', borderRadius: '20px', width: '100px', height: '100px', marginBottom: '2rem' }} />
+          <h1 style={{ color: 'white', fontSize: '2.5rem', marginBottom: '1rem', textShadow: '2px 2px 4px rgba(0,0,0,0.1)' }}>Đăng Ký Đối Tác Merci</h1>
+          <p style={{ color: 'white', fontSize: '1.2rem', textAlign: 'center', textShadow: '1px 1px 2px rgba(0,0,0,0.1)' }}>
+            Chào mừng bạn đến với Merci! <br />
+            Đăng ký để trở thành đối tác của chúng tôi.
+          </p>
         </Col>
 
-        {/* 2/3 - Right section with signup form */}
         <Col
-          span={16}
+          span={12}
           style={{
             display: "flex",
             justifyContent: "center",
@@ -98,81 +84,90 @@ const SignUp: React.FC = () => {
           <div
             style={{
               width: "80%",
-              padding: "2rem",
+              padding: "3rem",
               backgroundColor: "#fff",
-              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-              borderRadius: "10px",
+              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+              borderRadius: "8px",
             }}
           >
-            <h1 style={{ textAlign: "center", marginBottom: "1rem" }}>
+            <h2 style={{ textAlign: "center", marginBottom: "2rem", fontSize: "2rem", color: "#ff9a9e" }}>
               Đăng Ký Đối Tác
-            </h1>
+            </h2>
             <Form
-              name="basic"
+              name="signup"
               layout="vertical"
               onFinish={onFinish}
               onFinishFailed={onFinishFailed}
+              size="large"
             >
               <Form.Item
-                label="Tên người dùng"
                 name="username"
                 rules={[{ required: true, message: "Vui lòng nhập tên người dùng!" }]}
               >
-                <Input placeholder="Nhập tên người dùng" />
+                <Input prefix={<UserOutlined style={{ color: '#ff9a9e' }} />} placeholder="Tên người dùng" />
               </Form.Item>
 
-              {/* Password */}
               <Form.Item
-                label="Mật khẩu"
-                name="password"
-                rules={[{ required: true, message: "Vui lòng nhập mật khẩu!" }]}
-              >
-                <Input.Password placeholder="Nhập mật khẩu" />
-              </Form.Item>
-
-              {/* Email with format validation */}
-              <Form.Item
-                label="Email"
                 name="email"
                 rules={[
                   { required: true, message: "Vui lòng nhập email!" },
                   { type: 'email', message: "Email không hợp lệ!" },
                 ]}
               >
-                <Input placeholder="Nhập email" />
+                <Input prefix={<MailOutlined style={{ color: '#ff9a9e' }} />} placeholder="Email" />
               </Form.Item>
 
-              {/* Phone with numeric validation */}
               <Form.Item
-                label="Số điện thoại"
+                name="password"
+                rules={[{ required: true, message: "Vui lòng nhập mật khẩu!" }]}
+              >
+                <Input.Password prefix={<LockOutlined style={{ color: '#ff9a9e' }} />} placeholder="Mật khẩu" />
+              </Form.Item>
+
+              <Form.Item
+                name="confirmPassword"
+                dependencies={['password']}
+                rules={[
+                  { required: true, message: "Vui lòng xác nhận mật khẩu!" },
+                  ({ getFieldValue }) => ({
+                    validator(_, value) {
+                      if (!value || getFieldValue('password') === value) {
+                        return Promise.resolve();
+                      }
+                      return Promise.reject(new Error('Mật khẩu xác nhận không khớp!'));
+                    },
+                  }),
+                ]}
+              >
+                <Input.Password prefix={<LockOutlined style={{ color: '#ff9a9e' }} />} placeholder="Xác nhận mật khẩu" />
+              </Form.Item>
+
+              <Form.Item
                 name="phone"
                 rules={[
                   { required: true, message: "Vui lòng nhập số điện thoại!" },
                   { pattern: /^[0-9]*$/, message: "Số điện thoại phải là số!" },
                 ]}
               >
-                <Input placeholder="Nhập số điện thoại" />
+                <Input prefix={<PhoneOutlined style={{ color: '#ff9a9e' }} />} placeholder="Số điện thoại" />
               </Form.Item>
 
-              {/* Address */}
               <Form.Item
-                label="Địa chỉ"
                 name="address"
                 rules={[{ required: true, message: "Vui lòng nhập địa chỉ!" }]}
               >
-                <Input placeholder="Nhập địa chỉ" />
+                <Input prefix={<HomeOutlined style={{ color: '#ff9a9e' }} />} placeholder="Địa chỉ" />
               </Form.Item>
 
-              {/* Submit Button */}
               <Form.Item>
-                <Button type="primary" htmlType="submit" style={{ width: "100%" }}>
+                <Button type="primary" htmlType="submit" style={{ width: "100%", height: "40px", backgroundColor: "#ff9a9e", borderColor: "#ff9a9e" }}>
                   Đăng Ký
                 </Button>
               </Form.Item>
 
               <div style={{ textAlign: "center" }}>
-                <span>Bạn đã có tài khoản </span>
-                <Link to="/login">Đăng nhập</Link>
+                <span>Bạn đã có tài khoản? </span>
+                <Link to="/login" style={{ color: "#ff9a9e" }}>Đăng nhập</Link>
               </div>
             </Form>
           </div>

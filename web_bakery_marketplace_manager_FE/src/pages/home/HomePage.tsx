@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Button, Table, Tag, message } from "antd";
+import { Button, Collapse, Dropdown, Menu, Space, Table, Tag, message } from "antd";
 import { getBakeryByUserId } from "../../services/bakeriesService";
 import "../../styles/ManagePageStyles/BakeryManager.css";
-import { StarOutlined, StarFilled, PlusCircleOutlined } from '@ant-design/icons';
+import { StarOutlined, StarFilled, PlusCircleOutlined, ShoppingCartOutlined, CoffeeOutlined, CreditCardOutlined, RightOutlined, DownOutlined } from '@ant-design/icons';
 import AddBakeryModal from '../../components/modal/AddBakeryModal';
 import { createBakery } from '../../services/bakeriesService';
 import { useAuth } from '../../stores/authContex';
 import { ShopOutlined } from '@ant-design/icons';
+import Panel from 'antd/es/cascader/Panel';
 
 
 interface Bakery {
@@ -117,6 +118,30 @@ const BakeryManager: React.FC = () => {
             key: "name",
             render: (text: string, record: Bakery) => {
                 return <Link to={`/getOrdersByBakeryId/${record.key}`}>{text}</Link>;
+            },
+        },
+        {
+            title: "Quản lý",
+            key: "actions",
+            render: (text: string, record: Bakery) => {
+                const menu = (
+                    <Menu>
+                        <Menu.Item key="1" icon={<ShoppingCartOutlined />}>
+                            <Link to={`/getOrdersByBakeryId/${record.key}`}>Đơn hàng</Link>
+                        </Menu.Item>
+                        <Menu.Item key="2" icon={<CoffeeOutlined />}>
+                            <Link to={`/getAllProductsByBakeryId/${record.key}`}>Mặt hàng</Link>
+                        </Menu.Item>
+                    </Menu>
+                );
+
+                return (
+                    <Dropdown overlay={menu} trigger={['click']}>
+                        <Button>
+                            Quản lý <DownOutlined />
+                        </Button>
+                    </Dropdown>
+                );
             },
         },
         {
