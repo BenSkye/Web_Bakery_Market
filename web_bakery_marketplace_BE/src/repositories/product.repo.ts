@@ -25,13 +25,9 @@ class ProductRepository {
         }]).lean();
     }
 
-    // async updateProduct(id: number, product: Product): Promise<[number, Product[]]> {
-    //     return await Product.update(product, { where: { id } });
-    // }
-
-    // async deleteProduct(id: number): Promise<number> {
-    //     return await Product.destroy({ where: { id } });
-    // }
+    async updateProduct(id: string, product: any) {
+        return await productModel.findByIdAndUpdate(id, product, { new: true });
+    }
 }
 
 export default new ProductRepository();

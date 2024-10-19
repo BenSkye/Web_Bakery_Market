@@ -1,11 +1,18 @@
 import { NextFunction } from "express";
 import { SuccessResponse } from "../core/success.response";
 import { asyncHandler } from "../helpers/asyncHandler";
-import CheckoutService from "../services/checkout.service";
 import InventoryService from "../services/inventory.service";
 
 
 class InventoryController {
+
+    getAInventory = asyncHandler(async (req: any, res: Response, next: NextFunction) => {
+        new SuccessResponse({
+            message: 'Get A Inventory successfully',
+            metadata: await InventoryService.getAInventory(req.keyStore.user),
+        }).send(res);
+    });
+
     addStockToInventory = asyncHandler(async (req: any, res: Response, next: NextFunction) => {
         new SuccessResponse({
             message: 'Add Stock to Inventory successfully',
