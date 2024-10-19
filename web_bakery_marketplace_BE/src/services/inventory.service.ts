@@ -6,6 +6,12 @@ import productRepo from "../repositories/product.repo";
 
 
 class InventoryService {
+
+    static getAInventory = async (userId: string) => {
+        const bakery_detail = await bakeryRepo.getBakeryById(userId, ['_id', 'user_id']);
+        return await inventoryRepo.findInventory({ shop_id: bakery_detail?._id?.toString() ?? '' }, ['product_id', 'stock', 'daily_records']);
+    }
+
     static addStockToInventory = async (userId: string, productId: string, quantity: number) => {
         const product_detail = await productRepo.getProductById(productId, ['bakery']);
         console.log('product_detail', product_detail);

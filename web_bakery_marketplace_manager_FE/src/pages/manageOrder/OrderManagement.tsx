@@ -9,13 +9,16 @@ import moment from 'moment';
 
 const { Option } = Select;
 const { TabPane } = Tabs;
-const { Title, Text } = Typography;
+const { Title } = Typography;
 
-const OrderManagement: React.FC = () => {
-    const [orders, setOrders] = useState<any[]>([]);
+interface OrderManagementProps {
+    bakeryId?: string;
+}
+
+const OrderManagement: React.FC<OrderManagementProps> = ({ bakeryId }) => {
+    const [orders, setOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchText, setSearchText] = useState('');
-    const { bakeryId } = useParams();
     const [confirmModalVisible, setConfirmModalVisible] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState<any | null>(null);
     const [orderDetailModalVisible, setOrderDetailModalVisible] = useState(false);
@@ -189,7 +192,7 @@ const OrderManagement: React.FC = () => {
     return (
         <Card style={{ margin: '24px' }}>
             <Space direction="vertical" size="large" style={{ width: '100%' }}>
-                <Title level={2}>Order Management</Title>
+                <Title level={2}>Quản lí đơn hàng</Title>
                 <Row gutter={16}>
                     <Col span={6}><StatisticCard title="Pending Orders" value={pendingOrders} icon={<ClockCircleOutlined />} /></Col>
                     <Col span={6}><StatisticCard title="Total Revenue" value={formatCurrency(totalRevenue)} icon={<DollarCircleOutlined />} /></Col>

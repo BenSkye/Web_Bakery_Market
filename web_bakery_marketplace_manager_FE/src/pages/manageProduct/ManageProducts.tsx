@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Space, Button, Input, Tag, Image, Tooltip, Modal } from 'antd';
-import { EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
-import { getProductsByBakery } from '../../services/productService';
+import { Table, Space, Button, Input, Tag, Image, Tooltip, Modal, Card, Row, Col, Typography } from 'antd';
+import { EditOutlined, DeleteOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
-import { useParams } from 'react-router-dom';
+import { getProductsByBakery } from '../../services/productService';
+import AddProductModal from '../../components/modal/AddProductModal';
+import UpdateProductModal from '../../components/modal/UpdateProductModal';
 
 interface Product {
     _id: string;
     name: string;
     price: number;
     image: string[];
+    thumbnail: string;
     category: {
         _id: string;
         name: string;
@@ -18,43 +20,65 @@ interface Product {
         _id: string;
         name: string;
     };
+    quantity: number;
     status: string;
     rating: number;
 }
 
 const { Search } = Input;
+const { Title } = Typography;
 
-const ManageProducts: React.FC = () => {
+interface ManageProductsProps {
+    bakeryId: string;
+}
+
+const ManageProducts: React.FC<ManageProductsProps> = ({ bakeryId }) => {
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchText, setSearchText] = useState('');
-    const bakeryId = useParams();
+    const [isAddModalVisible, setIsAddModalVisible] = useState(false);
+    const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false);
+    const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
 
+    const fetchProducts = async () => {
+        setLoading(true);
+        const response = await getProductsByBakery(bakeryId);
+        setProducts(response.metadata);
+        setLoading(false);
+    };
 
     useEffect(() => {
-        const fetchProducts = async () => {
-            const response = await getProductsByBakery(bakeryId as unknown as string);
-            console.log('====================================');
-            console.log(response.metadata);
-            console.log('====================================');
-            setProducts(response.metadata);
-            setLoading(false);
-        };
         fetchProducts();
-    }, [bakeryId, products]);
+    }, [bakeryId]);
+
+    const showAddModal = () => {
+        setIsAddModalVisible(true);
+    };
+
+    const handleAddSuccess = () => {
+        setIsAddModalVisible(false);
+        fetchProducts();
+    };
 
     const handleSearch = (value: string) => {
         setSearchText(value);
     };
 
-    const handleEdit = (record: Product) => {
-        // Implement edit functionality
-        console.log('Edit product:', record);
-    };
+
 
     const handleDelete = (record: Product) => {
         // Implement delete functionality
         console.log('Delete product:', record);
+    };
+
+    const handleEdit = (record: Product) => {
+        setSelectedProductId(record._id);
+        setIsUpdateModalVisible(true);
+    };
+
+    const handleUpdateSuccess = () => {
+        setIsUpdateModalVisible(false);
+        fetchProducts();
     };
 
     const handleViewImages = (images: string[]) => {
@@ -87,6 +111,14 @@ const ManageProducts: React.FC = () => {
                 record.name.toLowerCase().includes(value.toString().toLowerCase()),
         },
         {
+            title: 'Thumbnail',
+            dataIndex: 'thumbnail',
+            key: 'thumbnail',
+            render: (thumbnail) => (
+                <Image src={thumbnail} alt="Thumbnail" style={{ width: 100, height: 100, objectFit: 'cover' }} />
+            ),
+        },
+        {
             title: 'Price',
             dataIndex: 'price',
             key: 'price',
@@ -104,6 +136,11 @@ const ManageProducts: React.FC = () => {
             key: 'bakery',
         },
         {
+            title: 'Quantity',
+            dataIndex: 'quantity',
+            key: 'quantity',
+        },
+        {
             title: 'Status',
             dataIndex: 'status',
             key: 'status',
@@ -117,7 +154,7 @@ const ManageProducts: React.FC = () => {
             title: 'Rating',
             dataIndex: 'rating',
             key: 'rating',
-            render: (rating) => (rating === -1 ? 'N/A' : rating),
+            render: (rating) => (rating && rating > 0 ? rating : 0),
         },
         {
             title: 'Actions',
@@ -139,21 +176,55 @@ const ManageProducts: React.FC = () => {
     ];
 
     return (
-        <div style={{ padding: 24 }}>
-            <h1>Manage Products</h1>
-            <Search
-                placeholder="Search products"
-                onSearch={handleSearch}
-                style={{ marginBottom: 16 }}
-            />
+        <Card>
+            <Row gutter={[16, 16]} align="middle" justify="space-between">
+                <Col>
+                    <Title level={2}>Quản lí sản phẩm</Title>
+                </Col>
+                <Col>
+                    <Button type="primary" icon={<PlusOutlined />} onClick={showAddModal}>
+                        Thêm sản phẩm
+                    </Button>
+                </Col>
+            </Row>
+            <Row gutter={[16, 16]}>
+                <Col span={24}>
+                    <Search
+                        placeholder="Search products"
+                        onSearch={handleSearch}
+                        style={{ marginBottom: 16 }}
+                        allowClear
+                    />
+                </Col>
+            </Row>
             <Table
                 columns={columns}
                 dataSource={products}
                 rowKey="_id"
                 loading={loading}
-                pagination={{ pageSize: 10 }}
+                pagination={{
+                    pageSize: 10,
+                    showSizeChanger: true,
+                    showQuickJumper: true,
+                    showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`
+                }}
+                scroll={{ x: 'max-content' }}
             />
-        </div>
+            <Modal
+                title="Cập nhật sản phẩm"
+                visible={isUpdateModalVisible}
+                onCancel={() => setIsUpdateModalVisible(false)}
+                footer={null}
+                width={800}
+            >
+                {selectedProductId && (
+                    <UpdateProductModal
+                        productId={selectedProductId}
+                        onSuccess={handleUpdateSuccess}
+                    />
+                )}
+            </Modal>
+        </Card>
     );
 };
 

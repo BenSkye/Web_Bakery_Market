@@ -9,7 +9,7 @@ const productRouter = Router();
 productRouter.get('/get-list', productController.getProducts);
 productRouter.get('/get-by-id/:id', productController.getProductById);
 productRouter.get('/get-by-bakery/:bakeryId', productController.getProductsByBakery);
-
+productRouter.put('/update/:id', productController.updateProduct);
 
 //authentication//
 productRouter.use(authentication);

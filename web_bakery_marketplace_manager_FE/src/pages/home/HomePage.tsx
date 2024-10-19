@@ -1,14 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Button, Collapse, Dropdown, Menu, Space, Table, Tag, message } from "antd";
+import { Button, Table, Tag, message } from "antd";
 import { getBakeryByUserId } from "../../services/bakeriesService";
 import "../../styles/ManagePageStyles/BakeryManager.css";
-import { StarOutlined, StarFilled, PlusCircleOutlined, ShoppingCartOutlined, CoffeeOutlined, CreditCardOutlined, RightOutlined, DownOutlined } from '@ant-design/icons';
+import { StarOutlined, StarFilled, PlusCircleOutlined, EditOutlined } from '@ant-design/icons';
 import AddBakeryModal from '../../components/modal/AddBakeryModal';
 import { createBakery } from '../../services/bakeriesService';
 import { useAuth } from '../../stores/authContex';
-import { ShopOutlined } from '@ant-design/icons';
-import Panel from 'antd/es/cascader/Panel';
 
 
 interface Bakery {
@@ -34,37 +32,34 @@ const BakeryManager: React.FC = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const { user } = useAuth();
 
-    useEffect(() => {
-        const fetchBakeries = async () => {
-            try {
-                const data = await getBakeryByUserId(user?.userId || '');
-                console.log('data: ', data);
-
-                // Assuming data.metadata contains the bakery information in the desired structure
-                const mappedBakeries = data.metadata.map((bakery: any) => ({
-                    key: bakery._id, // Use _id as the key
-                    name: bakery.name,
-                    address: bakery.address,
-                    rating: bakery.rating,
-                    contact: bakery.contact,
-                    openingHours: bakery.openingHours,
-                    image: bakery.image,
-                    customCake: bakery.customCake,
-                    status: bakery.status,
-                }));
-                setBakeries(mappedBakeries);
-                console.log('====================================');
-                console.log('bakeries', bakeries);
-                console.log('====================================');
-            } catch (error) {
-                message.error("Lấy danh sách tiệm bánh thất bại!");
-            }
-        };
-        fetchBakeries();
+    const fetchBakeries = useCallback(async () => {
+        try {
+            const data = await getBakeryByUserId(user?.userId || '');
+            const mappedBakeries = data.metadata.map((bakery: any) => ({
+                key: bakery._id,
+                name: bakery.name,
+                address: bakery.address,
+                rating: bakery.rating,
+                contact: bakery.contact,
+                openingHours: bakery.openingHours,
+                image: bakery.image,
+                customCake: bakery.customCake,
+                status: bakery.status,
+            }));
+            setBakeries(mappedBakeries);
+            console.log('Bakeries data:', mappedBakeries);
+        } catch (error) {
+            message.error("Lấy danh sách tiệm bánh thất bại!");
+        }
     }, [user]);
+
+    useEffect(() => {
+        fetchBakeries();
+    }, [fetchBakeries]);
 
     const showModal = () => setIsModalVisible(true);
     const handleCloseModal = () => setIsModalVisible(false);
+
 
     const handleAddBakery = async (values: any) => {
         try {
@@ -81,7 +76,6 @@ const BakeryManager: React.FC = () => {
                 customCake: values.customCake,
                 image: values.image,
                 openingHours: openingHoursMap,
-
             };
 
             const response = await createBakery(bakeryData);
@@ -89,6 +83,7 @@ const BakeryManager: React.FC = () => {
             if (response && response.status === 201) {
                 setBakeries([...bakeries, { key: response.data._id, ...response.data }]);
                 message.success("Thêm tiệm bánh thành công!");
+                setIsModalVisible(false);
                 return response;
             } else {
                 message.error("Đã xảy ra lỗi, vui lòng thử lại.");
@@ -124,23 +119,10 @@ const BakeryManager: React.FC = () => {
             title: "Quản lý",
             key: "actions",
             render: (text: string, record: Bakery) => {
-                const menu = (
-                    <Menu>
-                        <Menu.Item key="1" icon={<ShoppingCartOutlined />}>
-                            <Link to={`/getOrdersByBakeryId/${record.key}`}>Đơn hàng</Link>
-                        </Menu.Item>
-                        <Menu.Item key="2" icon={<CoffeeOutlined />}>
-                            <Link to={`/getAllProductsByBakeryId/${record.key}`}>Mặt hàng</Link>
-                        </Menu.Item>
-                    </Menu>
-                );
-
                 return (
-                    <Dropdown overlay={menu} trigger={['click']}>
-                        <Button>
-                            Quản lý <DownOutlined />
-                        </Button>
-                    </Dropdown>
+                    <Link to={`/bakery-management/${record.key}`}>
+                        <Button> Quản lý <EditOutlined /></Button>
+                    </Link>
                 );
             },
         },
@@ -156,30 +138,37 @@ const BakeryManager: React.FC = () => {
             render: (text: number) => renderStars(text),
         },
         {
-            title: "Trang thái",
+            title: "Trạng thái",
             dataIndex: "status",
             key: "status",
-            render: (text: string) => {
+            render: (text: any) => {
                 let color = "blue";
-                switch (text.toLowerCase()) {
-                    case "active":
-                        color = "green";
-                        break;
-                    case "inactive":
-                        color = "red";
-                        break;
-                    case "pending":
-                        color = "orange";
-                        break;
+                let status = "Unknown";
+
+                if (text !== null && text !== undefined) {
+                    status = String(text).toLowerCase();
+                    switch (status) {
+                        case "active":
+                            color = "green";
+                            break;
+                        case "inactive":
+                            color = "red";
+                            break;
+                        case "pending":
+                            color = "orange";
+                            break;
+                    }
                 }
-                return <Tag color={color}>{text.toUpperCase()}</Tag>;
+
+                return <Tag color={color}>{status.toUpperCase()}</Tag>;
             },
-            // Add sorting functionality
             sorter: (a: Bakery, b: Bakery) => {
-                const getStatusPriority = (status: string): number => {
-                    if (status.toLowerCase() === 'active') return 0;
-                    if (status.toLowerCase() === 'pending') return 1;
-                    if (status.toLowerCase() === 'inactive') return 2;
+                const getStatusPriority = (status: any): number => {
+                    if (status === null || status === undefined) return 3;
+                    const statusString = String(status).toLowerCase();
+                    if (statusString === 'active') return 0;
+                    if (statusString === 'pending') return 1;
+                    if (statusString === 'inactive') return 2;
                     return 3;
                 };
                 return getStatusPriority(a.status) - getStatusPriority(b.status);
@@ -190,7 +179,6 @@ const BakeryManager: React.FC = () => {
     return (
         <div className="bakery-manager-container">
             <header className="bakery-manager-header">
-                <ShopOutlined className="bakery-icon" />
                 <h1 className="page-title">Quản Lý Tiệm Bánh</h1>
             </header>
             <div className="bakery-content">

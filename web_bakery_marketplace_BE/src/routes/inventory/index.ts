@@ -10,6 +10,7 @@ inventoryRouter.use(authentication);
 ////////////////////////////
 inventoryRouter.use(apiKey)
 inventoryRouter.use(permission('shop'));
+inventoryRouter.get('/get-a-inventory', inventoryController.getAInventory);
 inventoryRouter.put('/add-stock', inventoryController.addStockToInventory);
 inventoryRouter.put('/remove-stock', inventoryController.removeStockFromInventory);
 
