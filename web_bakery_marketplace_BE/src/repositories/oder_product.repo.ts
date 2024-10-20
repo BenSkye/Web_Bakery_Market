@@ -56,7 +56,90 @@ class OrderProductRepo {
     async getOrderProduct(query: any) {
         return await orderProductModel.find(query).sort({ createdAt: -1 });
     }
+    async getOrderProductStatistics(startDate: Date, endDate: Date) {
+        return await orderProductModel.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: startDate, $lte: endDate }
+        }
+      },
+      {
+        $group: {
+          _id: "$bakery_id",
+          totalOrders: { $sum: 1 },
+          totalRevenue: { $sum: "$price" },
+          averageOrderValue: { $avg: "$price" },
+          ordersByStatus: {
+            $push: {
+              status: "$status",
+              count: 1
+            }
+          }
+        }
+      },
+      {
+        $lookup: {
+          from: "bakeries",
+          localField: "_id",
+          foreignField: "_id",
+          as: "bakeryInfo"
+        }
+      },
+      {
+        $unwind: "$bakeryInfo"
+      },
+      {
+        $project: {
+          bakeryName: "$bakeryInfo.name",
+          totalOrders: 1,
+          totalRevenue: 1,
+          averageOrderValue: 1,
+          ordersByStatus: {
+            $reduce: {
+              input: "$ordersByStatus",
+              initialValue: {},
+              in: {
+                $mergeObjects: [
+                  "$$value",
+                  { $arrayToObject: [[{ k: "$$this.status", v: { $sum: "$$this.count" } }]] }
+                ]
+              }
+            }
+          }
+        }
+      }
+    ]);
+    }
 
-}
+    async getOrderProductStatisticsByBakeryId(bakeryId: string, startDate: Date, endDate: Date) {
+       return await orderProductModel.aggregate([
+            {
+                $match: {
+                    bakery_id: new Types.ObjectId(bakeryId),
+                    createdAt: { $gte: startDate, $lte: endDate }
+                }
+            },
+            {
+                $group: {
+                    _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+                    totalRevenue: { $sum: "$price" },
+                    totalOrders: { $sum: 1 },
+                    uniqueCustomers: { $addToSet: "$user_id" }
+                }
+            },
+            {
+                $project: {
+                    date: "$_id",
+                    totalRevenue: 1,
+                    totalOrders: 1,
+                    uniqueCustomers: { $size: "$uniqueCustomers" }
+                }
+            },
+            { $sort: { date: 1 } }
+        ]);
+    }
+    }
+    
+
 
 export default new OrderProductRepo();

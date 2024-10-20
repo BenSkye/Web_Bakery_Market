@@ -15,6 +15,7 @@ interface Bakery {
         instagram?: string;
     };
     customCake: boolean;
+
     image: string[];
     openingHours: { [key: string]: { open: string; close: string } };
 }

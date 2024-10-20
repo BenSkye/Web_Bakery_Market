@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, Avatar, Button, Dropdown, Menu } from 'antd';
+import { Layout, Button, Dropdown, Menu } from 'antd';
 import { UserOutlined, BellOutlined, DownOutlined } from '@ant-design/icons';
 import logo from '../../assets/logo.png'
 import imgFun from '../../assets/asset-13-16837926873.png'
@@ -9,6 +9,10 @@ const { Header } = Layout;
 
 const UserHeader: React.FC = () => {
     const { user, logout } = useAuth();
+
+    // console.log('====================================');
+    // console.log('user', user);
+    // console.log('====================================');
 
     const handleLanguageChange = (lang: string) => {
         // Xử lý thay đổi ngôn ngữ
@@ -43,7 +47,7 @@ const UserHeader: React.FC = () => {
                 <Dropdown overlay={menu} trigger={['click']}>
                     <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
                         <UserOutlined sizes='large' />
-                        {user ? <span style={{ marginLeft: '10px' }}>Xin chào, {user.name} </span> : <UserOutlined />}
+                        {user ? <span style={{ marginLeft: '10px' }}>Xin chào, {user.name}, {user.roles} </span> : <UserOutlined />}
                         <DownOutlined style={{ marginLeft: '5px' }} />
                     </div>
                 </Dropdown>

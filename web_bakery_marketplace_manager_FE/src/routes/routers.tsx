@@ -8,7 +8,8 @@ import BakeryDetail from '../pages/home/ManageBakeryDetail';
 import MainLayout from '../layouts/DefaultLayout';
 import StatisticsPage from '../components/chart/ChartStatic';
 // import OrderManagement from '../pages/manageOrder/OrderManagement';
-import ProtectedRoute from './ProtectedRoute';// import ManageProducts from '../pages/manageProduct/ManageProducts';
+import ProtectedRoute from './ProtectedRoute';
+// import ManageProducts from '../pages/manageProduct/ManageProducts';
 import BakeryManagement from '../pages/manageBakery/BakeryManagement';
 import { useAuth } from '../stores/authContex';
 
@@ -18,19 +19,21 @@ const AppRoutes: React.FC = () => {
         <Routes>
             <Route path="/signup" element={<SignUp />} />
             <Route path="/login" element={<LoginManager />} />
-            <Route element={<ProtectedRoute element={<MainLayout />} />}>
-                <Route path="/home" element={<HomePage />} />
-                <Route path="/manage" element={<ManageBakery />} />
-                <Route path="/bakery/:id" element={<BakeryDetail />} />
-                <Route path='/statistics' element={<StatisticsPage />} />
-                <Route path='/bakery-management/:bakeryId' element={<BakeryManagement />} />
-                {/* <Route path='/getOrdersByBakeryId/:bakeryId' element={<OrderManagement />} />
-                <Route path='/getAllProductsByBakeryId/:bakeryId' element={<ManageProducts/>} /> */}
+            <Route element={<ProtectedRoute />}>
+                <Route element={<MainLayout />}>
+                    <Route path="/home" element={<HomePage />} />
+                    <Route path="/manage" element={<ManageBakery />} />
+                    <Route path="/bakery/:id" element={<BakeryDetail />} />
+                    <Route path='/statistics' element={<StatisticsPage />} />
+                    <Route path='/bakery-management/:bakeryId' element={<BakeryManagement />} />
+                    {/* <Route path='/getOrdersByBakeryId/:bakeryId' element={<OrderManagement />} />
+                    <Route path='/getAllProductsByBakeryId/:bakeryId' element={<ManageProducts/>} /> */}
+                </Route>
             </Route>
             <Route path="/" element={user ? <Navigate to="/home" /> : <Navigate to="/login" />} />
-
         </Routes>
     );
 };
+
 
 export default AppRoutes;
