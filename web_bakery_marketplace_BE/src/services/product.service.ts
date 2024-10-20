@@ -58,14 +58,25 @@ class ProductService {
     }
 
     static getProductsByBakery = async (bakeryId: string) => {
-
         const bakery = await bakeryRepo.getBakeryById(bakeryId, []);
         if (!bakery) {
             throw new NotFoundError('No bakery found');
         }
         const query = { bakery: bakeryId }
         const products = await productRepo.getProducts(query, []);
-        return products;
+        
+        // Fetch inventory information for all products
+        const inventories = await inventoryRepo.findInventories({ shop_id: bakeryId }, ['product_id', 'stock']);
+        // Create a map of product_id to stock
+        const stockMap = new Map(inventories.map(inv => [inv.product_id?.toString() ?? '', inv.stock]));
+        
+        // Add stock information to each product
+        const productsWithStock = products.map(product => ({
+            ...product,
+            stock: stockMap.get(product._id.toString()) || 0
+        }));
+
+        return productsWithStock;
     }
 
     static updateProduct = async (productId: string, data: any) => {

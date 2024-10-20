@@ -3,8 +3,10 @@ import { Table, Space, Button, Input, Tag, Image, Tooltip, Modal, Card, Row, Col
 import { EditOutlined, DeleteOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import { getProductsByBakery } from '../../services/productService';
+
 import AddProductModal from '../../components/modal/AddProductModal';
 import UpdateProductModal from '../../components/modal/UpdateProductModal';
+import { formatCurrency } from '../../utils/format/formatCurrency';
 
 interface Product {
     _id: string;
@@ -43,9 +45,14 @@ const ManageProducts: React.FC<ManageProductsProps> = ({ bakeryId }) => {
     const fetchProducts = async () => {
         setLoading(true);
         const response = await getProductsByBakery(bakeryId);
+        console.log('====================================');
+        console.log('products:', response.metadata);
+        console.log('====================================');
         setProducts(response.metadata);
         setLoading(false);
     };
+
+
 
     useEffect(() => {
         fetchProducts();
@@ -123,7 +130,7 @@ const ManageProducts: React.FC<ManageProductsProps> = ({ bakeryId }) => {
             dataIndex: 'price',
             key: 'price',
             sorter: (a, b) => a.price - b.price,
-            render: (price) => `${price.toLocaleString()} VND`,
+            render: (price) => formatCurrency(price),
         },
         {
             title: 'Category',
@@ -136,9 +143,9 @@ const ManageProducts: React.FC<ManageProductsProps> = ({ bakeryId }) => {
             key: 'bakery',
         },
         {
-            title: 'Quantity',
-            dataIndex: 'quantity',
-            key: 'quantity',
+            title: 'Stock',
+            dataIndex: 'stock',
+            key: 'stock',
         },
         {
             title: 'Status',
@@ -149,12 +156,6 @@ const ManageProducts: React.FC<ManageProductsProps> = ({ bakeryId }) => {
                     {status.toUpperCase()}
                 </Tag>
             ),
-        },
-        {
-            title: 'Rating',
-            dataIndex: 'rating',
-            key: 'rating',
-            render: (rating) => (rating && rating > 0 ? rating : 0),
         },
         {
             title: 'Actions',
@@ -223,6 +224,18 @@ const ManageProducts: React.FC<ManageProductsProps> = ({ bakeryId }) => {
                         onSuccess={handleUpdateSuccess}
                     />
                 )}
+            </Modal>
+            <Modal
+                title="Thêm sản phẩm mới"
+                visible={isAddModalVisible}
+                onCancel={() => setIsAddModalVisible(false)}
+                footer={null}
+                width={800}
+            >
+                <AddProductModal
+                    bakeryId={bakeryId}
+                    onSuccess={handleAddSuccess}
+                />
             </Modal>
         </Card>
     );
