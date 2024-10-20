@@ -30,9 +30,9 @@ export const addProduct = async (product: any) => {
     }
 };
 
-export const updateProduct = async (product: any) => {
+export const updateProduct = async (productId: string, product: any) => {
     try {
-        const response = await apiClient.put(`/product/update/${product.id}`, product);
+        const response = await apiClient.put(`/product/update/${productId}`, product);
         return response.data;
     } catch (error) {
         console.error('Error updating product:', error);

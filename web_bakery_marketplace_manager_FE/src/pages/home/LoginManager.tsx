@@ -1,12 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Form, Input, Button, Col, Row, message } from "antd";
 import { useNavigate, Link } from "react-router-dom";
 import { login } from "../../services/authenService";
 import logo from "../../assets/logo.png";
-import { UserOutlined, LockOutlined, CrownOutlined } from '@ant-design/icons';
+import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import { useAuth } from '../../stores/authContex';
 
 const LoginManager: React.FC = () => {
   const navigate = useNavigate();
+  const { user, login: authLogin } = useAuth()
+
+  useEffect(() => {
+    if (user) {
+      navigate("/home");
+    }
+  }, [user, navigate]);
 
   const onFinish = async (values: any) => {
     try {
@@ -17,14 +25,17 @@ const LoginManager: React.FC = () => {
 
       if (result.status === 200) {
         message.success("Đăng nhập thành công!");
-        navigate("/statistics");
-      } else {
-        message.error(result?.message || "Đăng nhập thất bại, vui lòng thử lại.");
+        authLogin(result.data); // Thêm dòng này để cập nhật context
+        // Không cần gọi navigate ở đây nữa
+      } else if (result.error) {
+        message.error("Chỉ tài khoản cửa hàng mới được phép đăng nhập.");
       }
     } catch (error) {
-      message.error("Đăng nhập thất bại, vui lòng thử lại.");
+      console.error('Login error:', error);
+      message.error("Đã xảy ra lỗi trong quá trình đăng nhập. Vui lòng thử lại sau.");
     }
   };
+
 
   const onFinishFailed = (errorInfo: any) => {
     console.log("Failed:", errorInfo);

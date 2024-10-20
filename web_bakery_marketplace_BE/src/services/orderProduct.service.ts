@@ -37,5 +37,35 @@ class OrderProductService {
         return await order_product_repo.getOrderProduct(query);
     }
 
+    static getOrderProductStatistics = async (startDate: Date, endDate: Date) => {
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        return await order_product_repo.getOrderProductStatistics(start, end);
+    }
+
+    static getOrderProductStatisticsByBakeryId = async (bakeryId: string, startDate?: string, endDate?: string) => {
+    let start: Date;
+    let end: Date;
+
+    console.log('Received dates:', { startDate, endDate });
+
+    if (!startDate && !endDate) {
+        // Nếu không có ngày nào được cung cấp, lấy 30 ngày gần nhất
+        console.log('No date provided, using default range');
+        end = new Date();
+        start = new Date(end.getTime() - 30 * 24 * 60 * 60 * 1000);
+    } else {
+        // Nếu có ít nhất một ngày được cung cấp
+        end = endDate ? new Date(endDate) : new Date();
+        start = startDate ? new Date(startDate) : new Date(end.getTime() - 30 * 24 * 60 * 60 * 1000);
+    }
+
+    console.log('Date range:', { 
+        start: start.toISOString(),
+        end: end.toISOString()
+    });
+
+    return await order_product_repo.getOrderProductStatisticsByBakeryId(bakeryId, start, end);
+}
 }
 export default OrderProductService;
