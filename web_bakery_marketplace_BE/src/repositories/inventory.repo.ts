@@ -13,6 +13,10 @@ class InventoryRepo {
         return await inventoryModel.findOne(query).select(getSelectData(fields));
     }
 
+    async findInventories(query: any, fields: string[]) {
+        return await inventoryModel.find(query).select(getSelectData(fields));
+    }
+
     async addStockToInventory(productId: string, quantity: number, shop_id: string) {
         const today = new Date().setHours(0, 0, 0, 0);
         const inventory = await inventoryModel.findOne({ product_id: productId });
