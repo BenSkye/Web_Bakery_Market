@@ -13,9 +13,9 @@ const HEADER = {
 const createTokenPair = async (payload: Object, publicKey: string, privateKey: string) => {
     try {
         const accessToken = await jwt.sign(payload, publicKey,
-            { expiresIn: '2 days' });
+            { expiresIn: '2 days' });//2 days
         const refreshToken = await jwt.sign(payload, privateKey,
-            { expiresIn: '7 days' });
+            { expiresIn: '7 days' });//7 days
 
         //
         jwt.verify(accessToken, publicKey, (err: any, decoded: any) => {
@@ -53,7 +53,7 @@ const authentication = asyncHandler(async (req: any, res: any, next: any) => {
             const refreshToken = req.headers[HEADER.REFRESH_TOKEN] as string;
             console.log('refreshToken::', refreshToken)
             const decodeUser: JwtPayload = jwt.verify(refreshToken, keyStore.privateKey) as JwtPayload;
-            if (userId !== decodeUser.userId) throw new AuthFailureError('Invalid UserId')
+            if (userId !== decodeUser.userId) throw new AuthFailureError('Invalid Refresh Token')
             req.user = decodeUser;
             req.keyStore = keyStore;
             req.refreshToken = refreshToken;
@@ -67,7 +67,7 @@ const authentication = asyncHandler(async (req: any, res: any, next: any) => {
     try {
         console.log('accessToken::', accessToken)
         const decodeUser: JwtPayload = jwt.verify(accessToken, keyStore.publicKey) as JwtPayload;
-        if (userId !== decodeUser.userId) throw new AuthFailureError('Invalid UserId')
+        if (userId !== decodeUser.userId) throw new AuthFailureError('Invalid Access Token')
         req.keyStore = keyStore;
         return next()
     } catch (error) {
