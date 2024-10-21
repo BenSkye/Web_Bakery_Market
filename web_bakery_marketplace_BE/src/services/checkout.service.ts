@@ -128,9 +128,11 @@ class CheckoutService {
         //     ipAddr: ipAddr,
         //     returnUrl: '/return-cake-design-payment'
         // }
+        const orderCode = generateOrderCode();
+        const updateOrderProduct = await orderProductRepo.updateOderProduct(orderProduct._id.toString(), { order_code: orderCode })
         const cancelUrl = '/cancel-cake-design-payment';
         const returnUrl = '/return-cake-design-payment';
-        const paymentLink = await createPaymentLink(orderProduct.order_code ?? 0, orderProduct.price ?? 0, 'thanh toan thiet ke banh ', cancelUrl, returnUrl);
+        const paymentLink = await createPaymentLink(updateOrderProduct.order_code ?? 0, orderProduct.price ?? 0, 'thanh toan thiet ke banh ', cancelUrl, returnUrl);
         const paymentUrl = paymentLink.checkoutUrl
         return {
             paymentUrl,
