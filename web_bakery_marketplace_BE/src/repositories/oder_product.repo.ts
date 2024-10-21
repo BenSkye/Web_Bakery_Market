@@ -113,29 +113,89 @@ class OrderProductRepo {
 
     async getOrderProductStatisticsByBakeryId(bakeryId: string, startDate: Date, endDate: Date) {
        return await orderProductModel.aggregate([
-            {
-                $match: {
-                    bakery_id: new Types.ObjectId(bakeryId),
-                    createdAt: { $gte: startDate, $lte: endDate }
-                }
-            },
-            {
-                $group: {
-                    _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
-                    totalRevenue: { $sum: "$price" },
-                    totalOrders: { $sum: 1 },
-                    uniqueCustomers: { $addToSet: "$user_id" }
-                }
-            },
-            {
-                $project: {
-                    date: "$_id",
-                    totalRevenue: 1,
-                    totalOrders: 1,
-                    uniqueCustomers: { $size: "$uniqueCustomers" }
-                }
-            },
-            { $sort: { date: 1 } }
+             {
+            $match: {
+                bakery_id: new Types.ObjectId(bakeryId),
+                createdAt: { $gte: startDate, $lte: endDate }
+            }
+        },
+        {
+            $facet: {
+                dailyStats: [
+                    {
+                        $group: {
+                            _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+                            totalRevenue: { $sum: "$price" },
+                            totalOrders: { $sum: 1 },
+                            uniqueCustomers: { $addToSet: "$user_id" }
+                        }
+                    },
+                    {
+                        $project: {
+                            date: "$_id",
+                            totalRevenue: 1,
+                            totalOrders: 1,
+                            uniqueCustomers: { $size: "$uniqueCustomers" }
+                        }
+                    },
+                    { $sort: { date: 1 } }
+                ],
+                topProducts: [
+                    {
+                        $group: {
+                            _id: "$product_id",
+                            totalSold: { $sum: "$quantity" },
+                            totalRevenue: { $sum: "$price" }
+                        }
+                    },
+                    { $sort: { totalSold: -1 } },
+                    { $limit: 5 },
+                    {
+                        $lookup: {
+                            from: "Products",
+                            localField: "_id",
+                            foreignField: "_id",
+                            as: "productInfo"
+                        }
+                    },
+                    {
+                        $project: {
+                            productName: { $arrayElemAt: ["$productInfo.name", 0] },
+                            totalSold: 1,
+                            totalRevenue: 1
+                        }
+                    }
+                ],
+                orderStatusStats: [
+                    {
+                        $group: {
+                            _id: "$status",
+                            count: { $sum: 1 }
+                        }
+                    }
+                ],
+                overallStats: [
+                    {
+                        $group: {
+                            _id: null,
+                            totalRevenue: { $sum: "$price" },
+                            totalOrders: { $sum: 1 },
+                            averageOrderValue: { $avg: "$price" },
+                            uniqueCustomers: { $addToSet: "$user_id" }
+                        }
+                    },
+                    {
+                        $project: {
+                            _id: 0,
+                            totalRevenue: 1,
+                            totalOrders: 1,
+                            averageOrderValue: 1,
+                            uniqueCustomers: { $size: "$uniqueCustomers" }
+                        }
+                    }
+                ]
+            }
+        }
         ]);
     }
     }
