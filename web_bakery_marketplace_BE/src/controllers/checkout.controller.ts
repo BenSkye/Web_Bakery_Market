@@ -70,7 +70,7 @@ class CheckoutController {
 
     getPayOsCakeDesignCancel = asyncHandler(async (req: any, res: any, next: NextFunction) => {
         await CheckoutService.getPayOsCakeDesignCancel(req.query)
-        const redirectUrl = new URL(process.env.FRONTEND_URL + '/checkout');
+        const redirectUrl = new URL(process.env.FRONTEND_URL + '/orderstatus');
         res.redirect(redirectUrl.toString());
     });
 }
