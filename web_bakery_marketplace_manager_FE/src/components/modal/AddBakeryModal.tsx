@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { Form, Input, Button, Modal, TimePicker, Upload, Switch, Table, message } from "antd";
+import { Form, Input, Button, Modal, TimePicker, Switch, Table, message } from "antd";
 import dayjs from "dayjs";
-import { storage } from '../../config/firebase/firebaseConfig';
-import { uploadBytesResumable, ref, getDownloadURL } from "firebase/storage";
+import ImageUploader from '../upload/ImageUploader';
+import pathFirebase from '../../config/firebase/pathFirebase';
 import '../../styles/modal/AddBakeryModal.css';
 
 
@@ -15,6 +15,7 @@ interface Bakery {
         instagram?: string;
     };
     customCake: boolean;
+
     image: string[];
     openingHours: { [key: string]: { open: string; close: string } };
 }
@@ -29,10 +30,7 @@ interface AddBakeryModalProps {
 const AddBakeryModal: React.FC<AddBakeryModalProps> = ({ visible, onClose, onAdd }) => {
     const [form] = Form.useForm();
     const [isScheduleVisible, setIsScheduleVisible] = useState(false);
-
-    const [fileList, setFileList] = useState<any[]>([]);
-    const [imagePreviewUrls, setImagePreviewUrls] = useState<string[]>([]);
-
+    const [uploadedImageUrls, setUploadedImageUrls] = useState<string[]>([]);
     const [openingHours, setOpeningHours] = useState<{ day: string; open: string; close: string }[]>([
         { day: "monday", open: "", close: "" },
         { day: "tuesday", open: "", close: "" },
@@ -42,32 +40,8 @@ const AddBakeryModal: React.FC<AddBakeryModalProps> = ({ visible, onClose, onAdd
         { day: "saturday", open: "", close: "" },
         { day: "sunday", open: "", close: "" },
     ]);
-
     const [selectedOpenTime, setSelectedOpenTime] = useState<string | null>(null);
     const [selectedCloseTime, setSelectedCloseTime] = useState<string | null>(null);
-
-    const handleRemove = (file: any) => {
-        const newFileList = Array.isArray(fileList) ? fileList.filter((f) => f.uid !== file.uid) : [];
-        setFileList(newFileList); // Đảm bảo fileList luôn là mảng
-
-        // Cập nhật danh sách preview URL
-        const newImagePreviewUrls = newFileList.map((file: any) => URL.createObjectURL(file.originFileObj));
-        setImagePreviewUrls(newImagePreviewUrls); // Đảm bảo imagePreviewUrls luôn là mảng
-    };
-
-
-
-    const handleUploadChange = (info: any) => {
-        // Sử dụng Array.isArray để kiểm tra và đảm bảo fileList là mảng hợp lệ
-        const newFileList = Array.isArray(info.fileList) ? info.fileList.slice(-3) : []; // Giới hạn tối đa 3 ảnh nếu cần
-        setFileList(newFileList); // Đảm bảo fileList luôn là mảng
-
-        // Generate preview URLs for display
-        const newImagePreviewUrls = newFileList.map((file: any) => URL.createObjectURL(file.originFileObj));
-        setImagePreviewUrls(newImagePreviewUrls); // Đảm bảo imagePreviewUrls luôn là mảng
-    };
-
-
 
     const handleTimeChange = (day: string, timeType: 'open' | 'close', time: any) => {
         const formattedTime = time.format('HH:mm');
@@ -95,48 +69,26 @@ const AddBakeryModal: React.FC<AddBakeryModalProps> = ({ visible, onClose, onAdd
         message.success("Giờ đã được áp dụng cho tất cả các ngày!");
     };
 
-
+    const handleImageUploadSuccess = (urls: string[]) => {
+        setUploadedImageUrls(urls);
+    };
 
     const handleOk = async () => {
         try {
             const values = await form.validateFields();
 
-
             // Validate images
-            if (fileList.length === 0) {
+            if (uploadedImageUrls.length === 0) {
                 message.warning("Vui lòng chọn ít nhất một hình ảnh!");
                 return;
             }
-
-            // Upload images to Firebase and gather URLs
-            const imageUrls: string[] = await Promise.all(
-                fileList.map(async (file: any) => {
-                    const storageRef = ref(storage, `bakeryImages/${file.name}`);
-                    const uploadTask = uploadBytesResumable(storageRef, file.originFileObj);
-                    const downloadURL = await new Promise<string>((resolve, reject) => {
-                        uploadTask.on(
-                            "state_changed",
-                            null,
-                            reject,
-                            () => {
-                                getDownloadURL(uploadTask.snapshot.ref).then(resolve).catch(reject);
-                            }
-                        );
-                    });
-                    return downloadURL;
-                })
-            );
-
-            console.log('====================================');
-            console.log('imageUrls:', imageUrls);
-            console.log('====================================');
 
             const bakeryData = {
                 name: values.name,
                 address: values.address,
                 contact: values.contact,
                 customCake: values.customCake,
-                image: imageUrls,
+                image: uploadedImageUrls,
                 openingHours: openingHours.reduce((acc, { day, open, close }) => {
                     acc[day] = { open, close };
                     return acc;
@@ -144,14 +96,13 @@ const AddBakeryModal: React.FC<AddBakeryModalProps> = ({ visible, onClose, onAdd
             };
 
             const response = onAdd(bakeryData);
-            console.log('====================================');
             console.log('bakeryData:', bakeryData);
-            console.log('====================================');
-            console.log("Response:", response); // Log the response
+            console.log("Response:", response);
 
             if (response && response.status === 201) {
                 message.success(response.message || "Tạo tiệm bánh thành công!");
                 form.resetFields();
+                setUploadedImageUrls([]);
                 onClose();
             } else {
                 message.error(response?.message || "Tạo tiệm bánh thất bại.");
@@ -268,29 +219,12 @@ const AddBakeryModal: React.FC<AddBakeryModalProps> = ({ visible, onClose, onAdd
 
 
                 <Form.Item label="Hình ảnh" name="image" valuePropName="fileList">
-                    <Upload
-                        multiple
-                        beforeUpload={() => false}
-                        fileList={Array.isArray(fileList) ? fileList : []}
-                        onChange={handleUploadChange}
-                        onRemove={handleRemove}
-                    >
-                        <Button className="upload-button">Chọn Hình Ảnh</Button>
-                    </Upload>
-
-                    {/* Display image previews */}
-                    {imagePreviewUrls.length > 0 && (
-                        <div style={{ marginTop: "10px" }}>
-                            {imagePreviewUrls.map((url, index) => (
-                                <img
-                                    key={index}
-                                    src={url}
-                                    alt="Hình ảnh đã chọn"
-                                    style={{ maxWidth: '100px', marginRight: '10px' }}
-                                />
-                            ))}
-                        </div>
-                    )}
+                    <ImageUploader
+                        onUploadSuccess={handleImageUploadSuccess}
+                        maxCount={5}
+                        multiple={true}
+                        storagePath={pathFirebase.bakeryImages}
+                    />
                 </Form.Item>
 
                 <Form.Item label="Thiết kế bánh 3D" name="customCake" valuePropName="checked">

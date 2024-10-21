@@ -56,7 +56,150 @@ class OrderProductRepo {
     async getOrderProduct(query: any) {
         return await orderProductModel.find(query).sort({ createdAt: -1 });
     }
+    async getOrderProductStatistics(startDate: Date, endDate: Date) {
+        return await orderProductModel.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: startDate, $lte: endDate }
+        }
+      },
+      {
+        $group: {
+          _id: "$bakery_id",
+          totalOrders: { $sum: 1 },
+          totalRevenue: { $sum: "$price" },
+          averageOrderValue: { $avg: "$price" },
+          ordersByStatus: {
+            $push: {
+              status: "$status",
+              count: 1
+            }
+          }
+        }
+      },
+      {
+        $lookup: {
+          from: "bakeries",
+          localField: "_id",
+          foreignField: "_id",
+          as: "bakeryInfo"
+        }
+      },
+      {
+        $unwind: "$bakeryInfo"
+      },
+      {
+        $project: {
+          bakeryName: "$bakeryInfo.name",
+          totalOrders: 1,
+          totalRevenue: 1,
+          averageOrderValue: 1,
+          ordersByStatus: {
+            $reduce: {
+              input: "$ordersByStatus",
+              initialValue: {},
+              in: {
+                $mergeObjects: [
+                  "$$value",
+                  { $arrayToObject: [[{ k: "$$this.status", v: { $sum: "$$this.count" } }]] }
+                ]
+              }
+            }
+          }
+        }
+      }
+    ]);
+    }
 
-}
+    async getOrderProductStatisticsByBakeryId(bakeryId: string, startDate: Date, endDate: Date) {
+       return await orderProductModel.aggregate([
+             {
+            $match: {
+                bakery_id: new Types.ObjectId(bakeryId),
+                createdAt: { $gte: startDate, $lte: endDate }
+            }
+        },
+        {
+            $facet: {
+                dailyStats: [
+                    {
+                        $group: {
+                            _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+                            totalRevenue: { $sum: "$price" },
+                            totalOrders: { $sum: 1 },
+                            uniqueCustomers: { $addToSet: "$user_id" }
+                        }
+                    },
+                    {
+                        $project: {
+                            date: "$_id",
+                            totalRevenue: 1,
+                            totalOrders: 1,
+                            uniqueCustomers: { $size: "$uniqueCustomers" }
+                        }
+                    },
+                    { $sort: { date: 1 } }
+                ],
+                topProducts: [
+                    {
+                        $group: {
+                            _id: "$product_id",
+                            totalSold: { $sum: "$quantity" },
+                            totalRevenue: { $sum: "$price" }
+                        }
+                    },
+                    { $sort: { totalSold: -1 } },
+                    { $limit: 5 },
+                    {
+                        $lookup: {
+                            from: "Products",
+                            localField: "_id",
+                            foreignField: "_id",
+                            as: "productInfo"
+                        }
+                    },
+                    {
+                        $project: {
+                            productName: { $arrayElemAt: ["$productInfo.name", 0] },
+                            totalSold: 1,
+                            totalRevenue: 1
+                        }
+                    }
+                ],
+                orderStatusStats: [
+                    {
+                        $group: {
+                            _id: "$status",
+                            count: { $sum: 1 }
+                        }
+                    }
+                ],
+                overallStats: [
+                    {
+                        $group: {
+                            _id: null,
+                            totalRevenue: { $sum: "$price" },
+                            totalOrders: { $sum: 1 },
+                            averageOrderValue: { $avg: "$price" },
+                            uniqueCustomers: { $addToSet: "$user_id" }
+                        }
+                    },
+                    {
+                        $project: {
+                            _id: 0,
+                            totalRevenue: 1,
+                            totalOrders: 1,
+                            averageOrderValue: 1,
+                            uniqueCustomers: { $size: "$uniqueCustomers" }
+                        }
+                    }
+                ]
+            }
+        }
+        ]);
+    }
+    }
+    
+
 
 export default new OrderProductRepo();

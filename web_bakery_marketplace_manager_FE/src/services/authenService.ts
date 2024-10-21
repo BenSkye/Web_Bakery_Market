@@ -15,6 +15,16 @@ export const signup = async (data: unknown) => {
 export const login = async (data: unknown) => {
     try {
         const response = await apiClient.post('/user/login', data);
+        
+       console.log('response:', response.data);
+        
+        // Kiểm tra vai trò của người dùng
+        const userRoles = response.data.metadata.user.roles;
+        if (!userRoles.includes('shop')) {
+            throw new Error('Access denied. Only shop users are allowed.');
+        }
+
+
         console.log('response:', response.data);
         Cookies.set('x-api-key', response.data.metadata.apiKey);
         Cookies.set('x-client-id', response.data.metadata.user._id);
@@ -22,9 +32,11 @@ export const login = async (data: unknown) => {
         Cookies.set('x-refresh-token', response.data.metadata.tokens.refreshToken);
         return response.data;
     } catch (error: any) {
-        console.error('Error signup:', error);
-        return error.response.data;
-        throw error;
+         console.error('Error login:', error);
+        if (error.message === 'Access denied. Only shop users are allowed.') {
+            return { error: error.message };
+        }
+        return error.response ? error.response.data : { error: 'An error occurred during login' };
     }
 };
 

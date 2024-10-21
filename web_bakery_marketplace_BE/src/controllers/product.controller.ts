@@ -32,6 +32,13 @@ class ProductController {
         }).send(res);
     });
 
+    updateProduct = asyncHandler(async (req: any, res: Response, next: NextFunction) => {
+        new SuccessResponse({
+            message: 'Update product successfully',
+            metadata: await ProductService.updateProduct(req.params.id, req.body),
+        }).send(res);
+    });
+
 }
 
 export default new ProductController();

@@ -85,7 +85,7 @@ class AccessService {
       throw new NotFoundError('API Key not found');
     }
     return {
-      user: getInfoData({ fields: ['_id', 'name', 'email'], object: foundUser }),
+      user: getInfoData({ fields: ['_id', 'name', 'email','roles'], object: foundUser }),
       tokens,
       apiKey: apiKey.key
     }

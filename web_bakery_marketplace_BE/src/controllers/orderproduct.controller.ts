@@ -60,6 +60,24 @@ class OrderProductController {
         }).send(res);
     });
 
+    getOrderProductStatistics = asyncHandler(async (req: any, res: Response, next: NextFunction) => {
+        new SuccessResponse({
+            message: 'Get Order Product Statistics successfully',
+            metadata: await OrderProductService.getOrderProductStatistics(req.query.startDate, req.query.endDate),
+        }).send(res);
+    });
+
+    getOrderProductStatisticsByBakeryId = asyncHandler(async (req: any, res: Response, next: NextFunction) => {
+        new SuccessResponse({
+            message: 'Get Order Product Statistics By Bakery Id successfully',
+         metadata: await OrderProductService.getOrderProductStatisticsByBakeryId(
+            req.params.bakeryId,
+            req.body.startDate,
+            req.body.endDate
+        ),
+        }).send(res);
+    });
+
 }
 
 export default new OrderProductController();

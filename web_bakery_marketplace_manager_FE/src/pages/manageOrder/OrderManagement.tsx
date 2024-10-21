@@ -1,68 +1,94 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Select, message, Tabs, Spin, Card, Space, Typography, Input, Tag, Row, Col, Statistic } from 'antd';
-import { getOrdersProductByBakeryId, changeStatusOrderProduct } from '../../services/ordersProductService';
+import { Table, Select, message, Tabs, Spin, Card, Space, Typography, Input, Tag, Row, Col, Statistic, Modal, Descriptions } from 'antd';
 import { useParams } from 'react-router-dom';
+import { getOrdersProductByBakeryId, changeStatusOrderProduct } from '../../services/ordersProductService';
 import { formatCurrency } from '../../utils/format/formatCurrency';
 import { SearchOutlined, ClockCircleOutlined, SyncOutlined, CheckCircleOutlined, CloseCircleOutlined, CarOutlined, GiftOutlined, StopOutlined, DollarCircleOutlined, ShoppingCartOutlined } from '@ant-design/icons';
+import Render3DCakeProps from '../../components/3D/Render3DCakeProps';
+import moment from 'moment';
 
 const { Option } = Select;
 const { TabPane } = Tabs;
 const { Title } = Typography;
 
-const OrderManagement: React.FC = () => {
-    const [orders, setOrders] = useState<any[]>([]);
+interface OrderManagementProps {
+    bakeryId?: string;
+}
+
+const OrderManagement: React.FC<OrderManagementProps> = ({ bakeryId }) => {
+    const [orders, setOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchText, setSearchText] = useState('');
-    const { bakeryId } = useParams();
+    const [confirmModalVisible, setConfirmModalVisible] = useState(false);
+    const [selectedOrder, setSelectedOrder] = useState<any | null>(null);
+    const [orderDetailModalVisible, setOrderDetailModalVisible] = useState(false);
 
+    // Fetch orders on component mount
     useEffect(() => {
         const fetchOrders = async () => {
             try {
                 const data = await getOrdersProductByBakeryId(bakeryId as string);
                 setOrders(data.metadata);
-                setLoading(false);
-            } catch (err) {
+            } catch {
                 message.error('Failed to fetch orders');
+            } finally {
                 setLoading(false);
             }
         };
-
         fetchOrders();
     }, [bakeryId]);
 
-    const handleStatusChange = async (orderId: string, newStatus: string) => {
-        try {
-            await changeStatusOrderProduct(orderId, newStatus);
-            setOrders(orders.map(order =>
-                order._id === orderId ? { ...order, status: newStatus } : order
-            ));
-            message.success('Order status updated successfully');
-        } catch (err) {
-            message.error('Failed to update order status');
+    // Handlers for modal visibility
+    const showOrderDetail = (order: any) => {
+        setSelectedOrder(order);
+        setOrderDetailModalVisible(true);
+    };
+
+    const closeOrderDetailModal = () => {
+        setOrderDetailModalVisible(false);
+        setSelectedOrder(null);
+    };
+
+    const showConfirmModal = (orderId: string, newStatus: string) => {
+        setSelectedOrder({ id: orderId, newStatus });
+        setConfirmModalVisible(true);
+    };
+
+    const handleConfirm = async () => {
+        if (selectedOrder) {
+            try {
+                await changeStatusOrderProduct(selectedOrder.id, selectedOrder.newStatus);
+                setOrders(prevOrders =>
+                    prevOrders.map(order =>
+                        order._id === selectedOrder.id ? { ...order, status: selectedOrder.newStatus } : order
+                    )
+                );
+                message.success('Trạng thái đơn hàng đã được cập nhật thành công');
+            } catch {
+                message.error('Không thể cập nhật trạng thái đơn hàng');
+            } finally {
+                setConfirmModalVisible(false);
+            }
         }
     };
 
+    const cancelConfirmModal = () => setConfirmModalVisible(false);
+
+    const handleSearch = (value: string) => setSearchText(value);
+
+    // Utility functions for status information and text
     const getStatusInfo = (status: string) => {
-        switch (status) {
-            case 'pending':
-                return { color: 'orange', icon: <ClockCircleOutlined />, text: 'Pending' };
-            case 'processing':
-                return { color: 'blue', icon: <SyncOutlined spin />, text: 'Processing' };
-            case 'success':
-                return { color: 'green', icon: <CheckCircleOutlined />, text: 'Success' };
-            case 'confirmed':
-                return { color: 'cyan', icon: <CheckCircleOutlined />, text: 'Confirmed' };
-            case 'rejected':
-                return { color: 'red', icon: <CloseCircleOutlined />, text: 'Rejected' };
-            case 'shipping':
-                return { color: 'geekblue', icon: <CarOutlined />, text: 'Shipping' };
-            case 'delivered':
-                return { color: 'purple', icon: <GiftOutlined />, text: 'Delivered' };
-            case 'canceled':
-                return { color: 'magenta', icon: <StopOutlined />, text: 'Canceled' };
-            default:
-                return { color: 'default', icon: <ClockCircleOutlined />, text: 'Unknown' };
-        }
+        const statusMap = {
+            pending: { color: 'orange', icon: <ClockCircleOutlined />, text: 'Pending' },
+            processing: { color: 'blue', icon: <SyncOutlined spin />, text: 'Processing' },
+            success: { color: 'green', icon: <CheckCircleOutlined />, text: 'Success' },
+            confirmed: { color: 'cyan', icon: <CheckCircleOutlined />, text: 'Confirmed' },
+            rejected: { color: 'red', icon: <CloseCircleOutlined />, text: 'Rejected' },
+            shipping: { color: 'geekblue', icon: <CarOutlined />, text: 'Shipping' },
+            delivered: { color: 'purple', icon: <GiftOutlined />, text: 'Delivered' },
+            canceled: { color: 'magenta', icon: <StopOutlined />, text: 'Canceled' },
+        };
+        return statusMap[status] || { color: 'default', icon: <ClockCircleOutlined />, text: 'Unknown' };
     };
 
     const getDashboardStats = () => {
@@ -74,12 +100,22 @@ const OrderManagement: React.FC = () => {
         return { pendingOrders, totalRevenue, totalOrders, completedOrders };
     };
 
+    // Table columns
     const columns = [
         {
             title: 'Order ID',
             dataIndex: '_id',
             key: '_id',
-            render: (text: string) => <a href={`/order/${text}`}>{text}</a>,
+            render: (text: string, record: any) => (
+                <a onClick={() => showOrderDetail(record)}>{text}</a>
+            ),
+        },
+        {
+            title: 'Order Time',
+            dataIndex: 'createdAt',
+            key: 'createdAt',
+            render: (createdAt: string) => moment(createdAt).format('DD-MM-YYYY HH:mm:ss'),
+            sorter: (a: any, b: any) => moment(a.createdAt).unix() - moment(b.createdAt).unix(),
         },
         {
             title: 'Quantity',
@@ -98,11 +134,7 @@ const OrderManagement: React.FC = () => {
             key: 'status',
             render: (status: string) => {
                 const { color, icon, text } = getStatusInfo(status);
-                return (
-                    <Tag color={color} icon={icon}>
-                        {text}
-                    </Tag>
-                );
+                return <Tag color={color} icon={icon}>{text}</Tag>;
             },
         },
         {
@@ -112,7 +144,7 @@ const OrderManagement: React.FC = () => {
                 <Select
                     defaultValue={record.status}
                     style={{ width: 120 }}
-                    onChange={(value) => handleStatusChange(record._id, value)}
+                    onChange={(value) => showConfirmModal(record._id, value)}
                 >
                     <Option value="pending">Pending</Option>
                     <Option value="processing">Processing</Option>
@@ -127,86 +159,123 @@ const OrderManagement: React.FC = () => {
         },
     ];
 
-    const filteredOrders = orders.filter(order =>
-        order._id.toLowerCase().includes(searchText.toLowerCase()) ||
-        order.status.toLowerCase().includes(searchText.toLowerCase())
+    // Filter and render table
+    const renderOrderTable = (isCustom: boolean, status: string | null) => {
+        const filteredOrders = orders.filter(order =>
+            order.isCustomCake === isCustom &&
+            (status ? order.status === status : true) &&
+            (searchText === '' || order._id.toLowerCase().includes(searchText.toLowerCase()))
+        );
+        return <Table dataSource={filteredOrders} columns={columns} rowKey="_id" pagination={{ pageSize: 10 }} />;
+    };
+
+    // Render status tabs
+    const renderStatusTabs = (isCustom: boolean) => (
+        <Tabs defaultActiveKey="all">
+            {['All', 'Pending', 'Processing', 'Success', 'Confirmed', 'Rejected', 'Shipping', 'Delivered', 'Canceled'].map(status => (
+                <TabPane tab={status} key={status.toLowerCase()}>
+                    {renderOrderTable(isCustom, status.toLowerCase() === 'all' ? null : status.toLowerCase())}
+                </TabPane>
+            ))}
+        </Tabs>
     );
 
-    const renderOrderTable = (isCustom: boolean) => (
-        <Table
-            dataSource={filteredOrders.filter(order => order.isCustomCake === isCustom)}
-            columns={columns}
-            rowKey="_id"
-            pagination={{ pageSize: 10 }}
-        />
-    );
+    const checkSelectedDecorations = (decorations: any[], value: string) => {
+        return decorations?.some(d => d.value === value) || false;
+    }
 
-    if (loading) return <Spin size="large" />;
 
     const { pendingOrders, totalRevenue, totalOrders, completedOrders } = getDashboardStats();
+
+    if (loading) return <Spin size="large" />;
 
     return (
         <Card style={{ margin: '24px' }}>
             <Space direction="vertical" size="large" style={{ width: '100%' }}>
-                <Title level={2}>Order Management</Title>
-
+                <Title level={2}>Quản lí đơn hàng</Title>
                 <Row gutter={16}>
-                    <Col span={6}>
-                        <Card>
-                            <Statistic
-                                title="Pending Orders"
-                                value={pendingOrders}
-                                prefix={<ClockCircleOutlined />}
-                            />
-                        </Card>
-                    </Col>
-                    <Col span={6}>
-                        <Card>
-                            <Statistic
-                                title="Total Revenue"
-                                value={formatCurrency(totalRevenue)}
-                                prefix={<DollarCircleOutlined />}
-                            />
-                        </Card>
-                    </Col>
-                    <Col span={6}>
-                        <Card>
-                            <Statistic
-                                title="Total Orders"
-                                value={totalOrders}
-                                prefix={<ShoppingCartOutlined />}
-                            />
-                        </Card>
-                    </Col>
-                    <Col span={6}>
-                        <Card>
-                            <Statistic
-                                title="Completed Orders"
-                                value={completedOrders}
-                                prefix={<CheckCircleOutlined />}
-                            />
-                        </Card>
-                    </Col>
+                    <Col span={6}><StatisticCard title="Pending Orders" value={pendingOrders} icon={<ClockCircleOutlined />} /></Col>
+                    <Col span={6}><StatisticCard title="Total Revenue" value={formatCurrency(totalRevenue)} icon={<DollarCircleOutlined />} /></Col>
+                    <Col span={6}><StatisticCard title="Total Orders" value={totalOrders} icon={<ShoppingCartOutlined />} /></Col>
+                    <Col span={6}><StatisticCard title="Completed Orders" value={completedOrders} icon={<CheckCircleOutlined />} /></Col>
                 </Row>
-
                 <Input
                     placeholder="Search orders..."
                     prefix={<SearchOutlined />}
-                    onChange={(e) => setSearchText(e.target.value)}
+                    onChange={(e) => handleSearch(e.target.value)}
                     style={{ width: 300 }}
                 />
-
                 <Tabs defaultActiveKey="1">
-                    <TabPane tab="Custom Cake Orders" key="1">
-                        {renderOrderTable(true)}
-                    </TabPane>
-                    <TabPane tab="Regular Product Orders" key="2">
-                        {renderOrderTable(false)}
-                    </TabPane>
+                    <TabPane tab="Custom Cake Orders" key="1">{renderStatusTabs(true)}</TabPane>
+                    <TabPane tab="Regular Product Orders" key="2">{renderStatusTabs(false)}</TabPane>
                 </Tabs>
             </Space>
-        </Card>
+
+            {/* Modals */}
+            <Modal
+                title="Xác nhận thay đổi trạng thái"
+                visible={confirmModalVisible}
+                onOk={handleConfirm}
+                onCancel={cancelConfirmModal}
+            >
+                <p>Bạn có chắc chắn muốn thay đổi trạng thái đơn hàng này thành <strong>{getStatusInfo(selectedOrder?.newStatus)?.text}</strong>?</p>
+            </Modal>
+
+            <Modal
+                title="Order Details"
+                visible={orderDetailModalVisible}
+                onCancel={closeOrderDetailModal}
+                footer={null}
+                width={800}
+            >
+                {selectedOrder && (
+                    <Descriptions column={1}>
+                        <Descriptions.Item label="Order ID">{selectedOrder._id}</Descriptions.Item>
+                        <Descriptions.Item label="Order Time">{moment(selectedOrder.createdAt).format('DD-MM-YYYY HH:mm:ss')}</Descriptions.Item>
+                        <Descriptions.Item label="Quantity">{selectedOrder.quantity}</Descriptions.Item>
+                        <Descriptions.Item label="Price">{formatCurrency(selectedOrder.price)}</Descriptions.Item>
+                        <Descriptions.Item label="Status">
+                            <Tag color={getStatusInfo(selectedOrder.status).color}>
+                                {getStatusInfo(selectedOrder.status).text}
+                            </Tag>
+                        </Descriptions.Item>
+                        {selectedOrder.isCustomCake && selectedOrder.customCake && (
+                            <Descriptions.Item label="Custom Cake">
+                                <div style={{ height: '400px', width: '400px' }}>
+                                    <Render3DCakeProps
+                                        style={{ width: "100%", height: '100%' }}
+                                        cameraPosition={[0, 500, 500]}
+                                        frostingColor={selectedOrder.customCake.frostingColor}
+                                        selectedDripSauce={selectedOrder.customCake.selectedDripSauce}
+                                        isCandle={checkSelectedDecorations(selectedOrder.customCake.selectedDecorations, 'candle')}
+                                        isWafer={checkSelectedDecorations(selectedOrder.customCake.selectedDecorations, 'wafer')}
+                                        isMacaron={checkSelectedDecorations(selectedOrder.customCake.selectedDecorations, 'macaron')}
+                                        isStrawberry={checkSelectedDecorations(selectedOrder.customCake.selectedDecorations, 'strawberry')}
+                                        isCream={checkSelectedDecorations(selectedOrder.customCake.selectedDecorations, 'cream')}
+                                        isCherry={checkSelectedDecorations(selectedOrder.customCake.selectedDecorations, 'cherry')}
+                                        isChocolate={checkSelectedDecorations(selectedOrder.customCake.selectedDecorations, 'chocolate')}
+                                        onObjectClick={() => { }}
+                                        handleCanvasCreated={() => { }}
+                                    />
+
+                                </div>
+
+                            </Descriptions.Item>
+                        )}
+                        <Descriptions.Item label="Is Custom Cake">
+                            {selectedOrder.isCustomCake ? 'Yes' : 'No'}
+                        </Descriptions.Item>
+                    </Descriptions>
+                )}
+            </Modal>
+        </Card >
     );
 };
+
+const StatisticCard: React.FC<{ title: string; value: number | string; icon: React.ReactNode }> = ({ title, value, icon }) => (
+    <Card>
+        <Statistic title={title} value={value} prefix={icon} />
+    </Card>
+);
 
 export default OrderManagement;
