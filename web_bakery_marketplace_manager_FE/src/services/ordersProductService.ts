@@ -29,3 +29,8 @@ export const changeStatusOrderProduct = async (orderProductId: string, status: s
     return response.data;
 };
 
+export const getOrderProductStatisticsByBakeryId = async (bakeryId: string, startDate: string, endDate: string) => {
+    const response = await apiClient.post(`order-product/get-order-product-statistics-by-bakery-id/${bakeryId}`, { startDate, endDate });
+    return response.data;
+};
+

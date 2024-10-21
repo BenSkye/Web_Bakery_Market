@@ -111,9 +111,6 @@ const BakeryManager: React.FC = () => {
             title: "Tên tiệm bánh",
             dataIndex: "name",
             key: "name",
-            render: (text: string, record: Bakery) => {
-                return <Link to={`/getOrdersByBakeryId/${record.key}`}>{text}</Link>;
-            },
         },
         {
             title: "Quản lý",
