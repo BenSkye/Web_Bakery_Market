@@ -5,16 +5,20 @@ import { convertObjectId } from "../utils";
 
 
 class OrderRepo {
-    async createOder(userId: string, order_products: Array<Types.ObjectId>, checkout: Object, shipping_address: Object, payment_method: string) {
+    async createOder(userId: string, order_products: Array<Types.ObjectId>, checkout: Object, shipping_address: Object, payment_method: string, order_code: number) {
         const newOder = {
             user_id: userId,
             order_products: order_products,
             checkout: checkout,
             shipping_address: shipping_address,
-            payment_method: payment_method
+            payment_method: payment_method,
+            order_code: order_code
         }
 
         return await ordersModel.create(newOder);
+    }
+    async getOneOrder(query: Object) {
+        return await ordersModel.findOne(query as any);
     }
 
     async getPersonalOder(userId: string) {

@@ -14,12 +14,8 @@ module.exports = {
       'warn',
       { allowConstantExport: true },
     ],
-    // Bỏ qua cảnh báo về biến không sử dụng
-    '@typescript-eslint/no-unused-vars': [
-      'warn', // Chỉ cảnh báo thay vì lỗi
-      { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }, // Bỏ qua các biến bắt đầu bằng dấu gạch dưới
-    ],
-    // Bỏ qua cảnh báo về tham số không sử dụng
-    '@typescript-eslint/no-unused-parameters': 'off', // Tắt hoàn toàn kiểm tra tham số không sử dụng
+    '@typescript-eslint/no-unused-vars': ['warn', { 'argsIgnorePattern': '^_', 'varsIgnorePattern': '^_' }],
+    '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/ban-ts-comment': 'off',
   },
 };

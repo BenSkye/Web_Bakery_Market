@@ -30,10 +30,10 @@ class CheckoutController {
             metadata: await CheckoutService.checkOutCakeDesign(req.keyStore.user, req.params.orderCakeDesignId, req),
         }).send(res);
     });
+
     getVnpayReturn = asyncHandler(async (req: any, res: any, next: NextFunction) => {
         await CheckoutService.getVnpayReturn(req.query)
-
-        const redirectUrl = new URL('http://localhost:2709/bill');
+        const redirectUrl = new URL(process.env.FRONTEND_URL + '/bill');
         Object.keys(req.query).forEach(key => {
             redirectUrl.searchParams.append(key, req.query[key]);
         });
@@ -42,13 +42,25 @@ class CheckoutController {
 
     getVnpayCakeDesignReturn = asyncHandler(async (req: any, res: any, next: NextFunction) => {
         await CheckoutService.getVnpayCakeDesignReturn(req.query)
-        const redirectUrl = new URL('http://localhost:2709/bill');
+        const redirectUrl = new URL(process.env.FRONTEND_URL + '/bill');
         Object.keys(req.query).forEach(key => {
             redirectUrl.searchParams.append(key, req.query[key]);
         });
         res.redirect(redirectUrl.toString());
     });
 
+    getPayOsReturn = asyncHandler(async (req: any, res: any, next: NextFunction) => {
+        await CheckoutService.getPayOsReturn(req.query)
+        const redirectUrl = new URL(process.env.FRONTEND_URL + '/orderstatus');
+        res.redirect(redirectUrl.toString());
+
+    });
+
+    getPayOsCancel = asyncHandler(async (req: any, res: any, next: NextFunction) => {
+        await CheckoutService.getPayOsCancel(req.query)
+        const redirectUrl = new URL(process.env.FRONTEND_URL + '/checkout');
+        res.redirect(redirectUrl.toString());
+    });
 }
 
 export default new CheckoutController();    

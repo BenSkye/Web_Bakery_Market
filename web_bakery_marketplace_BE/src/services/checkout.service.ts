@@ -6,6 +6,8 @@ import { acquireLock, releaseLock } from "./redis.service";
 import orderProductRepo from "../repositories/oder_product.repo";
 import VnpayService from "./vnpay.service";
 import inventoryRepo from "../repositories/inventory.repo";
+import { generateOrderCode } from "../utils";
+import { createPaymentLink } from "./payOs.service";
 class CheckoutService {
     static checkoutReview = async (userId: String, product_list: any) => {
         const cart = await cartRepo.findCart({ user_id: userId });
@@ -64,24 +66,34 @@ class CheckoutService {
 
             order_products.push(newOrderProduct._id);
         }
-        const newOder = await orderRepo.createOder(userId, order_products, checkout_info.checkout_oder, user_address, payment_method);
-
-
-        const ipAddr = req.headers['x-forwarded-for'] ||
-            req.connection.remoteAddress ||
-            req.socket.remoteAddress ||
-            req.connection.socket.remoteAddress;
-        console.log('ipAddr:::', ipAddr);
-        const paymentInfo = {
-            orderId: newOder._id.toString(),
-            amount: checkout_info.checkout_oder.total_price,
-            orderDescription: 'thanh toan don hang ' + newOder._id.toString(),
-            language: 'vn',
-            ipAddr: ipAddr,
-            returnUrl: '/return-product-payment'
+        //lấy ngày giờ phút hiện tại đển chuyển thành ordercode có type là number
+        const order_code = generateOrderCode();
+        const newOder = await orderRepo.createOder(userId, order_products, checkout_info.checkout_oder, user_address, payment_method, order_code);
+        let paymentUrl = '';
+        if (payment_method === 'vnpay') {
+            const ipAddr = req.headers['x-forwarded-for'] ||
+                req.connection.remoteAddress ||
+                req.socket.remoteAddress ||
+                req.connection.socket.remoteAddress;
+            console.log('ipAddr:::', ipAddr);
+            const paymentInfo = {
+                orderId: newOder._id.toString(),
+                amount: checkout_info.checkout_oder.total_price,
+                orderDescription: 'thanh toan don hang ' + newOder._id.toString(),
+                language: 'vn',
+                ipAddr: ipAddr,
+                returnUrl: '/return-product-payment'
+            }
+            const vnpayService = new VnpayService();
+            paymentUrl = await vnpayService.createPaymentUrl(paymentInfo);
+            console.log('paymentUrl:::', paymentUrl);
         }
-        const vnpayService = new VnpayService();
-        const paymentUrl = await vnpayService.createPaymentUrl(paymentInfo);
+        if (payment_method === 'payos') {
+            const paymentLink = await createPaymentLink(order_code, checkout_info.checkout_oder.total_price, 'thanh toan don hang');
+            console.log('paymentLink:::', paymentLink);
+            paymentUrl = paymentLink.checkoutUrl;
+            console.log('paymentUrl:::', paymentUrl);
+        }
 
         return {
             paymentUrl,
@@ -91,7 +103,7 @@ class CheckoutService {
 
     static oderByUserCakeDesign = async (userId: string, bakeryId: string, quantity: number, price: number, address: Object, customCake: any) => {
         const newOderProduct = await orderProductRepo.createOrderCakeDesign(userId, bakeryId, quantity, price, address, customCake);
-        const newOder = await orderRepo.createOder(userId, [newOderProduct._id], { total_price: price * quantity }, address, '');
+        const newOder = await orderRepo.createOder(userId, [newOderProduct._id], { total_price: price * quantity }, address, '', generateOrderCode());
         return newOderProduct;
     }
 
@@ -185,6 +197,73 @@ class CheckoutService {
         }
         return {
             order_products
+        }
+    }
+
+    static getPayOsReturn = async (reqQuery: any) => {
+        console.log('reqQueryPayos:::', reqQuery);
+        const order_products = [];
+        if (reqQuery.code === '00') {
+            //update order status and remove prouduct in cart
+            const order = await orderRepo.getOneOrder({ order_code: reqQuery.orderCode });
+            console.log(order)
+            if (order) {
+                for (const orderProductID of order.order_products) {
+                    const orderProduct = await orderProductRepo.getOrderProductById(orderProductID.toString());
+                    if (orderProduct) {
+                        const updateOderProduct = await orderProductRepo.updateOderProduct(orderProduct._id.toString(), { status: 'success' });
+                        order_products.push(updateOderProduct);
+                        //payment success, remove product in cart
+                        if (!orderProduct.isCustomCake && orderProduct.product_id) {
+                            await cartRepo.removeProductFromCart(order.user_id.toString(), orderProduct.product_id._id.toString());
+                        }
+                    }
+                }
+            }
+            else {
+                throw new BadRequestError('Order not found');
+            }
+        }
+        else {
+            //delete order,product order and update stock
+            const order = await orderRepo.getOneOrder({ order_code: reqQuery.orderCode });
+            if (order) {
+                for (const orderProductID of order.order_products) {
+                    const orderProduct = await orderProductRepo.getOrderProductById(orderProductID.toString());
+                    if (orderProduct) {
+                        const quantity = orderProduct.quantity;
+                        if (!orderProduct.isCustomCake && orderProduct.product_id) {
+                            const updateInventory = await inventoryRepo.updateInventory(orderProduct.product_id._id.toString(), quantity);
+                            console.log("updateInventory", updateInventory)
+                        }
+                        await orderProductRepo.deleteOderProduct(orderProduct._id.toString());
+                    }
+                }
+                await orderRepo.deleteOder(order._id.toString());
+            }
+            throw new BadRequestError('Payment failed');
+        }
+        return {
+            order_products
+        }
+    }
+
+    static getPayOsCancel = async (reqQuery: any) => {
+        console.log('reqQueryPayosCancel:::', reqQuery);
+        const order = await orderRepo.getOneOrder({ order_code: reqQuery.orderCode });
+        if (order) {
+            for (const orderProductID of order.order_products) {
+                const orderProduct = await orderProductRepo.getOrderProductById(orderProductID.toString());
+                if (orderProduct) {
+                    const quantity = orderProduct.quantity;
+                    if (!orderProduct.isCustomCake && orderProduct.product_id) {
+                        const updateInventory = await inventoryRepo.updateInventory(orderProduct.product_id._id.toString(), quantity);
+                        console.log("updateInventory", updateInventory)
+                    }
+                    await orderProductRepo.deleteOderProduct(orderProduct._id.toString());
+                }
+            }
+            await orderRepo.deleteOder(order._id.toString());
         }
     }
 }

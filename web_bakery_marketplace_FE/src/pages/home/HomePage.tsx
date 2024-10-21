@@ -217,7 +217,7 @@ const HomePage: React.FC = () => {
             {loading ? (
               <SpinLoading />
             ) : (
-              bakeries.map((bakery, index) => (
+              bakeries?.map((bakery, index) => (
                 <div key={index} className="card-wrapper">
                   <StoreCard key={index} bakery={bakery} />
                 </div>
