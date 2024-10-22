@@ -89,7 +89,9 @@ class CheckoutService {
             console.log('paymentUrl:::', paymentUrl);
         }
         if (payment_method === 'payos') {
-            const paymentLink = await createPaymentLink(order_code, checkout_info.checkout_oder.total_price, 'thanh toan don hang');
+            const cancelUrl = '/cancel-product-payment';
+            const returnUrl = '/return-product-payment';
+            const paymentLink = await createPaymentLink(order_code, checkout_info.checkout_oder.total_price, 'thanh toan don hang', cancelUrl, returnUrl);
             console.log('paymentLink:::', paymentLink);
             paymentUrl = paymentLink.checkoutUrl;
             console.log('paymentUrl:::', paymentUrl);
@@ -102,7 +104,7 @@ class CheckoutService {
     }
 
     static oderByUserCakeDesign = async (userId: string, bakeryId: string, quantity: number, price: number, address: Object, customCake: any) => {
-        const newOderProduct = await orderProductRepo.createOrderCakeDesign(userId, bakeryId, quantity, price, address, customCake);
+        const newOderProduct = await orderProductRepo.createOrderCakeDesign(userId, bakeryId, quantity, price, address, customCake, generateOrderCode());
         const newOder = await orderRepo.createOder(userId, [newOderProduct._id], { total_price: price * quantity }, address, '', generateOrderCode());
         return newOderProduct;
     }
@@ -113,22 +115,25 @@ class CheckoutService {
             throw new BadRequestError('Order product not found');
         }
 
-        const ipAddr = req.headers['x-forwarded-for'] ||
-            req.connection.remoteAddress ||
-            req.socket.remoteAddress ||
-            req.connection.socket.remoteAddress;
-        console.log('ipAddr:::', ipAddr);
-        const paymentInfo = {
-            orderId: orderProduct._id.toString(),
-            amount: orderProduct.price,
-            orderDescription: 'thanh toan thiet ke banh ' + orderProduct._id.toString(),
-            language: 'vn',
-            ipAddr: ipAddr,
-            returnUrl: '/return-cake-design-payment'
-        }
-        const vnpayService = new VnpayService();
-        const paymentUrl = await vnpayService.createPaymentUrl(paymentInfo);
-
+        // const ipAddr = req.headers['x-forwarded-for'] ||
+        //     req.connection.remoteAddress ||
+        //     req.socket.remoteAddress ||
+        //     req.connection.socket.remoteAddress;
+        // console.log('ipAddr:::', ipAddr);
+        // const paymentInfo = {
+        //     orderId: orderProduct._id.toString(),
+        //     amount: orderProduct.price,
+        //     orderDescription: 'thanh toan thiet ke banh ' + orderProduct._id.toString(),
+        //     language: 'vn',
+        //     ipAddr: ipAddr,
+        //     returnUrl: '/return-cake-design-payment'
+        // }
+        const orderCode = generateOrderCode();
+        const updateOrderProduct = await orderProductRepo.updateOderProduct(orderProduct._id.toString(), { order_code: orderCode })
+        const cancelUrl = '/cancel-cake-design-payment';
+        const returnUrl = '/return-cake-design-payment';
+        const paymentLink = await createPaymentLink(updateOrderProduct.order_code ?? 0, orderProduct.price ?? 0, 'thanh toan thiet ke banh ', cancelUrl, returnUrl);
+        const paymentUrl = paymentLink.checkoutUrl
         return {
             paymentUrl,
             orderProduct
@@ -265,6 +270,27 @@ class CheckoutService {
             }
             await orderRepo.deleteOder(order._id.toString());
         }
+    }
+
+    static getPayOsCakeDesignReturn = async (reqQuery: any) => {
+        const order_products: any[] = [];
+        if (reqQuery.code === '00') {
+            const orderProduct = await orderProductRepo.getOneOrderProduct({ order_code: reqQuery.orderCode });
+            if (orderProduct) {
+                const updateOderProduct = await orderProductRepo.updateOderProduct(orderProduct._id.toString(), { status: 'success' });
+                order_products.push(updateOderProduct);
+            }
+        } else {
+            throw new BadRequestError('Payment failed');
+        }
+        return {
+            order_products
+        }
+    }
+
+    static getPayOsCakeDesignCancel = async (reqQuery: any) => {
+        const orderProduct = await orderProductRepo.getOneOrderProduct({ order_code: reqQuery.orderCode });
+        return orderProduct;
     }
 }
 export default CheckoutService;

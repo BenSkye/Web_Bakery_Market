@@ -61,6 +61,18 @@ class CheckoutController {
         const redirectUrl = new URL(process.env.FRONTEND_URL + '/checkout');
         res.redirect(redirectUrl.toString());
     });
+
+    getPayOsCakeDesignReturn = asyncHandler(async (req: any, res: any, next: NextFunction) => {
+        await CheckoutService.getPayOsCakeDesignReturn(req.query)
+        const redirectUrl = new URL(process.env.FRONTEND_URL + '/orderstatus');
+        res.redirect(redirectUrl.toString());
+    });
+
+    getPayOsCakeDesignCancel = asyncHandler(async (req: any, res: any, next: NextFunction) => {
+        await CheckoutService.getPayOsCakeDesignCancel(req.query)
+        const redirectUrl = new URL(process.env.FRONTEND_URL + '/orderstatus');
+        res.redirect(redirectUrl.toString());
+    });
 }
 
 export default new CheckoutController();    

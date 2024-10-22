@@ -10,6 +10,9 @@ const orderProductSchema = new Schema(
             ref: 'User',
             required: true,
         },
+        order_code: {
+            type: Number,
+        },
         product_id: {
             type: Schema.Types.ObjectId,
             ref: 'Product',
