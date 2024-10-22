@@ -4,8 +4,6 @@ import crypto from 'crypto';
 import { createTokenPair, verifyJWT } from '../auth/authUtils';
 import { getInfoData } from '../utils';
 import { AuthFailureError, BadRequestError, ForbiddenError, NotFoundError } from '../core/error.response';
-import { keyModel } from "../models/keytoken.model"
-import { JwtPayload } from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
 
 //import service
@@ -51,13 +49,7 @@ class AccessService {
     return delKey;
   }
 
-  /*
-   1 check email in dbs
-   2- match password
-   3- create AT vs RT and save
-   4 generate tokens
-   5 get data return login
-   */
+  
   static login = async (email: string, password: string, refreshToken = null) => {
     //1 check email in dbs
     const foundUser = await findByEmail(email);

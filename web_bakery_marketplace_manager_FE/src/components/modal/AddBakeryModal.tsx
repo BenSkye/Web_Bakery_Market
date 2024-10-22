@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, Input, Button, Modal, TimePicker, Switch, Table, message } from "antd";
+import { Form, Input, Button, Modal, TimePicker, Switch, Table, message, Checkbox } from "antd";
 import dayjs from "dayjs";
 import ImageUploader from '../upload/ImageUploader';
 import pathFirebase from '../../config/firebase/pathFirebase';
@@ -228,7 +228,7 @@ const AddBakeryModal: React.FC<AddBakeryModalProps> = ({ visible, onClose, onAdd
                 </Form.Item>
 
                 <Form.Item label="Thiết kế bánh 3D" name="customCake" valuePropName="checked">
-                    <Switch className="custom-switch" />
+                    <Checkbox>Có thể thiết kế bánh 3D</Checkbox>
                 </Form.Item>
 
                 <Button type="primary" onClick={() => setIsScheduleVisible(true)}>Cài đặt giờ mở cửa</Button>

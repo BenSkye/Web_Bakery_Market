@@ -2,10 +2,12 @@ import React from "react";
 import { Form, Input, Button, notification, Col, Row } from "antd"; // Import notification
 import { signup } from "../../services/authenService";
 import logo from "../../assets/logo.png";
-import { Link } from 'react-router-dom';
-import { HomeOutlined, LockOutlined, MailOutlined, PhoneOutlined, ShopOutlined, UserOutlined } from '@ant-design/icons';
+import { Link, useNavigate } from 'react-router-dom';
+import { HomeOutlined, LockOutlined, MailOutlined, PhoneOutlined, UserOutlined } from '@ant-design/icons';
 
 const SignUp: React.FC = () => {
+
+  const navigate = useNavigate();
   // Handle form submission
 
   const onFinish = async (values: any) => {
@@ -16,7 +18,7 @@ const SignUp: React.FC = () => {
         password: values.password,
         phone: values.phone,
         address: values.address,
-        role: "shop", // Default role for signup
+        role: "shop",
       });
       console.log("Signup Result:", result);
 
@@ -27,6 +29,9 @@ const SignUp: React.FC = () => {
           placement: 'topRight', // Position of the notification
           duration: 3, // Duration in seconds
         });
+
+        navigate('/login');
+
       } else {
         notification.error({
           message: 'Đăng ký thất bại',
