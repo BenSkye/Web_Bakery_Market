@@ -1,32 +1,27 @@
 import React, { useEffect } from "react";
 import { Form, Input, Button, Col, Row, message } from "antd";
 import { useNavigate, Link } from "react-router-dom";
-import { login } from "../../services/authenService";
 import logo from "../../assets/logo.png";
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { useAuth } from '../../stores/authContex';
 
 const LoginManager: React.FC = () => {
+  const { login } = useAuth()
   const navigate = useNavigate();
-  const { user, login: authLogin } = useAuth()
 
-  useEffect(() => {
-    if (user) {
-      navigate("/home");
-    }
-  }, [user, navigate]);
 
   const onFinish = async (values: any) => {
     try {
-      const result = await login({
+
+      const data = {
         email: values.email,
         password: values.password,
-      });
+      }
+      const response = await login(data);
 
-      if (result.status === 200) {
+      if (response.status === 200) {
         message.success("Đăng nhập thành công!");
-        authLogin(result.data); // Thêm dòng này để cập nhật context
-        // Không cần gọi navigate ở đây nữa
+        navigate("/home");
       } else if (result.error) {
         message.error("Chỉ tài khoản cửa hàng mới được phép đăng nhập.");
       }
