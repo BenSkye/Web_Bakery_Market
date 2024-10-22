@@ -24,7 +24,7 @@ const FBXModel = ({ url, onClick,
     }) => {
     const fbx = useLoader(FBXLoader, url);
     const modelRef = useRef<Object3D>();
-    const { camera, gl, scene } = useThree();
+    const { camera, gl } = useThree();
     const raycaster = new Raycaster();
     const mouse = new Vector2();
 
