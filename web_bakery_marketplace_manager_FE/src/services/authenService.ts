@@ -75,3 +75,13 @@ export const resetPassword = async (token: string, newPassword: string) => {
         return error.response ? error.response.data : { message: 'An error occurred' };
     }
 };
+
+export const getManagerProfile = async (id: string) => {
+    const response = await apiClient.get(`/user/profile/${id}`);
+    return response.data;
+};
+
+export const updateManagerProfile = async (id: string, data: any) => {
+    const response = await apiClient.put(`/user/profile/${id}`, data);
+    return response.data;
+};

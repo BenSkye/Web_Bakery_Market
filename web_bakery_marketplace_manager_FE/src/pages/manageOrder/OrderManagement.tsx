@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Select, message, Tabs, Spin, Card, Space, Typography, Input, Tag, Row, Col, Statistic, Modal, Descriptions } from 'antd';
-import { useParams } from 'react-router-dom';
 import { getOrdersProductByBakeryId, changeStatusOrderProduct } from '../../services/ordersProductService';
 import { formatCurrency } from '../../utils/format/formatCurrency';
 import { SearchOutlined, ClockCircleOutlined, SyncOutlined, CheckCircleOutlined, CloseCircleOutlined, CarOutlined, GiftOutlined, StopOutlined, DollarCircleOutlined, ShoppingCartOutlined } from '@ant-design/icons';
 import Render3DCakeProps from '../../components/3D/Render3DCakeProps';
 import moment from 'moment';
+import { Order } from '../../services/ordersBillService';
 
 const { Option } = Select;
 const { TabPane } = Tabs;
@@ -241,9 +241,9 @@ const OrderManagement: React.FC<OrderManagementProps> = ({ bakeryId }) => {
                         </Descriptions.Item>
                         {selectedOrder.isCustomCake && selectedOrder.customCake && (
                             <Descriptions.Item label="Custom Cake">
-                                <div style={{ height: '400px', width: '400px' }}>
+                                <div style={{ height: '500px', width: '500px' }}>
                                     <Render3DCakeProps
-                                        style={{ width: "100%", height: '100%' }}
+                                        style={{ width: "100%", height: '100%', backgroundColor: 'white' }}
                                         cameraPosition={[0, 500, 500]}
                                         frostingColor={selectedOrder.customCake.frostingColor}
                                         selectedDripSauce={selectedOrder.customCake.selectedDripSauce}

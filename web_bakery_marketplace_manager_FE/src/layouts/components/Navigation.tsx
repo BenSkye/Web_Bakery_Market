@@ -50,7 +50,7 @@ const NavigationComponent: React.FC = () => {
                 </Menu.Item>
 
                 <Menu.Item key="settings-profile" icon={<SettingOutlined />}>
-                    <Link to='/admin/settings/profile'>Cài đặt hồ sơ</Link>
+                    <Link to='/manage-profile-manager'>Cài đặt hồ sơ</Link>
                 </Menu.Item>
 
             </Menu>
