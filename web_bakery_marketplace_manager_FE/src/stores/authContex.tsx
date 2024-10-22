@@ -65,7 +65,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             setUser(decodedUser);
 
             return response.data;
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error login:', error);
             return error.response.data;
         }
