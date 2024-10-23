@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { Layout, Menu, Button, Row, Col, Badge, Dropdown, Input, Modal, AutoComplete } from 'antd';
-import { ShoppingCartOutlined, UserOutlined, LogoutOutlined, ShareAltOutlined, SearchOutlined, HeartOutlined, HomeOutlined, ShopOutlined, QuestionCircleOutlined, ToolOutlined } from '@ant-design/icons';
+import { ShoppingCartOutlined, UserOutlined, LogoutOutlined, ShareAltOutlined, SearchOutlined, HeartOutlined, HomeOutlined, ShopOutlined, QuestionCircleOutlined, ToolOutlined, FacebookOutlined, TwitterOutlined, TikTokOutlined } from '@ant-design/icons';
 import logo from '../../assets/logoNobackground.png';
 import cakeIcon from '../../assets/pen_1324.png'
 import { Link } from 'react-router-dom';
@@ -25,6 +25,8 @@ const HeaderComponent: React.FC = () => {
 
     const [isSearchModalVisible, setIsSearchModalVisible] = useState(false);
     const [searchOptions, setSearchOptions] = useState<BakerySearchResult[]>([]);
+    const [isShareModalVisible, setIsShareModalVisible] = useState(false);
+
 
     const showSearchModal = () => {
         setIsSearchModalVisible(true);
@@ -33,6 +35,15 @@ const HeaderComponent: React.FC = () => {
     const handleSearchCancel = () => {
         setIsSearchModalVisible(false);
     };
+
+    const showShareModal = () => {
+        setIsShareModalVisible(true);
+    };
+
+    const handleShareCancel = () => {
+        setIsShareModalVisible(false);
+    };
+
 
     const handleSearch = async (value: string) => {
         if (value.length > 2) {
@@ -128,7 +139,7 @@ const HeaderComponent: React.FC = () => {
                             <Button type="text" icon={<HeartOutlined />} className="header-button" />
                         </Col>
                         <Col>
-                            <Button type="text" icon={<ShareAltOutlined />} className="header-button" />
+                            <Button type="text" icon={<ShareAltOutlined />} className="header-button" onClick={showShareModal} />
                         </Col>
                         {user && (
                             <Col>
@@ -163,6 +174,40 @@ const HeaderComponent: React.FC = () => {
                 >
                     <Input.Search size="large" />
                 </AutoComplete>
+            </Modal>
+            <Modal
+                title={<div style={{ textAlign: 'center', fontSize: '24px', fontWeight: 'bold' }}>Chia sẻ</div>}
+                visible={isShareModalVisible}
+                onCancel={handleShareCancel}
+                footer={null}
+                width={400}
+                bodyStyle={{ padding: '24px' }}
+            >
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px' }}>
+                    <p style={{ fontSize: '16px', textAlign: 'center', marginBottom: '20px' }}>
+                        Chia sẻ trang web của chúng tôi trên mạng xã hội!
+                    </p>
+                    <Button
+                        type="primary"
+                        className='button-hover'
+                        icon={<FacebookOutlined />}
+                        href="https://www.facebook.com/profile.php?id=61566189472699"
+                        target="_blank"
+                        style={{ width: '200px', height: '40px', fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                    >
+                        Facebook
+                    </Button>
+                    <Button
+                        type="primary"
+                        className='button-hover'
+                        icon={<TikTokOutlined />}
+                        href="https://www.tiktok.com/@your-account"
+                        target="_blank"
+                        style={{ width: '200px', height: '40px', fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#000000', borderColor: '#000000' }}
+                    >
+                        TikTok
+                    </Button>
+                </div>
             </Modal>
         </Header>
     );

@@ -8,8 +8,7 @@ const bakeryRouter = Router();
 
 bakeryRouter.get('/get-list', bakeryController.getBakeries);
 bakeryRouter.get('/get-by-id/:id', bakeryController.getBakeryById);
-
-
+bakeryRouter.get('/search-bakeries', bakeryController.searchBakeries);
 
 //authentication//
 bakeryRouter.use(authentication);
@@ -18,6 +17,6 @@ bakeryRouter.use(apiKey)
 bakeryRouter.post('/create', permission('shop'), bakeryController.createBakery);
 bakeryRouter.get('/get-by-user-id/:user_id', permission('shop'), bakeryController.getBakeryByUserId);
 bakeryRouter.put('/update-status/:id', permission('admin'), bakeryController.updateStatusBakery);
-bakeryRouter.get('/search-bakeries', bakeryController.searchBakeries);
+
 
 export default bakeryRouter;
