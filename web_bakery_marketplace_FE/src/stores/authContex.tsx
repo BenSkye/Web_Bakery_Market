@@ -5,6 +5,7 @@ import apiClient from '../services/apiClient';
 
 
 interface User {
+    name: any;
     userId: string;
     username: string;
     email: string;

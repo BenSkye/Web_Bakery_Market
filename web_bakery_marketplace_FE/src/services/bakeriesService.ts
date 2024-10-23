@@ -50,3 +50,13 @@ export const createBakery = async (data: any) => {
     throw error;
   }
 }
+
+export const searchBakeries = async (query: string) => {
+  try {
+    const response = await apiClient.get(`/bakery/search-bakeries?query=${query}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error searching bakeries:', error);
+    throw error;
+  }
+}

@@ -18,6 +18,6 @@ bakeryRouter.use(apiKey)
 bakeryRouter.post('/create', permission('shop'), bakeryController.createBakery);
 bakeryRouter.get('/get-by-user-id/:user_id', permission('shop'), bakeryController.getBakeryByUserId);
 bakeryRouter.put('/update-status/:id', permission('admin'), bakeryController.updateStatusBakery);
-
+bakeryRouter.get('/search-bakeries', bakeryController.searchBakeries);
 
 export default bakeryRouter;

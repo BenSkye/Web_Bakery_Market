@@ -52,6 +52,11 @@ class BakeryService {
     static updateStatusBakery = async (id: string, status: string) => {
         return await bakeryRepo.updateBakery(id, { status });
     }
+
+    static searchBakeries = async (query: string) => {
+        const bakeries = await bakeryRepo.searchBakeries(query);
+        return bakeries;        
+    }
 }
 
 export default BakeryService;

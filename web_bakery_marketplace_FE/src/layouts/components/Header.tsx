@@ -1,20 +1,69 @@
-import React, { useContext } from 'react';
-import { Layout, Menu, Button, Row, Col, Badge, Dropdown } from 'antd';
-import { ShoppingCartOutlined, UserOutlined, LogoutOutlined, ShareAltOutlined, SearchOutlined, HeartOutlined, HomeOutlined, InfoCircleOutlined, ShopOutlined, FundViewOutlined, QuestionCircleOutlined, ToolOutlined } from '@ant-design/icons';
+import React, { useContext, useState } from 'react';
+import { Layout, Menu, Button, Row, Col, Badge, Dropdown, Input, Modal, AutoComplete } from 'antd';
+import { ShoppingCartOutlined, UserOutlined, LogoutOutlined, ShareAltOutlined, SearchOutlined, HeartOutlined, HomeOutlined, ShopOutlined, QuestionCircleOutlined, ToolOutlined } from '@ant-design/icons';
 import logo from '../../assets/logoNobackground.png';
 import cakeIcon from '../../assets/pen_1324.png'
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../stores/authContex';
 import '../../styles/layoutSyles/headerComponent.css';
 import { CartContext } from '../../stores/cartContext';
+import { searchBakeries } from '../../services/bakeriesService';
+
 
 const { Header } = Layout;
 
+interface BakerySearchResult {
+    image: any;
+    _id: string;
+    name: string;
+    address: string;
+}
+
 const HeaderComponent: React.FC = () => {
     const { user, logout } = useAuth();
-    const { cart } = useContext(CartContext);
-    console.log('cart', cart)
-    // Dropdown menu for user
+    const { cart } = useContext(CartContext) || { cart: undefined };
+
+    const [isSearchModalVisible, setIsSearchModalVisible] = useState(false);
+    const [searchOptions, setSearchOptions] = useState<BakerySearchResult[]>([]);
+
+    const showSearchModal = () => {
+        setIsSearchModalVisible(true);
+    };
+
+    const handleSearchCancel = () => {
+        setIsSearchModalVisible(false);
+    };
+
+    const handleSearch = async (value: string) => {
+        if (value.length > 2) {
+            try {
+                const response = await searchBakeries(value);
+                console.log('response', response.metadata);
+                setSearchOptions(response.metadata || []); // Ensure it's always an array
+            } catch (error) {
+                console.error('Error fetching search results:', error);
+                setSearchOptions([]); // Set to empty array on error
+            }
+        } else {
+            setSearchOptions([]);
+        }
+    };
+
+    const renderOption = (bakery: BakerySearchResult) => ({
+        value: bakery._id,
+        label: (
+            <Link to={`/detail/${bakery._id}`} style={{ display: 'block' }}>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <img src={bakery.image[0]} alt={bakery.name} style={{ width: 30, height: 30, marginRight: 10 }} />
+                    <span>
+                        <div>{bakery.name}</div>
+                        <div style={{ fontSize: '0.8em', color: '#888' }}>{bakery.address}</div>
+                    </span>
+                </div>
+            </Link>
+        ),
+    });
+
     const userMenu = (
         <Menu>
             {user ? (
@@ -73,7 +122,7 @@ const HeaderComponent: React.FC = () => {
                 <Col flex="1" style={{ textAlign: 'right' }}>
                     <Row gutter={[16, 16]} align="middle" justify="end">
                         <Col>
-                            <Button type="text" icon={<SearchOutlined />} className="header-button" />
+                            <Button type="text" icon={<SearchOutlined />} className="header-button" onClick={showSearchModal} />
                         </Col>
                         <Col>
                             <Button type="text" icon={<HeartOutlined />} className="header-button" />
@@ -100,6 +149,21 @@ const HeaderComponent: React.FC = () => {
                     </Row>
                 </Col>
             </Row>
+            <Modal
+                title="Tìm kiếm cửa hàng"
+                visible={isSearchModalVisible}
+                onCancel={handleSearchCancel}
+                footer={null}
+            >
+                <AutoComplete
+                    style={{ width: '100%' }}
+                    onSearch={handleSearch}
+                    placeholder="Nhập tên cửa hàng hoặc địa chỉ"
+                    options={(searchOptions || []).map(renderOption)}
+                >
+                    <Input.Search size="large" />
+                </AutoComplete>
+            </Modal>
         </Header>
     );
 };
