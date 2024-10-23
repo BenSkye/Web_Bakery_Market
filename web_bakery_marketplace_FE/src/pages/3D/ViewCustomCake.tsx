@@ -16,11 +16,9 @@ const { Title, Text } = Typography;
 const ViewCustomCake = () => {
     const [selectedObject, setSelectedObject] = useState<Object3D | null>(null);
     const [cameraPosition, setCameraPosition] = useState<[number, number, number]>([0, 500, 1000]);
-    const [cakeSize, setCakeSize] = useState<number>(20);
-    const [cakeColor, setCakeColor] = useState<Color>('#FFFFFF');
-    const [selectedFilling, setSelectedFilling] = useState<object>({});
-    const [frostingColor, setFrostingColor] = useState<object>({});
-    const [selectedDripSauce, setSelectedDripSauce] = useState<object>({});
+    const [selectedFilling, setSelectedFilling] = useState<any>({});
+    const [frostingColor, setFrostingColor] = useState<any>({});
+    const [selectedDripSauce, setSelectedDripSauce] = useState<any>({});
     const [isCandle, setIsCandle] = useState<boolean>(false);
     const [isWafer, setIsWafer] = useState<boolean>(false);
     const [isMacaron, setIsMacaron] = useState<boolean>(false);
@@ -28,55 +26,52 @@ const ViewCustomCake = () => {
     const [isCream, setIsCream] = useState<boolean>(false);
     const [isCherry, setIsCherry] = useState<boolean>(false);
     const [isChocolate, setIsChocolate] = useState<boolean>(false);
-    const [selectedDecorations, setSelectedDecorations] = useState<object[]>([]);
+    const [selectedDecorations, setSelectedDecorations] = useState<any[]>([]);
     const [totalPrice, setTotalPrice] = useState<number>(0);
 
     const [decorationOptions, setDecorationsOptions] = useState<object[]>([]);
-    const [loading, setLoading] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [isReady, setIsReady] = useState<boolean>(false);
 
     const sceneRef = useRef<Scene | null>(null);
     const { id } = useParams<{ id: string }>();
 
-
-    const [orderProduct, setOrderProduct] = useState<object>({});
+    const [orderProduct, setOrderProduct] = useState<any>({});
 
     const fetchOrderProductById = async () => {
+        setLoading(true);
         const response = await getOrderProductById(id);
         console.log('response:', response.metadata);
         setOrderProduct(response.metadata);
-        setSelectedFilling(response.metadata.customCake.selectedFilling);
-        setFrostingColor(response.metadata.customCake.frostingColor);
-        setSelectedDripSauce(response.metadata.customCake.selectedDripSauce);
-        setSelectedDecorations(response.metadata.customCake.selectedDecorations);
-        setTotalPrice(response.metadata.price);
-
     }
+    const fetchCakeOption = async () => {
+        if (orderProduct?.bakery_id) {
+            try {
+                const cakeOption = await getCakeOptionByBakeryId(orderProduct.bakery_id);
+                console.log('Cake option:', cakeOption);
+                setDecorationsOptions(cakeOption.metadata.cakeDecoration);
+                setSelectedFilling(orderProduct.customCake.selectedFilling);
+                setFrostingColor(orderProduct.customCake.frostingColor);
+                setSelectedDripSauce(orderProduct.customCake.selectedDripSauce);
+                setSelectedDecorations(orderProduct.customCake.selectedDecorations);
+                setTotalPrice(orderProduct.price);
+                // Xử lý decorations từ orderProduct
+                if (orderProduct.customCake && orderProduct.customCake.selectedDecorations) {
+                    setDecoration(orderProduct.customCake.selectedDecorations);
+                }
+            } catch (error) {
+                console.error('Error fetching cake options:', error);
+                message.error('Không thể tải tùy chọn bánh');
+            }
+        }
+        setLoading(false);
+    };
 
     useEffect(() => {
         fetchOrderProductById();
     }, []);
 
     useEffect(() => {
-        const fetchCakeOption = async () => {
-            setLoading(true);
-            if (orderProduct?.bakery_id) {
-                try {
-                    const cakeOption = await getCakeOptionByBakeryId(orderProduct.bakery_id);
-                    console.log('Cake option:', cakeOption);
-                    setDecorationsOptions(cakeOption.metadata.cakeDecoration);
-
-                    // Xử lý decorations từ orderProduct
-                    if (orderProduct.customCake && orderProduct.customCake.selectedDecorations) {
-                        setDecoration(orderProduct.customCake.selectedDecorations);
-                    }
-                } catch (error) {
-                    console.error('Error fetching cake options:', error);
-                    message.error('Không thể tải tùy chọn bánh');
-                }
-            }
-            setLoading(false);
-        };
-
         fetchCakeOption();
     }, [orderProduct]);
 
@@ -85,7 +80,7 @@ const ViewCustomCake = () => {
         console.log('decorationOptions:', decorationOptions);
 
         const newSelectedDecorations = decorations.map(decoration => {
-            const foundDecoration = decorationOptions.find(option => option.value === decoration.value);
+            const foundDecoration = decorationOptions.find((option: any) => option.value === decoration.value);
             return foundDecoration || decoration;
         });
 
@@ -100,6 +95,7 @@ const ViewCustomCake = () => {
         setIsCream(newSelectedDecorations.some(d => d.value === 'cream'));
         setIsCherry(newSelectedDecorations.some(d => d.value === 'cherry'));
         setIsChocolate(newSelectedDecorations.some(d => d.value === 'chocolate'));
+        setIsReady(true);
     };
     const handleObjectClick = (object: Object3D) => {
         setSelectedObject(object);
@@ -109,31 +105,32 @@ const ViewCustomCake = () => {
     const handleCanvasCreated = useCallback(({ scene }: { scene: Scene }) => {
         sceneRef.current = scene;
     }, []);
-    useEffect(() => {
-        console.log('Camera position:', cameraPosition);
-    }, [cameraPosition]);
 
-    if (loading) {
+
+    if (loading || !isReady) {
         return <Spin />;
     }
     return (
         <Row gutter={[24, 24]}>
             <Col span={16}>
-                <CakeVisualization
-                    cameraPosition={cameraPosition}
-                    frostingColor={frostingColor}
-                    selectedDripSauce={selectedDripSauce}
-                    isCandle={isCandle}
-                    isWafer={isWafer}
-                    isMacaron={isMacaron}
-                    isStrawberry={isStrawberry}
-                    isCream={isCream}
-                    isCherry={isCherry}
-                    isChocolate={isChocolate}
-                    onObjectClick={handleObjectClick}
-                    handleCanvasCreated={handleCanvasCreated}
-                    style={{ height: '80vh' }}
-                />
+                {selectedDripSauce && frostingColor && isReady && (
+                    <CakeVisualization
+                        cameraPosition={cameraPosition}
+                        frostingColor={frostingColor}
+                        selectedDripSauce={selectedDripSauce}
+                        isCandle={isCandle}
+                        isWafer={isWafer}
+                        isMacaron={isMacaron}
+                        isStrawberry={isStrawberry}
+                        isCream={isCream}
+                        isCherry={isCherry}
+                        isChocolate={isChocolate}
+                        onObjectClick={handleObjectClick}
+                        handleCanvasCreated={handleCanvasCreated}
+                        style={{ height: '80vh' }}
+                    />
+                )}
+
             </Col>
             <Col span={8}>
                 <Card title="Thông tin bánh">

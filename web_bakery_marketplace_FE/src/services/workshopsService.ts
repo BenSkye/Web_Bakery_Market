@@ -2,7 +2,7 @@ import apiClient from './apiClient';
 import axios from 'axios';
 
 export interface Workshop {
-  id: string;
+  _id: string;
   title: string;
   description: string;
   date: string;

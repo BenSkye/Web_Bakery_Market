@@ -86,7 +86,7 @@ const WorkshopPage: React.FC = () => {
                     Workshop Nổi Bật
                 </Title>
                 <Carousel autoplay>
-                    {workshops.slice(0, 3).map((workshop) => (
+                    {workshops.slice(0, 3).map((workshop: any) => (
                         <CarouselImageWrapper key={workshop.id}>
                             <img
                                 src={workshop.image}
@@ -105,7 +105,7 @@ const WorkshopPage: React.FC = () => {
                     Tất cả Workshops
                 </Title>
                 <Row gutter={[24, 24]}>
-                    {workshops.map((workshop) => (
+                    {workshops.map((workshop: any) => (
                         <Col key={workshop.id} xs={24} sm={12} md={8}>
                             <StyledCard
                                 hoverable

@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Card, Row, Col, Image, Typography, Rate, InputNumber, Button } from 'antd';
 import { getProductById } from '../../services/productService';
 import { ShoppingCartOutlined } from '@ant-design/icons';
-import { CartContext } from '../../stores/cartContext';
+import { CartContext, CartContextType } from '../../stores/cartContext';
 import { formatCurrency } from '../../utils/currency/formatCurrency';
 const { Title, Text } = Typography;
 
@@ -34,7 +34,7 @@ const ProductDetail: React.FC = () => {
     const [inventory, setInventory] = useState<any>(null);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [quantity, setQuantity] = useState<number>(1);
-    const { addToCart } = useContext(CartContext);
+    const { addToCart } = useContext(CartContext) as CartContextType;
 
     useEffect(() => {
         const fetchProduct = async () => {

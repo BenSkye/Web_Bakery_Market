@@ -36,7 +36,7 @@ const StoresPage: React.FC = () => {
     }, [bakeries, minRating]);
 
     const cities = useMemo(() =>
-        [...new Set(bakeries.map(b => b.city))],
+        [...new Set(bakeries.map((b: any) => b.city))],
         [bakeries]
     );
 

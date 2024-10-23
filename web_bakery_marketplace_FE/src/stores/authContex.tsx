@@ -7,13 +7,13 @@ import apiClient from '../services/apiClient';
 interface User {
     name: any;
     userId: string;
-    username: string;
+    name: string;
     email: string;
 }
 
 interface AuthContextType {
     user: User | null;
-    login: (user: User) => void;
+    login: (data: any) => Promise<any>;
     logout: () => void;
     isAuthenticated: boolean;
 }

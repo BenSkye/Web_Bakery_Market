@@ -43,10 +43,11 @@ const BakeryInfo: React.FC<BakeryInfoProps> = ({ bakery }) => {
     const currentDay = daysOfWeek[today === 0 ? 6 : today - 1]; // Adjust for Sunday
     const currentTime = new Date().toTimeString().slice(0, 5); // Get current time in HH:mm format
 
-    const openingHoursToday = openingHours[currentDay];
+    const openingHoursToday = openingHours[currentDay as keyof typeof openingHours];
 
     // Function to check if the bakery is open
     const isOpen = () => {
+        if (!openingHoursToday) return false;
         return currentTime >= openingHoursToday.open && currentTime <= openingHoursToday.close;
     };
 

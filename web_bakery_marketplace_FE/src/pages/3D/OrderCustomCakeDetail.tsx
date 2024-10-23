@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom';
 import ViewCustomCake from './ViewCustomCake';
 
@@ -8,6 +8,6 @@ export default function OrderCustomCakeDetail() {
         console.log('id', id)
     }, [id])
     return (
-        <ViewCustomCake id={id || ''} />
+        <ViewCustomCake />
     )
 }

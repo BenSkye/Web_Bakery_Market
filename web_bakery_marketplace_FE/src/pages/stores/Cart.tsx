@@ -1,14 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Table, InputNumber, Button, Typography, Space, Image, Card, Empty } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import { CartContext } from '../../stores/cartContext';
+import { CartContext, CartContextType } from '../../stores/cartContext';
 import { convertToVND } from '../../utils';
 import { DeleteOutlined, ShoppingCartOutlined, MinusOutlined, PlusOutlined } from '@ant-design/icons';
 
 const { Title } = Typography;
 
 const Cart: React.FC = () => {
-    const { cart, addToCart, removeFromCart } = useContext(CartContext);
+    const { cart, addToCart, removeFromCart } = useContext(CartContext) as CartContextType;
     const [cartItems, setCartItems] = useState<any[]>([]);
     const navigate = useNavigate();
 

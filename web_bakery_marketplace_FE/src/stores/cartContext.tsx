@@ -18,11 +18,11 @@ interface CartItem {
     cart_count_products: number,
 }
 
-interface CartContextType {
+export interface CartContextType {
     cart: CartItem | null;
     isLoading: boolean;
     error: string | null;
-    addToCart: (productData: { product_id: string, quantity: number }) => Promise<void>;
+    addToCart: (productData: any) => Promise<void>;
     removeFromCart: (productId: string) => Promise<void>;
     fetchCart: () => Promise<void>;
 }

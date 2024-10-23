@@ -8,8 +8,8 @@ import NoImg from '../../assets/NoImg.jpg';
 import { EnvironmentOutlined, ShopOutlined } from '@ant-design/icons';
 
 interface StoreCardProps {
-    bakery: Bakery;
-    className?: string;
+  bakery: Bakery;
+  className?: string;
 }
 
 const StyledCard = styled(Card)`
@@ -94,47 +94,47 @@ const StyledButton = styled(Button)`
 `;
 
 const StoreCard: React.FC<StoreCardProps> = ({ bakery, className }) => {
-    const coverImage = bakery.image.length > 0 ? bakery.image[0] : NoImg;
+  const coverImage = bakery.image.length > 0 ? bakery.image[0] : NoImg;
 
-    return (
-        <Link to={`/detail/${bakery._id}`} className={className}>
-            <StyledCard
-                bordered={false}
-                cover={
-                    <ImageContainer>
-                        <StyledImage alt={bakery.name} src={coverImage} />
-                    </ImageContainer>
-                }
-            >
-                <CardContent>
-                    <Tooltip title={bakery.name} placement="topLeft">
-                        <StoreName>{truncateText(bakery.name, 35)}</StoreName>
-                    </Tooltip>
-                    <Tooltip title={bakery.address} placement="topLeft">
-                        <StoreAddress>
-                            <EnvironmentOutlined style={{ marginRight: 8 }} />
-                            {truncateText(bakery.address, 35)}
-                        </StoreAddress>
-                    </Tooltip>
-                    <RatingContainer>
-                        {bakery.rating >= 0 ? (
-                            <>
-                                <Rate disabled value={bakery.rating} style={{ fontSize: 16 }} />
-                                <span style={{ marginLeft: 8, fontSize: 16, color: '#faad14' }}>{bakery.rating.toFixed(1)}</span>
-                            </>
-                        ) : (
-                            <Tag color="default">Chưa có đánh giá</Tag>
-                        )}
-                    </RatingContainer>
-                    <ButtonContainer>
-                        <StyledButton type="primary" className='button-hover' icon={<ShopOutlined />}>
-                            Ghé tiệm
-                        </StyledButton>
-                    </ButtonContainer>
-                </CardContent>
-            </StyledCard>
-        </Link>
-    );
+  return (
+    <Link to={`/detail/${bakery._id}`} className={className}>
+      <StyledCard
+        bordered={false}
+        cover={
+          <ImageContainer>
+            <StyledImage alt={bakery.name} src={coverImage} />
+          </ImageContainer>
+        }
+      >
+        <CardContent>
+          <Tooltip title={bakery.name} placement="topLeft">
+            <StoreName>{truncateText(bakery.name, 35)}</StoreName>
+          </Tooltip>
+          <Tooltip title={bakery.address} placement="topLeft">
+            <StoreAddress>
+              <EnvironmentOutlined style={{ marginRight: 8 }} />
+              {truncateText(bakery.address, 35)}
+            </StoreAddress>
+          </Tooltip>
+          <RatingContainer>
+            {bakery.rating >= 0 ? (
+              <>
+                <Rate disabled value={bakery.rating} style={{ fontSize: 16 }} />
+                <span style={{ marginLeft: 8, fontSize: 16, color: '#faad14' }}>{bakery.rating.toFixed(1)}</span>
+              </>
+            ) : (
+              <Tag color="default">Chưa có đánh giá</Tag>
+            )}
+          </RatingContainer>
+          <ButtonContainer>
+            <StyledButton type="primary" className='button-hover' icon={<ShopOutlined />}>
+              Ghé tiệm
+            </StyledButton>
+          </ButtonContainer>
+        </CardContent>
+      </StyledCard>
+    </Link>
+  );
 };
 
 export default StoreCard;

@@ -39,8 +39,8 @@ interface BakeryWithDetails extends Bakery {
 
 const Detail: React.FC = () => {
     const [selectedFilter, setSelectedFilter] = useState('Tất cả');
-    const [filteredCakes, setFilteredCakes] = useState();
-    const [listCake, setListCake] = useState();
+    const [filteredCakes, setFilteredCakes] = useState<any[]>([]);
+    const [listCake, setListCake] = useState<any[]>([]);
     const [bakery, setBakery] = useState<BakeryWithDetails | null>(null);
     const [listFilter, setListFilter] = useState([]);
 
