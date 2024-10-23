@@ -26,6 +26,15 @@ class BakeryRepository {
     async getBakeryByUserId(user_id: string) {
         return await bakeryModel.find({ user_id });
     }
+
+    async searchBakeries(query: string) {
+        const searchRegex = new RegExp(query, 'i');
+        return await bakeryModel.find({
+            $or: [{ name: { $regex: searchRegex } }, { address: { $regex: searchRegex } }]
+        })
+            .limit(10)
+            .lean();
+    }
 }
 
 export default new BakeryRepository();

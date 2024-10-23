@@ -71,6 +71,9 @@ const bakerySchema = new Schema(
         collection: COLLECTION_NAME,
     },
 );
+
+
+
 //Export the model
 const bakeryModel = model(DOCUMENT_NAME, bakerySchema);
 export { bakeryModel };

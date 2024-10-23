@@ -8,8 +8,7 @@ const bakeryRouter = Router();
 
 bakeryRouter.get('/get-list', bakeryController.getBakeries);
 bakeryRouter.get('/get-by-id/:id', bakeryController.getBakeryById);
-
-
+bakeryRouter.get('/search-bakeries', bakeryController.searchBakeries);
 
 //authentication//
 bakeryRouter.use(authentication);

@@ -39,5 +39,12 @@ class BakeryController {
             metadata: await BakeryService.updateStatusBakery(req.params.id, req.body.status),
         }).send(res);
     });
+
+    searchBakeries = asyncHandler(async (req: any, res: Response, next: NextFunction) => {
+        new SuccessResponse({
+            message: 'Search bakeries successfully',
+            metadata: await BakeryService.searchBakeries(req.query.query),
+        }).send(res);
+    });
 }
 export default new BakeryController();
