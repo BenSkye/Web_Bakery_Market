@@ -59,13 +59,13 @@ class OrderProductService {
         end = endDate ? new Date(endDate) : new Date();
         start = startDate ? new Date(startDate) : new Date(end.getTime() - 30 * 24 * 60 * 60 * 1000);
     }
+        return await order_product_repo.getOrderProductStatisticsByBakeryId(bakeryId, start, end);
+    }
 
-    console.log('Date range:', { 
-        start: start.toISOString(),
-        end: end.toISOString()
-    });
+    static getCashFlowByBakeryId = async (bakeryId: string, startDate?: string, endDate?: string) => {
+        return await order_product_repo.getCashFlowByBakeryId(bakeryId, startDate, endDate);
+    }
 
-    return await order_product_repo.getOrderProductStatisticsByBakeryId(bakeryId, start, end);
 }
-}
+
 export default OrderProductService;
