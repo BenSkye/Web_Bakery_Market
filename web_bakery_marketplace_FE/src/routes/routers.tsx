@@ -9,9 +9,9 @@ import MainLayout from '../layouts/DefaultLayout';
 import SignUp from '../pages/signup/signup';
 import CakeDesigner from "../pages/3D/3DHome";
 import Detail from '../pages/detail/Detail';
-import Dashboard from '../pages/admin/Dashboard';
+// import Dashboard from '../pages/admin/Dashboard';
 import Cart from '../pages/stores/Cart';
-import StorePage from '../pages/manager/StorePage';
+// import StorePage from '../pages/manager/StorePage';
 import ListStoreAcceptDesignPage from '../pages/listStoreAcceptDesign/StoreAcceptDesignPage';
 import ForgotPassword from '../pages/login/ForgotPassword';
 import ResetPassword from '../pages/login/ResetPassword';
@@ -41,12 +41,12 @@ const AppRoutes: React.FC = () => {
                 <Route path="/about" element={<AboutPage />} />
                 <Route path="/stores" element={<StoresPage />} />
                 <Route path="/workshop" element={<WorkshopPage />} />
-                <Route path="/storepage" element={<StorePage />} />
+                {/* <Route path="/storepage" element={<StorePage />} /> */}
                 <Route path="/orderstatus" element={<OrderStatus />} />
                 <Route path="/bill" element={<Bill />} />
                 <Route path="/orderdetailstatus/:id" element={<OrderDetailStatus />} />
                 <Route path="/profile" element={<Profile />} />
-                <Route path="/dashboard" element={<Dashboard />} />
+                {/* <Route path="/dashboard" element={<Dashboard />} /> */}
                 <Route path="/checkout" element={<Checkout />} />
                 <Route path="/product/:id" element={<ProductDetail />} />
                 <Route path="/detail/:id" element={<Detail />} />

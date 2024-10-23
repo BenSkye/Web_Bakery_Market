@@ -11,6 +11,7 @@ import {
   RightOutlined,
   BulbOutlined,
   ClockCircleOutlined,
+  EnvironmentOutlined,
 } from "@ant-design/icons";
 import imgIntro from "../../assets/pexels-jill-wellington-1638660-433527.jpg";
 import { getBakeries, Bakery } from "../../services/bakeriesService";
@@ -143,18 +144,6 @@ const HomePage: React.FC = () => {
     }
   };
 
-  const introductionContainerStyle: React.CSSProperties = {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: "2rem",
-    borderRadius: "10px",
-    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
-    backgroundColor: "#fefefe",
-    marginTop: "2rem",
-    animation: "fadeIn 1s ease-in-out",
-  };
 
   return (
     <div style={homeContainerStyle}>
@@ -277,9 +266,9 @@ const HomePage: React.FC = () => {
           }}
         >
           Địa điểm các cửa hàng
-          <ClockCircleOutlined style={{ marginLeft: "8px" }} />
+          <EnvironmentOutlined style={{ marginLeft: "8px" }} />
         </animated.h1>
-        <Map address={''} />
+        <Map bakeries={bakeries} />
       </Col>
     </div>
   );
