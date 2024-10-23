@@ -3,12 +3,12 @@ import { Row, Col, Input, Button, Card, Avatar, Divider, Modal, Form, Radio, Ima
 import { EnvironmentOutlined, EditOutlined, DollarOutlined } from '@ant-design/icons';
 import { convertToVND } from '../../utils';
 import { createOrder } from '../../services/checkoutService';
-import { CartContext } from '../../stores/cartContext';
+import { CartContext, CartContextType } from '../../stores/cartContext';
 
 const Checkout: React.FC = () => {
     const [form] = Form.useForm();     // Ant Design form hook
 
-    const { cart } = useContext(CartContext);
+    const { cart } = useContext(CartContext) as CartContextType;
     console.log('cart', cart)
 
 

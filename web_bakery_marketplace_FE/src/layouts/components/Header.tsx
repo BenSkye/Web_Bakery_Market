@@ -6,13 +6,13 @@ import cakeIcon from '../../assets/pen_1324.png'
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../stores/authContex';
 import '../../styles/layoutSyles/headerComponent.css';
-import { CartContext } from '../../stores/cartContext';
+import { CartContext, CartContextType } from '../../stores/cartContext';
 
 const { Header } = Layout;
 
 const HeaderComponent: React.FC = () => {
     const { user, logout } = useAuth();
-    const { cart } = useContext(CartContext);
+    const { cart } = useContext(CartContext) as CartContextType;
     console.log('cart', cart)
     // Dropdown menu for user
     const userMenu = (

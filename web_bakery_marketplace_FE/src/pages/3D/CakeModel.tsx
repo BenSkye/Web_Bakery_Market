@@ -11,6 +11,7 @@ import { getCakeOptionByBakeryId } from '../../services/cakeoptionService';
 import { useAuth } from '../../stores/authContex';
 import { EditOutlined, EnvironmentOutlined } from '@ant-design/icons';
 import { createOrderCakeDesign } from '../../services/checkoutService';
+type CheckboxValueType = string | number | boolean;
 
 const { Title, Text } = Typography;
 
@@ -24,12 +25,12 @@ const FBXModel = ({ url, onClick,
   {
     url: string,
     onClick: (object: Object3D) => void,
-    position: [number, number, number],
-    rotation: [number, number, number],
-    scale: [number, number, number],
+    position?: [number, number, number],
+    rotation?: [number, number, number],
+    scale?: [number, number, number],
     modelColor?: string,
-    frostingColor: object,
-    DripSauce: string
+    frostingColor?: any,
+    DripSauce?: any
   }) => {
   const fbx = useLoader(FBXLoader, url);
   const modelRef = useRef<Object3D>();
@@ -171,11 +172,9 @@ const SceneInteraction = ({ onSelect }: { onSelect: (object: Object3D) => void }
 const CakeModel = ({ bakeryId }: { bakeryId: string }) => {
   const [selectedObject, setSelectedObject] = useState<Object3D | null>(null);
   const [cameraPosition, setCameraPosition] = useState<[number, number, number]>([0, 500, 1000]);
-  const [cakeSize, setCakeSize] = useState<number>(20);
-  const [cakeColor, setCakeColor] = useState<Color>('#FFFFFF');
-  const [selectedFilling, setSelectedFilling] = useState<object>({});
-  const [frostingColor, setFrostingColor] = useState<object>({});
-  const [selectedDripSauce, setSelectedDripSauce] = useState<object>({});
+  const [selectedFilling, setSelectedFilling] = useState<any>({});
+  const [frostingColor, setFrostingColor] = useState<any>({});
+  const [selectedDripSauce, setSelectedDripSauce] = useState<any>({});
   const [isCandle, setIsCandle] = useState<boolean>(false);
   const [isWafer, setIsWafer] = useState<boolean>(false);
   const [isMacaron, setIsMacaron] = useState<boolean>(false);
@@ -184,14 +183,14 @@ const CakeModel = ({ bakeryId }: { bakeryId: string }) => {
   const [isCherry, setIsCherry] = useState<boolean>(false);
   const [isChocolate, setIsChocolate] = useState<boolean>(false);
   const [decorations, setDecorations] = useState<CheckboxValueType[]>([]);
-  const [selectedDecorations, setSelectedDecorations] = useState<object[]>([]);
+  const [selectedDecorations, setSelectedDecorations] = useState<any[]>([]);
   const [disabledOptions, setDisabledOptions] = useState<CheckboxValueType[]>([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
 
-  const [cakeFillings, setCakeFillings] = useState<object[]>([]);
-  const [frostingColors, setFrostingColors] = useState<object[]>([]);
-  const [dripSauces, setDripSauces] = useState<object[]>([]);
-  const [decorationOptions, setDecorationsOptions] = useState<object[]>([]);
+  const [cakeFillings, setCakeFillings] = useState<any[]>([]);
+  const [frostingColors, setFrostingColors] = useState<any[]>([]);
+  const [dripSauces, setDripSauces] = useState<any[]>([]);
+  const [decorationOptions, setDecorationsOptions] = useState<any[]>([]);
   const [basePrice, setBasePrice] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -286,9 +285,9 @@ const CakeModel = ({ bakeryId }: { bakeryId: string }) => {
     console.log('Selected object:', object);
   };
   const handleFillingChange: TreeSelectProps['onChange'] = (value, node) => {
-    const selectedBranch = cakeFillings.find(branch => branch.fillings.some(filling => filling.name === value));
+    const selectedBranch = cakeFillings.find(branch => branch.fillings.some((filling: any) => filling.name === value));
     if (selectedBranch) {
-      const selectedFilling = selectedBranch.fillings.find(filling => filling.name === value);
+      const selectedFilling = selectedBranch.fillings.find((filling: any) => filling.name === value);
       if (selectedFilling) {
         setSelectedFilling(selectedFilling);
       }
@@ -409,7 +408,7 @@ const CakeModel = ({ bakeryId }: { bakeryId: string }) => {
               >
                 {cakeFillings?.map((branch) => (
                   <TreeNode value={branch.branch} title={branch.branch} key={branch.branch} selectable={false}>
-                    {branch?.fillings?.map((filling) => (
+                    {branch?.fillings?.map((filling: any) => (
                       <TreeNode
                         value={filling.name}
                         title={`${filling.name} - ${convertToVND(filling.price)}`}

@@ -37,7 +37,7 @@ const ChangePassword: React.FC = () => {
 
         setLoading(true); // Start loading state
         try {
-            const response = await resetPassword(token, newPassword);
+            const response = await resetPassword(token as string, newPassword);
             console.log('Change Password Response: ', response);
 
             messageApi.open({

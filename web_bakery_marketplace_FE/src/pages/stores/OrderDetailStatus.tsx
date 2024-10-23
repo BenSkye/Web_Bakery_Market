@@ -23,8 +23,8 @@ const OrderDetailStatus = () => {
                     processing: 1,
                     shipping: 2,
                     delivered: 3,
-                };
-                setCurrentStep(statusToStep[orderResponse.metadata.status] || 0);
+                } as const;
+                setCurrentStep(statusToStep[orderResponse.metadata.status as keyof typeof statusToStep] || 0);
             } catch (error) {
                 console.error('Error fetching order:', error);
             }

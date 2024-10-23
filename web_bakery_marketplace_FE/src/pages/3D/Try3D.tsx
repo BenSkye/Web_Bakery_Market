@@ -4,20 +4,19 @@ import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
 import { PerspectiveCamera, OrbitControls } from '@react-three/drei';
 import { Mesh, Object3D, Raycaster, Vector2, Intersection, Color, MeshStandardMaterial, MeshPhongMaterial, MeshLambertMaterial } from 'three';
 import { Checkbox, Col, Progress, Radio, RadioChangeEvent, Row, Select, Tooltip, Button, Steps, message, Slider } from 'antd';
-import { CheckboxValueType } from 'antd/es/checkbox/Group';
 import '../../styles/3d/Try3D.css';
-
+type CheckboxValueType = string | number | boolean;
 const { Step } = Steps;
 
 const FBXModel = ({ url, onClick, position = [0, 0, 0], rotation = [0, 0, 0], scale = [1, 1, 1], frostingColor, modelColor, DripSauce }: {
     url: string,
     onClick: (object: Object3D) => void,
-    position: [number, number, number],
-    rotation: [number, number, number],
-    scale: [number, number, number],
+    position?: [number, number, number],
+    rotation?: [number, number, number],
+    scale?: [number, number, number],
     modelColor?: string,
-    frostingColor: string,
-    DripSauce: string
+    frostingColor?: string,
+    DripSauce?: string
 }) => {
     const fbx = useLoader(FBXLoader, url);
     const modelRef = useRef<Object3D>();

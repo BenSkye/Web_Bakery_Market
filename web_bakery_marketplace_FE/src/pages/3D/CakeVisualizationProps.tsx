@@ -4,20 +4,20 @@ import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
 import { PerspectiveCamera, OrbitControls } from '@react-three/drei';
 import { Mesh, Object3D, Raycaster, Vector2, Intersection, Color, MeshStandardMaterial, MeshPhongMaterial, MeshLambertMaterial, Scene } from 'three'
 
-interface CakeVisualizationProps {
-    cameraPosition: [number, number, number];
-    frostingColor: object;
-    selectedDripSauce: object;
-    isCandle: boolean;
-    isWafer: boolean;
-    isMacaron: boolean;
-    isStrawberry: boolean;
-    isCream: boolean;
-    isCherry: boolean;
-    isChocolate: boolean;
-    onObjectClick: (object: THREE.Object3D) => void;
-    handleCanvasCreated: ({ scene }: { scene: THREE.Scene }) => void;
-}
+// interface CakeVisualizationProps {
+//     cameraPosition: [number, number, number];
+//     frostingColor: object;
+//     selectedDripSauce: object;
+//     isCandle: boolean;
+//     isWafer: boolean;
+//     isMacaron: boolean;
+//     isStrawberry: boolean;
+//     isCream: boolean;
+//     isCherry: boolean;
+//     isChocolate: boolean;
+//     onObjectClick: (object: THREE.Object3D) => void;
+//     handleCanvasCreated: ({ scene }: { scene: THREE.Scene }) => void;
+// }
 
 const FBXModel = ({ url, onClick,
     position = [0, 0, 0],
@@ -29,12 +29,12 @@ const FBXModel = ({ url, onClick,
     {
         url: string,
         onClick: (object: Object3D) => void,
-        position: [number, number, number],
-        rotation: [number, number, number],
-        scale: [number, number, number],
+        position?: [number, number, number],
+        rotation?: [number, number, number],
+        scale?: [number, number, number],
         modelColor?: string,
-        frostingColor: object,
-        DripSauce: string
+        frostingColor?: any,
+        DripSauce?: any
     }) => {
     const fbx = useLoader(FBXLoader, url);
     const modelRef = useRef<Object3D>();
