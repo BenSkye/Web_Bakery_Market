@@ -324,7 +324,7 @@ const TryCake3D = () => {
                     <directionalLight position={[5, 5, 5]} intensity={0.8} />
                     <spotLight position={[-5, 5, 5]} angle={0.15} penumbra={1} intensity={0.5} />
                     <FBXModel
-                        url="/public/Cake2.fbx"
+                        url="/Cake2.fbx"
                         position={[0, -100, 0]}
                         onClick={handleObjectClick}
                         frostingColor={frostingColor}
@@ -332,7 +332,7 @@ const TryCake3D = () => {
                     />
                     {decorations.includes('candle') && (
                         <FBXModel
-                            url="/public/Candle.fbx"
+                            url="/Candle.fbx"
                             position={[0, -50, 0]}
                             scale={[0.5, 1.4, 0.5]}
                             onClick={(object) => setSelectedObject(object)}
@@ -340,7 +340,7 @@ const TryCake3D = () => {
                     )}
                     {decorations.includes('wafer') && (
                         <FBXModel
-                            url="/public/Wafer.fbx"
+                            url="/Wafer.fbx"
                             position={[-20, -100, -15]}
                             rotation={[0, 0, 0]}
                             scale={[1.1, 1.1, 1.1]}
@@ -350,7 +350,7 @@ const TryCake3D = () => {
                     )}
                     {decorations.includes('macaron') && (
                         <FBXModel
-                            url="/public/Macaron.fbx"
+                            url="/Macaron.fbx"
                             position={[0, 85, 0]}
                             rotation={[0, 0, 0]}
                             scale={[0.5, 0.5, 0.5]}
@@ -359,7 +359,7 @@ const TryCake3D = () => {
                     )}
                     {decorations.includes('strawberry') && (
                         <FBXModel
-                            url="/public/Strawberry.fbx"
+                            url="/Strawberry.fbx"
                             position={[0, 85, 0]}
                             rotation={[0, 0, 0]}
                             scale={[0.5, 0.5, 0.5]}
@@ -369,7 +369,7 @@ const TryCake3D = () => {
                     )}
                     {decorations.includes('cream') && (
                         <FBXModel
-                            url="/public/Cream.fbx"
+                            url="/Cream.fbx"
                             position={[0, -100, 0]}
                             rotation={[0, 0, 0]}
                             scale={[1, 1, 1]}
@@ -378,7 +378,7 @@ const TryCake3D = () => {
                     )}
                     {decorations.includes('cherry') && (
                         <FBXModel
-                            url="/public/Cherry.fbx"
+                            url="/Cherry.fbx"
                             position={[0, -100, 0]}
                             rotation={[0, 0, 0]}
                             scale={[1, 1, 1]}
@@ -388,7 +388,7 @@ const TryCake3D = () => {
                     )}
                     {decorations.includes('chocolate') && (
                         <FBXModel
-                            url="/public/Chocolate.fbx"
+                            url="/Chocolate.fbx"
                             position={[0, 15, 0]}
                             rotation={[0, 0, 0]}
                             scale={[1, 1, 1]}

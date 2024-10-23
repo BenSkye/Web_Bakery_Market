@@ -190,14 +190,14 @@ const Render3DCakeProps = ({
             <OrbitControls />
             <ambientLight intensity={0.5} />
             <directionalLight position={[5, 5, 5]} />
-            <FBXModel url="/public/Cake2.fbx" position={[0, -100, 0]} onClick={onObjectClick} frostingColor={frostingColor} DripSauce={selectedDripSauce} />
-            {isCandle && <FBXModel url="/public/Candle.fbx" position={[0, -50, 0]} scale={[0.5, 1.4, 0.5]} onClick={onObjectClick} />}
-            {isWafer && <FBXModel url="/public/Wafer.fbx" position={[-20, -100, -15]} rotation={[0, 0, 0]} scale={[1.1, 1.1, 1.1]} modelColor='#f8c471' onClick={onObjectClick} />}
-            {isMacaron && <FBXModel url="/public/Macaron.fbx" position={[0, 85, 0]} rotation={[0, 0, 0]} scale={[0.5, 0.5, 0.5]} onClick={onObjectClick} />}
-            {isStrawberry && <FBXModel url="/public/Strawberry.fbx" position={[0, 85, 0]} rotation={[0, 0, 0]} scale={[0.5, 0.5, 0.5]} modelColor='#f1948a' onClick={onObjectClick} />}
-            {isCream && <FBXModel url="/public/Cream.fbx" position={[0, -100, 0]} rotation={[0, 0, 0]} scale={[1, 1, 1]} onClick={onObjectClick} />}
-            {isCherry && <FBXModel url="/public/Cherry.fbx" position={[0, -100, 0]} rotation={[0, 0, 0]} scale={[1, 1, 1]} modelColor='#e74c3c' onClick={onObjectClick} />}
-            {isChocolate && <FBXModel url="/public/Chocolate.fbx" position={[0, 15, 0]} rotation={[0, 0, 0]} scale={[1, 1, 1]} modelColor='#b76732' onClick={onObjectClick} />}
+            <FBXModel url="/Cake2.fbx" position={[0, -100, 0]} onClick={onObjectClick} frostingColor={frostingColor} DripSauce={selectedDripSauce} />
+            {isCandle && <FBXModel url="/Candle.fbx" position={[0, -50, 0]} scale={[0.5, 1.4, 0.5]} onClick={onObjectClick} />}
+            {isWafer && <FBXModel url="/Wafer.fbx" position={[-20, -100, -15]} rotation={[0, 0, 0]} scale={[1.1, 1.1, 1.1]} modelColor='#f8c471' onClick={onObjectClick} />}
+            {isMacaron && <FBXModel url="/Macaron.fbx" position={[0, 85, 0]} rotation={[0, 0, 0]} scale={[0.5, 0.5, 0.5]} onClick={onObjectClick} />}
+            {isStrawberry && <FBXModel url="/Strawberry.fbx" position={[0, 85, 0]} rotation={[0, 0, 0]} scale={[0.5, 0.5, 0.5]} modelColor='#f1948a' onClick={onObjectClick} />}
+            {isCream && <FBXModel url="/Cream.fbx" position={[0, -100, 0]} rotation={[0, 0, 0]} scale={[1, 1, 1]} onClick={onObjectClick} />}
+            {isCherry && <FBXModel url="/Cherry.fbx" position={[0, -100, 0]} rotation={[0, 0, 0]} scale={[1, 1, 1]} modelColor='#e74c3c' onClick={onObjectClick} />}
+            {isChocolate && <FBXModel url="/Chocolate.fbx" position={[0, 15, 0]} rotation={[0, 0, 0]} scale={[1, 1, 1]} modelColor='#b76732' onClick={onObjectClick} />}
             <SceneInteraction onSelect={onObjectClick} />
         </Canvas>
     );
