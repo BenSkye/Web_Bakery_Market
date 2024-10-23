@@ -202,6 +202,45 @@ class OrderProductRepo {
             }
         ]);
     }
+
+    async getCashFlowByBakeryId(bakeryId: string, startDate?: string, endDate?: string) {
+         const matchStage: any = { bakery_id: new Types.ObjectId(bakeryId) };
+    if (startDate && endDate) {
+        matchStage.createdAt = { $gte: new Date(startDate), $lte: new Date(endDate) };
+    }
+
+    return await orderProductModel.aggregate([
+        { $match: matchStage },
+        {
+            $group: {
+                _id: "$payment_method",
+                totalAmount: { $sum: "$price" },
+                count: { $sum: 1 }
+            }
+        },
+        {
+            $group: {
+                _id: null,
+                paymentMethods: { 
+                    $push: { 
+                        method: "$_id", 
+                        totalAmount: "$totalAmount", 
+                        count: "$count" 
+                    } 
+                },
+                totalCashFlow: { $sum: "$totalAmount" }
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                paymentMethods: 1,
+                totalCashFlow: 1
+            }
+        }
+    ]);
+    }
+
 }
 
 

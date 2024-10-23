@@ -34,3 +34,8 @@ export const getOrderProductStatisticsByBakeryId = async (bakeryId: string, star
     return response.data;
 };
 
+export const getCashFlowByBakeryId = async (bakeryId: string, startDate: string, endDate: string) => {
+    const response = await apiClient.post(`order-product/get-cash-flow-by-bakery-id/${bakeryId}`, { startDate, endDate });
+    return response.data;
+};
+

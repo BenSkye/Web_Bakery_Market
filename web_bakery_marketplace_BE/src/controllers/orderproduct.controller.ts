@@ -78,6 +78,16 @@ class OrderProductController {
         }).send(res);
     });
 
+    getCashFlowByBakeryId = asyncHandler(async (req: any, res: Response, next: NextFunction) => {
+        new SuccessResponse({
+            message: 'Get Cash Flow By Bakery Id successfully',     
+            metadata: await OrderProductService.getCashFlowByBakeryId(
+                req.params.bakeryId,
+                req.body.startDate,
+                req.body.endDate
+            ),
+        }).send(res);
+    });
 }
 
 export default new OrderProductController();
