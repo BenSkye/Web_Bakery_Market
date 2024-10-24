@@ -2,7 +2,7 @@
 import React from 'react';
 import { Button } from 'antd';
 import { Link } from 'react-router-dom';
-import imgIntro from "../../assets/pexels-jill-wellington-1638660-433527.jpg";
+import imgIntro from "../../assets/Bàn tay người đang làm bánh.png";
 
 const About: React.FC = () => {
     const aboutContainerStyle: React.CSSProperties = {
