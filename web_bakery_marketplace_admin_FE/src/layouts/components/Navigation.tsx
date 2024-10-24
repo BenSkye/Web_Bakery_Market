@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { Layout, Menu, Row, Col } from 'antd';
 import {
     BarChartOutlined,
-    HomeOutlined,
-    ShoppingCartOutlined,
     SettingOutlined,
-    LineChartOutlined
+    LineChartOutlined,
+    UsergroupAddOutlined,
+    AreaChartOutlined,
+    ShopOutlined
 } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 
@@ -31,9 +32,9 @@ const NavigationComponent: React.FC = () => {
                 openKeys={openKeys}
                 onOpenChange={handleOpenChange}
             >
-                {/* <Menu.Item key="dashboard" icon={<UserOutlined />}>
-                    <Link to='/admin/dashboard'>Tài khoản</Link>
-                </Menu.Item> */}
+                <Menu.Item key="dashboard" icon={<AreaChartOutlined />}>
+                    <Link to='/dashboard'>Tài khoản</Link>
+                </Menu.Item>
                 <Menu.SubMenu key="statistics" title="Thống kê" icon={<BarChartOutlined />}>
                     <Menu.Item key="stats-overview" icon={<LineChartOutlined />}>
                         <Link to='/statistics'>Tổng quan</Link>
@@ -42,17 +43,16 @@ const NavigationComponent: React.FC = () => {
                         <Link to='/reports'>Báo cáo</Link>
                     </Menu.Item>
                 </Menu.SubMenu>
-                <Menu.Item key="bakeries" icon={<HomeOutlined />}>
-                    <Link to='/home'>Các tiệm</Link>
+                <Menu.Item key="bakeries" icon={<ShopOutlined />}>
+                    <Link to='/bakeries'>Các tiệm</Link>
                 </Menu.Item>
-                {/* <Menu.Item key="orders" icon={<ShoppingCartOutlined />}>
-                    <Link to='manage'>Đơn hàng</Link>
-                </Menu.Item> */}
+                <Menu.Item key="manage-user" icon={<UsergroupAddOutlined />}>
+                    <Link to='manage-user'>Quản lí người dùng</Link>
+                </Menu.Item>
 
                 <Menu.Item key="settings-profile" icon={<SettingOutlined />}>
                     <Link to='/manage-profile-manager'>Cài đặt hồ sơ</Link>
                 </Menu.Item>
-
             </Menu>
         </Header>
     );

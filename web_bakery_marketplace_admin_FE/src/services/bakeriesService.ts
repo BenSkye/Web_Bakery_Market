@@ -1,4 +1,5 @@
 import apiClient from './apiClient';
+import e from 'express';
 export interface Contact {
   phone: string;
   facebook?: string;
@@ -57,4 +58,25 @@ export const createBakery = async (data: any) => {
     throw error; // Ensure that the error is propagated for handling
   }
 };
+
+export const getAllBakeriesByStatus = async (status: string) => {
+  try {
+    const response = await apiClient.get(`/bakery/get-all-bakeries-by-status?status=${status}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching bakeries by status ${status}:`, error);
+    throw error;
+  }
+};
+
+export const updateBakeryStatus = async (id: string, status: string) => {
+  try {
+    const response = await apiClient.put(`/bakery/update-status/${id}`, { status });
+    return response.data;
+  } catch (error) {
+    console.error(`Error updating bakery status ${status}:`, error);
+    throw error;
+  }
+};
+
 

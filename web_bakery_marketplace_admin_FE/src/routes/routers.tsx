@@ -14,6 +14,8 @@ import BakeryManagement from '../pages/manageBakery/BakeryManagement';
 import ManageProfileManager from '../pages/profile/ManageProfileManager';
 import ReportsPage from '../pages/reports/ReportsPage';
 import { useAuth } from '../stores/authContex';
+import ManageUser from '../pages/manageUser/ManageUser';
+import ManageBakeries from '../pages/manageBakeries/ManageBekeries';
 
 const AppRoutes: React.FC = () => {
     const { user } = useAuth();
@@ -30,6 +32,8 @@ const AppRoutes: React.FC = () => {
                     <Route path='/reports' element={<ReportsPage />} />
                     <Route path='/bakery-management/:bakeryId' element={<BakeryManagement />} />
                     <Route path='/manage-profile-manager' element={<ManageProfileManager />} />
+                    <Route path='/manage-user' element={<ManageUser />} />
+                    <Route path='/bakeries' element={<ManageBakeries />} />
                     {/* <Route path='/getOrdersByBakeryId/:bakeryId' element={<OrderManagement />} />
                     <Route path='/getAllProductsByBakeryId/:bakeryId' element={<ManageProducts/>} /> */}
                 </Route>

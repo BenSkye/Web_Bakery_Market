@@ -57,6 +57,11 @@ class BakeryService {
         const bakeries = await bakeryRepo.searchBakeries(query);
         return bakeries;        
     }
+
+    static getAllBakeriesByStatus = async (status: string) => {
+        const bakeries = await bakeryRepo.getAllBakeriesByStatus(status);
+        return bakeries;
+    }
 }
 
 export default BakeryService;

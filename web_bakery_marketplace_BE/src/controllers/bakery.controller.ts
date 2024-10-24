@@ -46,5 +46,11 @@ class BakeryController {
             metadata: await BakeryService.searchBakeries(req.query.query),
         }).send(res);
     });
+    getAllBakeriesByStatus = asyncHandler(async (req: any, res: Response, next: NextFunction) => {
+        new SuccessResponse({
+            message: 'Get all bakeries by status successfully',
+            metadata: await BakeryService.getAllBakeriesByStatus(req.query.status),
+        }).send(res);
+    });
 }
 export default new BakeryController();
