@@ -23,7 +23,7 @@ const LoginManager: React.FC = () => {
       if (response.status === 200) {
         message.success("Đăng nhập thành công!");
         navigate("/home");
-      } else if (result.error) {
+      } else if (response.error) {
         message.error("Chỉ tài khoản admin mới được phép đăng nhập.");
       }
     } catch (error) {
@@ -51,7 +51,7 @@ const LoginManager: React.FC = () => {
             padding: "2rem",
           }}
         ><img style={{ boxShadow: '10px', borderRadius: '20px', width: '100px', height: '100px', marginBottom: '2rem' }} src={logo}></img>
-          <h1 style={{ color: 'white', fontSize: '2.5rem', marginBottom: '1rem', textShadow: '2px 2px 4px rgba(0,0,0,0.1)' }}>Quản lý Merci</h1>
+          <h1 style={{ color: 'white', fontSize: '2.5rem', marginBottom: '1rem', textShadow: '2px 2px 4px rgba(0,0,0,0.1)' }}>Admin Dashboard</h1>
           <p style={{ color: 'white', fontSize: '1.2rem', textAlign: 'center', textShadow: '1px 1px 2px rgba(0,0,0,0.1)' }}>
             Chào mừng đến với hệ thống quản lý Merci! <br />
             Đăng nhập để truy cập bảng điều khiển của bạn.
@@ -106,12 +106,12 @@ const LoginManager: React.FC = () => {
                 </Button>
               </Form.Item>
 
-              <div style={{ textAlign: "center" }}>
+              {/* <div style={{ textAlign: "center" }}>
                 <Link to="/forgot-password" style={{ color: '#ff9a9e' }}>Quên mật khẩu?</Link>
               </div>
               <div style={{ textAlign: "center" }}>
                 <Link to="/signup" style={{ color: '#ff9a9e' }}>Đăng kí tài khoản?</Link>
-              </div>
+              </div> */}
             </Form>
           </div>
         </Col>

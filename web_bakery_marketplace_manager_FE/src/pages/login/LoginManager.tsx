@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Form, Input, Button, Col, Row, message } from "antd";
 import { useNavigate, Link } from "react-router-dom";
 import logo from "../../assets/logo.png";
@@ -23,7 +23,7 @@ const LoginManager: React.FC = () => {
       if (response.status === 200) {
         message.success("Đăng nhập thành công!");
         navigate("/home");
-      } else if (result.error) {
+      } else if (response.error) {
         message.error("Chỉ tài khoản cửa hàng mới được phép đăng nhập.");
       }
     } catch (error) {

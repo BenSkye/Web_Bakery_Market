@@ -13,6 +13,8 @@ import oderProductRouter from './oderProduct';
 import cakeoptionRouter from './cakeoption';
 import payosRouter from './payos';
 import orderRouter from './order';
+import userRouter from './user/index';
+
 
 const router = Router();
 
@@ -29,6 +31,7 @@ router.use('/v1/api/checkout', checkoutRouter);
 router.use('/v1/api/order-product', oderProductRouter);
 router.use('/v1/api/order', orderRouter);
 router.use('/v1/api/user', accessRouter);
+router.use('/v1/api/user-service', userRouter);
 router.use('/v1/api/workshop', workshopRouter);
 router.use('/v1/api/cakeoption', cakeoptionRouter);
 router.use('/v1/api/vnpay', vnpayRouter);

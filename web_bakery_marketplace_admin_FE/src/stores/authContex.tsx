@@ -54,7 +54,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const login = async (data: unknown) => {
         try {
             const response = await apiClient.post('/user/login', data);
+
             const { apiKey, user, tokens } = response.data.metadata;
+
+            const userRoles = response.data.metadata.user.roles;
+            if (!userRoles.includes('admin')) {
+                throw new Error('Access denied. Only admin users are allowed.');
+            }
 
             Cookies.set('x-api-key', apiKey);
             Cookies.set('x-client-id', user._id);
@@ -67,7 +73,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             return response.data;
         } catch (error: any) {
             console.error('Error login:', error);
-            return error.response.data;
+            if (error.message === 'Access denied. Only admin users are allowed.') {
+                return { error: error.message };
+            }
+            return error.response ? error.response.data : { error: 'An error occurred during login' };
         }
     };
 

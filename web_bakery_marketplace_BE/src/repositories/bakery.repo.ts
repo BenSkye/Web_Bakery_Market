@@ -35,6 +35,10 @@ class BakeryRepository {
             .limit(10)
             .lean();
     }
+
+    async getAllBakeriesByStatus(status: string) {
+        return await bakeryModel.find({ status }).lean();
+    }
 }
 
 export default new BakeryRepository();
