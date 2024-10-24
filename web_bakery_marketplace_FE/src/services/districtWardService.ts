@@ -1,7 +1,7 @@
 import axios from "axios";
 
 
-export const fetchDataEsgoo = async (url) => {
+export const fetchDataEsgoo = async (url: any) => {
   try {
     const response = await axios.get(url);
     if (response.data.error === 0) {

@@ -223,7 +223,7 @@ const Checkout: React.FC = () => {
                                 placeholder="Chọn quận"
                                 onChange={handleDistrictChange}
                             >
-                                {districts.map(district => (
+                                {districts.map((district: { id: string; name: string }) => (
                                     <Select.Option key={district.id} value={district.id}>
                                         {district.name}
                                     </Select.Option>
@@ -239,7 +239,7 @@ const Checkout: React.FC = () => {
                                 placeholder="Chọn phường"
                                 onChange={handleWardChange}
                             >
-                                {wards.map(ward => (
+                                {wards.map((ward: { id: string; name: string }) => (
                                     <Select.Option key={ward.id} value={ward.id}>
                                         {ward.name}
                                     </Select.Option>
