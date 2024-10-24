@@ -10,7 +10,11 @@ export const fetchDataEsgoo = async (url: any) => {
       console.error("Error fetching data:", response.data.error_text);
     }
   } catch (error) {
-    console.error("Error fetching data:", error.message);
+    if (error instanceof Error) {
+      console.error("Error fetching data:", error.message);
+    } else {
+      console.error("An unknown error occurred");
+    }
   }
   return [];
 };
