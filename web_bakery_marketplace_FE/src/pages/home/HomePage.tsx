@@ -12,6 +12,7 @@ import {
   BulbOutlined,
   ClockCircleOutlined,
   EnvironmentOutlined,
+  TeamOutlined,
 } from "@ant-design/icons";
 import imgIntro from "../../assets/pexels-jill-wellington-1638660-433527.jpg";
 import { getBakeries, Bakery } from "../../services/bakeriesService";
@@ -251,6 +252,18 @@ const HomePage: React.FC = () => {
 
       {/* Introduction Section */}
       <Col style={{ marginTop: "4rem" }}>
+        <animated.h1
+          style={{
+            textAlign: "start",
+            display: "flex",
+            alignItems: "center",
+            ...springPropsContainer,
+            marginBottom: "0.5rem",
+          }}
+        >
+          Giới thiệu
+          <TeamOutlined style={{ marginLeft: "8px" }} />
+        </animated.h1>
         <About />
       </Col>
 
