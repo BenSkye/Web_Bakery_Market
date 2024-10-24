@@ -14,7 +14,6 @@ const About: React.FC = () => {
         borderRadius: "10px",
         boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
         backgroundColor: "#fefefe",
-        marginTop: "2rem",
         animation: "fadeIn 1s ease-in-out",
         fontFamily: "'Roboto', sans-serif", // Ensure consistent font-family
     };

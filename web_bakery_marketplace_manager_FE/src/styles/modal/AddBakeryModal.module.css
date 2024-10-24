@@ -1,0 +1,60 @@
+.modalContent {
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  margin: 1.2rem;
+}
+
+.modalHeader {
+  border-radius: 8px 8px 0 0;
+  background-color: #f0f2f5;
+  padding: 16px 24px;
+}
+
+.modalTitle {
+  font-size: 20px;
+  color: #ff7e67;
+}
+
+.modalBody {
+  padding: 24px;
+}
+
+.formLabel {
+  font-weight: 500;
+}
+
+.card {
+  margin-bottom: 24px;
+  box-shadow: 0 1px 2px -2px rgba(0, 0, 0, 0.16),
+    0 3px 6px 0 rgba(0, 0, 0, 0.12), 0 5px 12px 4px rgba(0, 0, 0, 0.09);
+}
+
+.button {
+  margin-right: 8px;
+}
+
+.mapContainer {
+  height: '100%';
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.imageUploader {
+  border: 2px dashed #d9d9d9;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.imageUploader:hover {
+  border-color: #1890ff;
+}
+
+.checkbox {
+  font-size: 16px;
+}
+
+.timePicker {
+  width: 100%;
+}

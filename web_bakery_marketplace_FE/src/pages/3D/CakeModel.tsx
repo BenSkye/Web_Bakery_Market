@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Canvas, useFrame, useLoader, useThree } from '@react-three/fiber';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
 import { PerspectiveCamera, OrbitControls } from '@react-three/drei';
-import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter.js';
 import { Mesh, Object3D, Raycaster, Vector2, Intersection, Color, MeshStandardMaterial, MeshPhongMaterial, MeshLambertMaterial, Scene } from 'three';
 import { Button, Card, Checkbox, Col, Divider, Form, Input, message, Modal, Radio, RadioChangeEvent, Row, Select, Spin, Tooltip, TreeSelect, TreeSelectProps, Typography } from 'antd';
 import { TreeNode } from 'antd/es/tree-select';
@@ -11,6 +10,9 @@ import { getCakeOptionByBakeryId } from '../../services/cakeoptionService';
 import { useAuth } from '../../stores/authContex';
 import { EditOutlined, EnvironmentOutlined } from '@ant-design/icons';
 import { createOrderCakeDesign } from '../../services/checkoutService';
+import { fetchDistricts, fetchWards } from '../../services/districtWardService';
+import { DISTRICT_ID } from '../../constants/districWard_ID';
+
 type CheckboxValueType = string | number | boolean;
 
 const { Title, Text } = Typography;
@@ -199,6 +201,7 @@ const CakeModel = ({ bakeryId }: { bakeryId: string }) => {
   const { user } = useAuth();
 
 
+
   useEffect(() => {
     const fetchCakeOption = async () => {
       setLoading(true);
@@ -303,20 +306,47 @@ const CakeModel = ({ bakeryId }: { bakeryId: string }) => {
     sceneRef.current = scene;
   }, []);
 
-  const [form] = Form.useForm();
+
   const [order, setOrder] = useState<any>({});
-  const [newAddress, setNewAddress] = useState<any>({});
+  const [form] = Form.useForm();
+  const [districts, setDistricts] = useState([]);
+  const [wards, setWards] = useState([]);
+  const [selectedDistrict, setSelectedDistrict] = useState('');
+  const [selectedWard, setSelectedWard] = useState('');
   const [newAddressVisible, setNewAddressVisible] = useState(false);
+  const [newAddress, setNewAddress] = useState<any>({});
+
+  useEffect(() => {
+    fetchDistricts(DISTRICT_ID.HOCHIMINH_ID).then(data => setDistricts(data));
+  }, []);
+
+  const handleDistrictChange = (value: string, option: any) => {
+    setSelectedDistrict(option.children);
+    form.setFieldsValue({ ward: undefined });
+    fetchWards(value).then(data => setWards(data));
+  };
+
+  const handleWardChange = (value: string, option: any) => {
+    setSelectedWard(option.children);
+  };
+
   const handleOk = () => {
     form.validateFields()
       .then((values) => {
-        console.log('New Address:', values);
-        setNewAddress(values)
+        const fullAddress = `${values.specificAddress}, Phường ${selectedWard}, Quận ${selectedDistrict}, Hồ Chí Minh`;
+        const newAddressData = {
+          ...values,
+          address: fullAddress,
+          district: selectedDistrict,
+          ward: selectedWard
+        };
+        console.log('New Address:', newAddressData);
+        setNewAddress(newAddressData);
         setNewAddressVisible(false);
         setOrder({
           ...order,
-          user_address: values
-        })
+          user_address: newAddressData
+        });
       })
       .catch((info) => {
         console.log('Validate Failed:', info);
@@ -546,11 +576,43 @@ const CakeModel = ({ bakeryId }: { bakeryId: string }) => {
                 <Input placeholder="Nhập số điện thoại" />
               </Form.Item>
               <Form.Item
-                label="Địa chỉ"
-                name="address"
-                rules={[{ required: true, message: 'Vui lòng nhập địa chỉ' }]}
+                label="Quận"
+                name="district"
+                rules={[{ required: true, message: 'Vui lòng chọn quận' }]}
               >
-                <Input placeholder="Nhập địa chỉ" />
+                <Select
+                  placeholder="Chọn quận"
+                  onChange={handleDistrictChange}
+                >
+                  {districts.map((district: { id: string | number; name: string }) => (
+                    <Select.Option key={district.id} value={district.id}>
+                      {district.name}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
+              <Form.Item
+                label="Phường"
+                name="ward"
+                rules={[{ required: true, message: 'Vui lòng chọn phường' }]}
+              >
+                <Select
+                  placeholder="Chọn phường"
+                  onChange={handleWardChange}
+                >
+                  {wards.map((ward: { id: string | number; name: string }) => (
+                    <Select.Option key={ward.id} value={ward.id}>
+                      {ward.name}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
+              <Form.Item
+                label="Địa chỉ cụ thể"
+                name="specificAddress"
+                rules={[{ required: true, message: 'Vui lòng nhập địa chỉ cụ thể' }]}
+              >
+                <Input placeholder="Nhập địa chỉ cụ thể" />
               </Form.Item>
             </Form>
           </Modal>
