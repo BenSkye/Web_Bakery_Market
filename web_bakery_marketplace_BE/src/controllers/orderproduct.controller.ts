@@ -88,6 +88,13 @@ class OrderProductController {
             ),
         }).send(res);
     });
+
+    getOrderProductStatisticsAndCashFlowBakeries = asyncHandler(async (req: any, res: Response, next: NextFunction) => {
+        new SuccessResponse({
+            message: 'Get Order Product Statistics And Cash Flow Bakeries successfully',
+            metadata: await OrderProductService.getOrderProductStatisticsAndCashFlowBakeries(),
+        }).send(res);
+    });
 }
 
 export default new OrderProductController();

@@ -241,6 +241,127 @@ class OrderProductRepo {
     ]);
     }
 
+   async getOrderProductStatisticsAndCashFlowBakeries() {
+    const now = new Date();
+    const startOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay());
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const startOfYear = new Date(now.getFullYear(), 0, 1);
+
+
+    return await orderProductModel.aggregate([
+        {
+            $facet: {
+                weeklyStats: [
+                    { $match: { createdAt: { $gte: startOfWeek } } },
+                    { $group: {
+                        _id: null,
+                        totalOrders: { $sum: 1 },
+                        totalRevenue: { $sum: "$price" }
+                    }}
+                ],
+                monthlyStats: [
+                    { $match: { createdAt: { $gte: startOfMonth } } },
+                    { $group: {
+                        _id: null,
+                        totalOrders: { $sum: 1 },
+                        totalRevenue: { $sum: "$price" }
+                    }}
+                ],
+                yearlyStats: [
+                    { $match: { createdAt: { $gte: startOfYear } } },
+                    { $group: {
+                        _id: null,
+                        totalOrders: { $sum: 1 },
+                        totalRevenue: { $sum: "$price" }
+                    }}
+                ],
+                topBakeries: [
+                    { 
+                        $group: {
+                            _id: "$bakery_id",
+                            totalOrders: { $sum: 1 },
+                            totalRevenue: { $sum: "$price" }
+                        }
+                    },
+                    { $sort: { totalOrders: -1 } },
+                    { $limit: 5 },  // Limit to top 5
+                    { 
+                        $lookup: {
+                            from: "bakeries",
+                            localField: "_id",
+                            foreignField: "_id",
+                            as: "bakeryInfo"
+                        }
+                    },
+                    { $unwind: { path: "$bakeryInfo", preserveNullAndEmptyArrays: true } },
+                    { 
+                        $project: {
+                            _id: 1,
+                            bakeryName: { $ifNull: ["$bakeryInfo.name", "Unknown Bakery"] },
+                            totalOrders: 1,
+                            totalRevenue: 1
+                        }
+                    }
+                ],
+                successfulOrdersRevenue: [
+                    { $match: { status: "success" } },
+                    { $group: {
+                        _id: null,
+                        totalRevenue: { $sum: "$price" }
+                    }}
+                ],
+                orderStatusStats: [
+                    { $group: {
+                        _id: "$status",
+                        count: { $sum: 1 },
+                        revenue: { $sum: "$price" }
+                    }}
+                ],
+                averageOrderValue: [
+                    { $group: {
+                        _id: null,
+                        avgValue: { $avg: "$price" }
+                    }}
+                ],
+                totalCustomers: [
+                    { $group: {
+                        _id: null,
+                        uniqueCustomers: { $addToSet: "$user_id" }
+                    }},
+                    { $project: {
+                        totalCustomers: { $size: "$uniqueCustomers" }
+                    }}
+                ]
+            }
+        },
+        {
+            $project: {
+                weeklyStats: { $arrayElemAt: ["$weeklyStats", 0] },
+                monthlyStats: { $arrayElemAt: ["$monthlyStats", 0] },
+                yearlyStats: { $arrayElemAt: ["$yearlyStats", 0] },
+                topBakeries: { 
+                    $cond: {
+                        if: { $eq: [{ $size: "$topBakeries" }, 0] },
+                        then: [
+                            {
+                                _id: null,
+                                bakeryName: "No bakeries found",
+                                totalOrders: 0,
+                                totalRevenue: 0
+                            }
+                        ],
+                        else: "$topBakeries"
+                    }
+                },
+                successfulOrdersRevenue: { $arrayElemAt: ["$successfulOrdersRevenue", 0] },
+                orderStatusStats: 1,
+                averageOrderValue: { $arrayElemAt: ["$averageOrderValue", 0] },
+                totalCustomers: { $arrayElemAt: ["$totalCustomers", 0] }
+            }
+        }
+    ]);
+ }
+
 }
 
 
