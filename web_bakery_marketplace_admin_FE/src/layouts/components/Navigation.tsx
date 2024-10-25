@@ -35,14 +35,14 @@ const NavigationComponent: React.FC = () => {
                 <Menu.Item key="dashboard" icon={<AreaChartOutlined />}>
                     <Link to='/dashboard'>Tài khoản</Link>
                 </Menu.Item>
-                <Menu.SubMenu key="statistics" title="Thống kê" icon={<BarChartOutlined />}>
+                {/* <Menu.SubMenu key="statistics" title="Thống kê" icon={<BarChartOutlined />}>
                     <Menu.Item key="stats-overview" icon={<LineChartOutlined />}>
                         <Link to='/statistics'>Tổng quan</Link>
                     </Menu.Item>
                     <Menu.Item key="stats-reports" icon={<BarChartOutlined />}>
                         <Link to='/reports'>Báo cáo</Link>
                     </Menu.Item>
-                </Menu.SubMenu>
+                </Menu.SubMenu> */}
                 <Menu.Item key="bakeries" icon={<ShopOutlined />}>
                     <Link to='/bakeries'>Các tiệm</Link>
                 </Menu.Item>

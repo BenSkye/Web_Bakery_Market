@@ -47,8 +47,6 @@ class OrderProductService {
     let start: Date;
     let end: Date;
 
-    console.log('Received dates:', { startDate, endDate });
-
     if (!startDate && !endDate) {
         // Nếu không có ngày nào được cung cấp, lấy 30 ngày gần nhất
         console.log('No date provided, using default range');
@@ -64,6 +62,10 @@ class OrderProductService {
 
     static getCashFlowByBakeryId = async (bakeryId: string, startDate?: string, endDate?: string) => {
         return await order_product_repo.getCashFlowByBakeryId(bakeryId, startDate, endDate);
+    }
+
+    static getOrderProductStatisticsAndCashFlowBakeries = async () => {
+        return await order_product_repo.getOrderProductStatisticsAndCashFlowBakeries();
     }
 
 }

@@ -1,6 +1,6 @@
 import React from "react";
 import { Form, Input, Button, Col, Row, message } from "antd";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import logo from "../../assets/logo.png";
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { useAuth } from '../../stores/authContex';
@@ -22,7 +22,7 @@ const LoginManager: React.FC = () => {
 
       if (response.status === 200) {
         message.success("Đăng nhập thành công!");
-        navigate("/home");
+        navigate("/dashboard");
       } else if (response.error) {
         message.error("Chỉ tài khoản admin mới được phép đăng nhập.");
       }

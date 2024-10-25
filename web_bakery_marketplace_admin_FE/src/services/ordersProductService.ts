@@ -39,3 +39,9 @@ export const getCashFlowByBakeryId = async (bakeryId: string, startDate: string,
     return response.data;
 };
 
+export const getOrderProductStatisticsAndCashFlowBakeries = async () => {
+    const response = await apiClient.get(`order-product/get-order-product-statistics-and-cash-flow-bakeries`);
+    return response.data;
+};
+
+

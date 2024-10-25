@@ -10,6 +10,12 @@ class UserController {
             metadata: await UserNewService.getAllUserByRole(req.query.role),
         }).send(res);
     });
+    getStatisUser = asyncHandler(async (req: any, res: Response, next: NextFunction) => {
+        new SuccessResponse({
+            message: 'Get statis user successfully',
+            metadata: await UserNewService.getStatisUser(),
+        }).send(res);
+    });
 }
 
 export default new UserController();

@@ -10,5 +10,6 @@ userRouter.use(authentication);
 userRouter.use(apiKey)
 userRouter.use(permission('admin'));
 userRouter.get('/get-all-user-by-role', userController.getAllUserByRole);
+userRouter.get('/statis-user', userController.getStatisUser);
 
 export default userRouter;

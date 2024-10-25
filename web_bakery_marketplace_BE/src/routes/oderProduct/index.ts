@@ -20,5 +20,6 @@ oderProductRouter.put('/get-order-product', permission('admin'), OrderProductCon
 oderProductRouter.get('/get-order-product-statistics', permission('shop'), OrderProductController.getOrderProductStatistics);
 oderProductRouter.post('/get-order-product-statistics-by-bakery-id/:bakeryId', permission('shop'), OrderProductController.getOrderProductStatisticsByBakeryId);
 oderProductRouter.post('/get-cash-flow-by-bakery-id/:bakeryId', permission('shop'), OrderProductController.getCashFlowByBakeryId);
+oderProductRouter.get('/get-order-product-statistics-and-cash-flow-bakeries', permission('admin'), OrderProductController.getOrderProductStatisticsAndCashFlowBakeries);
 
 export default oderProductRouter;
