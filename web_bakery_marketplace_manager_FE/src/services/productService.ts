@@ -20,7 +20,7 @@ export const getProductById = async (productId: string) => {
     }
 };
 
-export const addProduct = async (product: any) => {
+export const addProduct = async (product: unknown) => {
     try {
         const response = await apiClient.post('/product/create', product);
         return response.data;
@@ -30,7 +30,7 @@ export const addProduct = async (product: any) => {
     }
 };
 
-export const updateProduct = async (productId: string, product: any) => {
+export const updateProduct = async (productId: string, product: unknown) => {
     try {
         const response = await apiClient.put(`/product/update/${productId}`, product);
         return response.data;

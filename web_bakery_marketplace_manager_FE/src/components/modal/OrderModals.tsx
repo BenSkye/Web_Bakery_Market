@@ -3,10 +3,19 @@ import { Modal, Descriptions, Tag } from 'antd';
 import moment from 'moment';
 import { getStatusInfo } from '../../utils/status/statusUtils';
 
+
+interface Order {
+    _id: string;
+    createdAt: string;
+    quantity: number;
+    price: number;
+    status: string;
+    newStatus?: string;
+}
 interface OrderModalsProps {
     confirmModalVisible: boolean;
     orderDetailModalVisible: boolean;
-    selectedOrder: any | null;
+    selectedOrder: Order | null;
     handleConfirm: () => void;
     cancelConfirmModal: () => void;
     closeOrderDetailModal: () => void;

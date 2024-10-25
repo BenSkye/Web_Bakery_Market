@@ -11,6 +11,7 @@ import { useAuth } from '../../stores/authContex';
 
 interface Bakery {
     key: number;
+    _id: string;
     name: string;
     address: string;
     rating: number;
@@ -35,7 +36,7 @@ const BakeryManager: React.FC = () => {
     const fetchBakeries = useCallback(async () => {
         try {
             const data = await getBakeryByUserId(user?.userId || '');
-            const mappedBakeries = data.metadata.map((bakery: any) => ({
+            const mappedBakeries = data.metadata.map((bakery: Bakery) => ({
                 key: bakery._id,
                 name: bakery.name,
                 address: bakery.address,
@@ -61,7 +62,7 @@ const BakeryManager: React.FC = () => {
     const handleCloseModal = () => setIsModalVisible(false);
 
 
-    const handleAddBakery = async (values: any) => {
+    const handleAddBakery = async (values: Omit<Bakery, '_id' | 'rating' | 'status'>) => {
         try {
             const openingHoursMap: { [key: string]: { open: string; close: string } } = {};
             Object.keys(values.openingHours).forEach((day) => {
@@ -115,7 +116,7 @@ const BakeryManager: React.FC = () => {
         {
             title: "Quản lý",
             key: "actions",
-            render: (text: string, record: Bakery) => {
+            render: (_text: string, record: Bakery) => {
                 return (
                     <Link to={`/bakery-management/${record.key}`}>
                         <Button> Quản lý <EditOutlined /></Button>
@@ -138,7 +139,7 @@ const BakeryManager: React.FC = () => {
             title: "Trạng thái",
             dataIndex: "status",
             key: "status",
-            render: (text: any) => {
+            render: (text: string) => {
                 let color = "blue";
                 let status = "Unknown";
 
@@ -160,7 +161,7 @@ const BakeryManager: React.FC = () => {
                 return <Tag color={color}>{status.toUpperCase()}</Tag>;
             },
             sorter: (a: Bakery, b: Bakery) => {
-                const getStatusPriority = (status: any): number => {
+                const getStatusPriority = (status: string | null | undefined): number => {
                     if (status === null || status === undefined) return 3;
                     const statusString = String(status).toLowerCase();
                     if (statusString === 'active') return 0;

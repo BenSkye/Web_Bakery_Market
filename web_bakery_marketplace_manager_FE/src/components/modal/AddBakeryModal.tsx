@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Form, Input, Button, Modal, TimePicker, Table, message, Checkbox, Select, Card, Col, Row } from "antd";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import ImageUploader from '../upload/ImageUploader';
 import pathFirebase from '../../config/firebase/pathFirebase';
 import styles from '../../styles/modal/AddBakeryModal.module.css'
@@ -23,6 +23,9 @@ interface Bakery {
     image: string[];
     openingHours: { [key: string]: { open: string; close: string } };
 }
+
+type District = { id: string; name: string };
+type Ward = { id: string; name: string };
 
 
 interface AddBakeryModalProps {
@@ -66,23 +69,23 @@ const AddBakeryModal: React.FC<AddBakeryModalProps> = ({ visible, onClose, onAdd
         fetchDistricts(DISTRICT_ID.HOCHIMINH_ID).then(data => setDistricts(data));
     }, []);
 
-    const handleDistrictChange = (value: string, option: any) => {
+    const handleDistrictChange = (value: string, option: { children: string }) => {
         setSelectedDistrict(option.children);
         form.setFieldsValue({ ward: undefined });
         fetchWards(value).then(data => setWards(data));
         updateFullAddress();
     };
 
-    const handleWardChange = (value: string, option: any) => {
+    const handleWardChange = (value: string, option: { children: string }) => {
         setSelectedWard(option.children);
         updateFullAddress();
     };
 
-    const handleSpecificAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleSpecificAddressChange = () => {
         updateFullAddress();
     };
 
-    const handleTimeChange = (day: string, timeType: 'open' | 'close', time: any) => {
+    const handleTimeChange = (day: string, timeType: 'open' | 'close', time: Dayjs) => {
         const formattedTime = time.format('HH:mm');
         const newOpeningHours = openingHours.map((item) =>
             item.day === day ? { ...item, [timeType]: formattedTime } : item
@@ -267,7 +270,7 @@ const AddBakeryModal: React.FC<AddBakeryModalProps> = ({ visible, onClose, onAdd
                                     rules={[{ required: true, message: 'Vui lòng chọn quận' }]}
                                 >
                                     <Select placeholder="Chọn quận" onChange={handleDistrictChange}>
-                                        {districts.map(district => (
+                                        {districts.map((district: District) => (
                                             <Select.Option key={district.id} value={district.id}>
                                                 {district.name}
                                             </Select.Option>
@@ -280,7 +283,7 @@ const AddBakeryModal: React.FC<AddBakeryModalProps> = ({ visible, onClose, onAdd
                                     rules={[{ required: true, message: 'Vui lòng chọn phường' }]}
                                 >
                                     <Select placeholder="Chọn phường" onChange={handleWardChange}>
-                                        {wards.map(ward => (
+                                        {wards.map((ward: Ward) => (
                                             <Select.Option key={ward.id} value={ward.id}>
                                                 {ward.name}
                                             </Select.Option>

@@ -41,7 +41,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ bakeryId, onSuccess }
         fetchCategories();
     }, []);
 
-    const onFinish = async (values: any) => {
+    const onFinish = async (values: unknown) => {
         try {
             if (uploadedImages.length === 0) {
                 message.error('Vui lòng tải lên ít nhất một hình ảnh');

@@ -4,12 +4,16 @@ import { Tabs } from 'antd';
 import OrderTable from '../table/OrderTable';
 
 const { TabPane } = Tabs;
+interface Order {
+    id: string;
+    status: string;
+}
 
 interface StatusTabsProps {
-    orders: any[];
+    orders: Order[];
     searchText: string;
     isCustom: boolean;
-    showOrderDetail: (order: any) => void;
+    showOrderDetail: (order: Order) => void;
     showConfirmModal: (orderId: string, newStatus: string) => void;
 }
 

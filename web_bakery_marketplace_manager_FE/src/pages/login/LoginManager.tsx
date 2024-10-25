@@ -4,13 +4,26 @@ import { useNavigate, Link } from "react-router-dom";
 import logo from "../../assets/logo.png";
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { useAuth } from '../../stores/authContex';
+import { useSpring, animated } from 'react-spring';
+
+
+interface LoginFormValues {
+  email: string;
+  password: string;
+}
 
 const LoginManager: React.FC = () => {
   const { login } = useAuth()
   const navigate = useNavigate();
 
+  const fadeIn = useSpring({
+    from: { opacity: 0, transform: 'translateY(50px)' },
+    to: { opacity: 1, transform: 'translateY(0)' },
+    config: { duration: 1000 },
+  });
 
-  const onFinish = async (values: any) => {
+
+  const onFinish = async (values: LoginFormValues) => {
     try {
 
       const data = {
@@ -23,9 +36,12 @@ const LoginManager: React.FC = () => {
       if (response.status === 200) {
         message.success("Đăng nhập thành công!");
         navigate("/home");
-      } else if (response.error) {
+      } else if (response.error === "Access denied. Only shop users are allowed.") {
         message.error("Chỉ tài khoản cửa hàng mới được phép đăng nhập.");
+      } else {
+        message.error("Sai email hoặc mật khẩu!");
       }
+
     } catch (error) {
       console.error('Login error:', error);
       message.error("Đã xảy ra lỗi trong quá trình đăng nhập. Vui lòng thử lại sau.");
@@ -33,7 +49,7 @@ const LoginManager: React.FC = () => {
   };
 
 
-  const onFinishFailed = (errorInfo: any) => {
+  const onFinishFailed = (errorInfo: unknown) => {
     console.log("Failed:", errorInfo);
   };
 
@@ -50,12 +66,16 @@ const LoginManager: React.FC = () => {
             alignItems: "center",
             padding: "2rem",
           }}
-        ><img style={{ boxShadow: '10px', borderRadius: '20px', width: '100px', height: '100px', marginBottom: '2rem' }} src={logo}></img>
-          <h1 style={{ color: 'white', fontSize: '2.5rem', marginBottom: '1rem', textShadow: '2px 2px 4px rgba(0,0,0,0.1)' }}>Quản lý Merci</h1>
-          <p style={{ color: 'white', fontSize: '1.2rem', textAlign: 'center', textShadow: '1px 1px 2px rgba(0,0,0,0.1)' }}>
-            Chào mừng đến với hệ thống quản lý Merci! <br />
-            Đăng nhập để truy cập bảng điều khiển của bạn.
-          </p>
+        >
+
+          <img style={{ boxShadow: '10px', borderRadius: '20px', width: '100px', height: '100px', marginBottom: '2rem' }} src={logo}></img>
+          <animated.div style={fadeIn}>
+            <h1 style={{ color: 'white', fontSize: '2.5rem', marginBottom: '1rem', textShadow: '2px 2px 4px rgba(0,0,0,0.1)', textAlign: 'center' }}>Quản lý Merci</h1>
+            <p style={{ color: 'white', fontSize: '1.2rem', textAlign: 'center', textShadow: '1px 1px 2px rgba(0,0,0,0.1)' }}>
+              Chào mừng đến với hệ thống quản lý Merci! <br />
+              Đăng nhập để truy cập bảng điều khiển của bạn.
+            </p>
+          </animated.div>
         </Col>
 
         <Col
@@ -67,8 +87,9 @@ const LoginManager: React.FC = () => {
             backgroundColor: "white",
           }}
         >
-          <div
+          <animated.div
             style={{
+              ...fadeIn,
               width: "80%",
               padding: "3rem",
               backgroundColor: "#fff",
@@ -113,7 +134,7 @@ const LoginManager: React.FC = () => {
                 <Link to="/signup" style={{ color: '#ff9a9e' }}>Đăng kí tài khoản?</Link>
               </div>
             </Form>
-          </div>
+          </animated.div>
         </Col>
       </Row>
     </div>

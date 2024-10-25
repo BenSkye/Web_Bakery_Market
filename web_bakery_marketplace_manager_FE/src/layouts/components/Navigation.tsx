@@ -3,7 +3,6 @@ import { Layout, Menu, Row, Col } from 'antd';
 import {
     BarChartOutlined,
     HomeOutlined,
-    ShoppingCartOutlined,
     SettingOutlined,
     LineChartOutlined
 } from '@ant-design/icons';

@@ -15,12 +15,22 @@ interface OrderManagementProps {
     bakeryId?: string;
 }
 
+interface OrderWithStatus extends Order {
+    status: string;
+    isCustomCake: boolean;
+    customCake?: {
+        frostingColor: string;
+        selectedDripSauce: string;
+        selectedDecorations: Array<{ value: string }>;
+    };
+}
+
 const OrderManagement: React.FC<OrderManagementProps> = ({ bakeryId }) => {
-    const [orders, setOrders] = useState<Order[]>([]);
+    const [orders, setOrders] = useState<OrderWithStatus[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchText, setSearchText] = useState('');
     const [confirmModalVisible, setConfirmModalVisible] = useState(false);
-    const [selectedOrder, setSelectedOrder] = useState<any | null>(null);
+    const [selectedOrder, setSelectedOrder] = useState<OrderWithStatus | null>(null);
     const [orderDetailModalVisible, setOrderDetailModalVisible] = useState(false);
 
     // Fetch orders on component mount
@@ -39,7 +49,7 @@ const OrderManagement: React.FC<OrderManagementProps> = ({ bakeryId }) => {
     }, [bakeryId]);
 
     // Handlers for modal visibility
-    const showOrderDetail = (order: any) => {
+    const showOrderDetail = (order: OrderWithStatus) => {
         setSelectedOrder(order);
         setOrderDetailModalVisible(true);
     };
@@ -106,7 +116,7 @@ const OrderManagement: React.FC<OrderManagementProps> = ({ bakeryId }) => {
             title: 'Order ID',
             dataIndex: '_id',
             key: '_id',
-            render: (text: string, record: any) => (
+            render: (text: string, record: OrderWithStatus) => (
                 <a onClick={() => showOrderDetail(record)}>{text}</a>
             ),
         },
@@ -115,7 +125,7 @@ const OrderManagement: React.FC<OrderManagementProps> = ({ bakeryId }) => {
             dataIndex: 'createdAt',
             key: 'createdAt',
             render: (createdAt: string) => moment(createdAt).format('DD-MM-YYYY HH:mm:ss'),
-            sorter: (a: any, b: any) => moment(a.createdAt).unix() - moment(b.createdAt).unix(),
+            sorter: (a: OrderWithStatus, b: OrderWithStatus) => moment(a.createdAt).unix() - moment(b.createdAt).unix(),
         },
         {
             title: 'Quantity',
@@ -140,7 +150,7 @@ const OrderManagement: React.FC<OrderManagementProps> = ({ bakeryId }) => {
         {
             title: 'Actions',
             key: 'actions',
-            render: (text: string, record: any) => (
+            render: (text: string, record: OrderWithStatus) => (
                 <Select
                     defaultValue={record.status}
                     style={{ width: 120 }}
@@ -180,7 +190,7 @@ const OrderManagement: React.FC<OrderManagementProps> = ({ bakeryId }) => {
         </Tabs>
     );
 
-    const checkSelectedDecorations = (decorations: any[], value: string) => {
+    const checkSelectedDecorations = (decorations: Array<{ value: string }>, value: string) => {
         return decorations?.some(d => d.value === value) || false;
     }
 

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 
-export const fetchDataEsgoo = async (url) => {
+export const fetchDataEsgoo = async (url: string) => {
   try {
     const response = await axios.get(url);
     if (response.data.error === 0) {
@@ -15,10 +15,10 @@ export const fetchDataEsgoo = async (url) => {
   return [];
 };
 
-export const fetchDistricts = (provinceId: any) => {
+export const fetchDistricts = (provinceId: unknown) => {
   return fetchDataEsgoo(`https://esgoo.net/api-tinhthanh/2/${provinceId}.htm`);
 };
 
-export const fetchWards = (districtId: any) => {
+export const fetchWards = (districtId: unknown) => {
   return fetchDataEsgoo(`https://esgoo.net/api-tinhthanh/3/${districtId}.htm`);
 };

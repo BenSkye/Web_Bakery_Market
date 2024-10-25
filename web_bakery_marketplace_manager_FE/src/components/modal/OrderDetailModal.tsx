@@ -4,10 +4,17 @@ import { Modal, Descriptions, Tag } from 'antd';
 import moment from 'moment';
 import { getStatusInfo } from '../../utils/status/statusUtils';
 
-interface OrderDetailModalProps {
+
+interface Order {
+    _id: string;
+    createdAt: string;
+    quantity: number;
+    price: number;
+    status: string;
+}interface OrderDetailModalProps {
     visible: boolean;
     onCancel: () => void;
-    selectedOrder: any;
+    selectedOrder: Order | null;
 }
 
 const OrderDetailModal: React.FC<OrderDetailModalProps> = ({ visible, onCancel, selectedOrder }) => {
