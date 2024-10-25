@@ -1,4 +1,10 @@
 {
+  "compilerOptions": {
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "skipLibCheck": true,
+    "noEmitOnError": false
+  },
   "files": [],
   "references": [
     {
