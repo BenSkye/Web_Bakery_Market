@@ -4,6 +4,7 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recha
 import { getCashFlowByBakeryId } from '../../services/ordersProductService';
 import { useAuth } from '../../stores/authContex';
 import { getBakeryByUserId } from '../../services/bakeriesService';
+import { Dayjs } from 'dayjs';
 
 const { RangePicker } = DatePicker;
 const { Title } = Typography;
@@ -84,7 +85,7 @@ const ReportsPage: React.FC = () => {
         }
     }, [selectedBakery, dateRange]);
 
-    const handleDateRangeChange = (_dates: any, dateStrings: [string, string]) => {
+    const handleDateRangeChange = (_dates: [Dayjs | null, Dayjs | null], dateStrings: [string, string]) => {
         setDateRange(dateStrings);
     };
 

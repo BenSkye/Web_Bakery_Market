@@ -5,12 +5,25 @@ import logo from "../../assets/logo.png";
 import { Link, useNavigate } from 'react-router-dom';
 import { HomeOutlined, LockOutlined, MailOutlined, PhoneOutlined, UserOutlined } from '@ant-design/icons';
 
+interface SignupValues {
+  username: string;
+  email: string;
+  password: string;
+  phone: string;
+  address: string;
+}
+interface ErrorInfo {
+  errorFields: { name: string[], errors: string[] }[];
+  outOfDate: boolean;
+  values: SignupValues;
+}
+
 const SignUp: React.FC = () => {
 
   const navigate = useNavigate();
   // Handle form submission
 
-  const onFinish = async (values: any) => {
+  const onFinish = async (values: SignupValues) => {
     try {
       const result = await signup({
         name: values.username,
@@ -51,7 +64,7 @@ const SignUp: React.FC = () => {
   };
 
   // Handle form failure
-  const onFinishFailed = (errorInfo: any) => {
+  const onFinishFailed = (errorInfo: ErrorInfo) => {
     console.log("Failed:", errorInfo);
   };
 

@@ -71,9 +71,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             setUser(decodedUser);
 
             return response.data;
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error('Error login:', error);
-            if (error.message === 'Access denied. Only shop users are allowed.') {
+            if (error instanceof Error && error.message === 'Access denied. Only shop users are allowed.') {
                 return { error: error.message };
             }
             return error.response ? error.response.data : { error: 'An error occurred during login' };

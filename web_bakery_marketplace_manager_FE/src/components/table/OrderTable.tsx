@@ -4,12 +4,20 @@ import { Table, Tag, Select } from 'antd';
 import moment from 'moment';
 import { getStatusInfo } from '../../utils/status/statusUtils';
 
+interface Order {
+    _id: string;
+    createdAt: string;
+    quantity: number;
+    price: number;
+    status: string;
+    isCustomCake: boolean;
+}
 interface OrderTableProps {
-    orders: any[];
+    orders: Order[];
     searchText: string;
     isCustom: boolean;
     status: string | null;
-    showOrderDetail: (order: any) => void;
+    showOrderDetail: (order: Order) => void;
     showConfirmModal: (orderId: string, newStatus: string) => void;
 }
 
@@ -21,7 +29,7 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders, searchText, isCustom, s
             title: 'Order ID',
             dataIndex: '_id',
             key: '_id',
-            render: (text: string, record: any) => (
+            render: (text: string, record: Order) => (
                 <a onClick={() => showOrderDetail(record)}>{text}</a>
             ),
         },
@@ -54,7 +62,7 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders, searchText, isCustom, s
         {
             title: 'Actions',
             key: 'actions',
-            render: (text: string, record: any) => (
+            render: (text: string, record: Order) => (
                 <Select
                     defaultValue={record.status}
                     style={{ width: 120 }}

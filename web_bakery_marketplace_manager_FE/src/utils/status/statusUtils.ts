@@ -1,4 +1,3 @@
-import React from 'react';
 import { CheckCircleOutlined, CloseCircleOutlined, ClockCircleOutlined, SyncOutlined, CarOutlined, SmileOutlined } from '@ant-design/icons';
 
 export const getStatusInfo = (status: string) => {

@@ -1,4 +1,14 @@
 {
+  "compilerOptions": {
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "skipLibCheck": true,
+    "noEmitOnError": false,
+    "noImplicitAny": false,
+    "strict": false,
+    "allowJs": true,
+    "checkJs": false
+  },
   "files": [],
   "references": [
     {

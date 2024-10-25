@@ -1,11 +1,22 @@
 import apiClient from "./apiClient";
 import Cookies from 'js-cookie';
-export const signup = async (data: unknown) => {
+
+interface UserData {
+  email: string;
+  password: string;
+  
+}
+
+interface ErrorResponse {
+  message: string;
+}
+
+export const signup = async (data: UserData) => {
     try {
         const response = await apiClient.post('/user/signup', data);
         console.log('response:', response.data);
         return response.data;
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('Error signup:', error);
         return error.response.data;
         throw error;
@@ -31,12 +42,12 @@ export const login = async (data: unknown) => {
         Cookies.set('authorization', response.data.metadata.tokens.accessToken);
         Cookies.set('x-refresh-token', response.data.metadata.tokens.refreshToken);
         return response.data;
-    } catch (error: any) {
+    } catch (error: unknown) {
          console.error('Error login:', error);
-        if (error.message === 'Access denied. Only shop users are allowed.') {
+        if (error instanceof Error && error.message === 'Access denied. Only shop users are allowed.') {
             return { error: error.message };
         }
-        return error.response ? error.response.data : { error: 'An error occurred during login' };
+        return (error as { response?: { data: ErrorResponse } }).response?.data || { error: 'An error occurred during login' };
     }
 };
 
@@ -45,20 +56,20 @@ export const SignUpManager = async (data: unknown) => {
         const response = await apiClient.post('/user/signup', data);
         console.log('response:', response.data);
         return response.data;
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('Error signup:', error);
         return error.response.data;
         throw error;
     }
 }
 
-export const forgotPassword = async (data: any) => {
+export const forgotPassword = async (data: {email: string}) => {
     try {
         const response = await apiClient.post('/user/forgot-password', data);
         console.log('response forgotpassword:', response.data);
 
         return response.data.metadata;
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('Error forgotPassword:', error);
         return error.response.data;
         throw error;
@@ -69,7 +80,7 @@ export const resetPassword = async (token: string, newPassword: string) => {
         const response = await apiClient.post(`/user/reset-password/${token}`, { newPassword });
         console.log('response:', response.data);
         return response.data;
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('Error resetPassword:', error);
         // Ensure that we only return error.response.data if it exists
         return error.response ? error.response.data : { message: 'An error occurred' };
@@ -81,7 +92,7 @@ export const getManagerProfile = async (id: string) => {
     return response.data;
 };
 
-export const updateManagerProfile = async (id: string, data: any) => {
+export const updateManagerProfile = async (id: string, data: unknown) => {
     const response = await apiClient.put(`/user/profile/${id}`, data);
     return response.data;
 };

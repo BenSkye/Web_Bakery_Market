@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Input, InputNumber, Select, Button, message, Tabs, UploadFile, Space } from 'antd';
+import { Form, Input, InputNumber, Select, Button, message, Tabs, Space } from 'antd';
 import { updateProduct, getProductById } from '../../services/productService';
 import { getCategories } from '../../services/categoryService';
 import { addStockToInventory, removeStockFromInventory } from '../../services/stockService';
@@ -10,6 +10,11 @@ import { DeleteOutlined } from '@ant-design/icons';
 const { Option } = Select;
 const { TabPane } = Tabs;
 
+interface Category {
+    _id: string;
+    name: string;
+}
+
 interface UpdateProductModalProps {
     productId: string;
     onSuccess: () => void;
@@ -19,7 +24,7 @@ const UpdateProductModal: React.FC<UpdateProductModalProps> = ({ productId, onSu
     const [productForm] = Form.useForm();
     const [inventoryForm] = Form.useForm();
     const [loading, setLoading] = useState(false);
-    const [categories, setCategories] = useState<any[]>([]);
+    const [categories, setCategories] = useState<Category[]>([]);
     const [currentStock, setCurrentStock] = useState(0);
     const [stockChangeType, setStockChangeType] = useState<'add' | 'remove'>('add');
 
@@ -79,7 +84,7 @@ const UpdateProductModal: React.FC<UpdateProductModalProps> = ({ productId, onSu
         }
     };
 
-    const onFinishProduct = async (values: any) => {
+    const onFinishProduct = async (values: Record<string, unknown>) => {
         setLoading(true);
         try {
             const updatedValues = {
@@ -96,14 +101,7 @@ const UpdateProductModal: React.FC<UpdateProductModalProps> = ({ productId, onSu
         setLoading(false);
     };
 
-    const normFile = (e: any) => {
-        if (Array.isArray(e)) {
-            return e;
-        }
-        return e?.fileList;
-    };
-
-    const onFinishInventory = async (values: any) => {
+    const onFinishInventory = async (values: { stockChange: number }) => {
         setLoading(true);
         try {
             const changeAmount = values.stockChange;

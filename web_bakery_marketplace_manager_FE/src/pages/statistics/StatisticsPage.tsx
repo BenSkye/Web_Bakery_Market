@@ -14,6 +14,10 @@ interface Bakery {
     name: string;
 }
 
+interface DateRangeValue {
+    [index: number]: dayjs.Dayjs;
+}
+
 interface Statistics {
     dailyStats: Array<{
         date: string;
@@ -138,7 +142,7 @@ const StatisticsPage: React.FC = () => {
     };
 
 
-    const handleDateRangeChange = (dates: any, dateStrings: [string, string]) => {
+    const handleDateRangeChange = (dates: DateRangeValue | null, dateStrings: [string, string]) => {
         if (dates) {
             setDateRange([new Date(dateStrings[0]), new Date(dateStrings[1])]);
         }
@@ -238,9 +242,9 @@ const StatisticsPage: React.FC = () => {
                                             cy="50%"
                                             outerRadius={100}
                                             fill="#8884d8"
-                                            label
+                                            label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
                                         >
-                                            {formattedData.orderStatusStats.map((entry: any, index: number) => (
+                                            {formattedData.orderStatusStats.map((_entry, index: number) => (
                                                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                             ))}
                                         </Pie>
@@ -251,7 +255,7 @@ const StatisticsPage: React.FC = () => {
                             </div>
                         </div>
                         <div>
-                            <h4>Thống Kê Tổng Quan</h4>
+                            {/* <h4>Thống Kê Tổng Quan</h4> */}
                             {/* <p>Tổng Doanh Thu: {formattedData.overallStats.totalRevenue.toLocaleString()} VND</p> */}
                             {/* <p>Tổng Số Đơn Hàng: {formattedData.overallStats.totalOrders}</p> */}
                             {/* <p>Giá Trị Đơn Hàng Trung Bình: {formattedData.overallStats.averageOrderValue.toLocaleString()} VND</p> */}

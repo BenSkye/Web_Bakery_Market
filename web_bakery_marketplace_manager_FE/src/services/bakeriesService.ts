@@ -48,7 +48,7 @@ export const getBakeryByUserId = async (userId: string) => {
   }
 };
 
-export const createBakery = async (data: any) => {
+export const createBakery = async (data: unknown) => {
   try {
     const response = await apiClient.post('/bakery/create', data);
     return response; // Return the entire response, not just response.data
