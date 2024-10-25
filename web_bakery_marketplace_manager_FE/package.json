@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b --force --noEmitOnError && vite build && shx cp -r public/* dist/",
-    "build:vercel": "tsc -b --force --noEmitOnError && vite build && shx cp -r public/* dist/",
+    "build": "tsc && vite build && shx cp -r public/* dist/",
+    "build:vercel": "tsc && vite build && shx cp -r public/* dist/",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "postinstall": "npm rebuild rollup"
