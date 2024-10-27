@@ -31,14 +31,18 @@ const LoginManager: React.FC = () => {
         password: values.password,
       }
       const response = await login(data);
-
+      console.log('responseeee:', response)
 
       if (response.status === 200) {
         message.success("Đăng nhập thành công!");
         navigate("/home");
       } else if (response.error === "Access denied. Only shop users are allowed.") {
         message.error("Chỉ tài khoản cửa hàng mới được phép đăng nhập.");
-      } else {
+      } else if (response.message === "User not verify email yet") {
+        message.error("Tài khoản chưa được xác thực email!");
+      }
+
+      else {
         message.error("Sai email hoặc mật khẩu!");
       }
 

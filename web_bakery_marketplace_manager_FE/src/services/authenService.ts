@@ -29,6 +29,7 @@ export const login = async (data: unknown) => {
 
         console.log('response:', response.data);
 
+
         // Kiểm tra vai trò của người dùng
         const userRoles = response.data.metadata.user.roles;
         if (!userRoles.includes('shop')) {

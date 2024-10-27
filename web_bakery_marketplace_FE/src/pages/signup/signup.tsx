@@ -22,9 +22,9 @@ const SignUp: React.FC = () => {
         if (response.status === 201) {
             messageApi.open({
                 type: 'success',
-                content: 'Đăng kí thành công',
+                content: 'Đăng kí thành công, vui lòng kiểm tra email để xác thực tài khoản!',
             });
-            navigate('/login');
+
         } else {
             messageApi.open({
                 type: 'error',
