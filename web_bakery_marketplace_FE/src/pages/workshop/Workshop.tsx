@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Row, Col, Card, Spin, Typography, Carousel } from 'antd';
+import { Button, Row, Col, Card, Spin, Typography, Carousel, message } from 'antd';
 import { getWorkshops, Workshop } from '../../services/workshopsService';
 import { ShoppingCartOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
@@ -70,6 +70,10 @@ const WorkshopPage: React.FC = () => {
         fetchWorkshops();
     }, []);
 
+    const handleRegisterClick = () => {
+        message.info('Tính năng đang phát triển');
+    };
+
     if (loading) {
         return <Spin size="large" style={{ display: 'block', margin: '20px auto' }} />;
     }
@@ -111,7 +115,7 @@ const WorkshopPage: React.FC = () => {
                                 hoverable
                                 cover={<img alt={workshop.title} src={workshop.image} style={{ height: '200px', objectFit: 'cover' }} />}
                                 actions={[
-                                    <Button type="primary" icon={<ShoppingCartOutlined />} size="large">
+                                    <Button type="primary" icon={<ShoppingCartOutlined />} size="large" onClick={handleRegisterClick}>
                                         Đăng ký ngay
                                     </Button>,
                                 ]}
