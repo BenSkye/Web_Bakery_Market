@@ -52,10 +52,17 @@ class AccessService {
 
   static login = async (email: string, password: string, refreshToken = null) => {
     //1 check email in dbs
+
+
     const foundUser = await findByEmail(email);
+    console.log('foundUserrrrr', foundUser);
     if (!foundUser) {
-      throw new BadRequestError('User not Registered');
+      throw new BadRequestError('User not Registered ');
     }
+    if (foundUser.verify === false) {
+      throw new BadRequestError('User not verify email yet');
+    }
+
     //2- match password
     const match = await bcrypt.compare(password, foundUser.password);
     if (!match) {

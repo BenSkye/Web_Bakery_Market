@@ -80,7 +80,20 @@ const Login: React.FC = () => {
                 content: 'Đăng nhập thành công!',
             });
             navigate('/'); // Navigate to home page
-        } else {
+        } else if (response.message === 'User not verify email yet') {
+            messageApi.open({
+                type: 'error',
+                content: 'Tài khoản chưa được xác thực email!',
+            });
+
+        }
+        else if (response.message === 'Password not match') {
+            messageApi.open({
+                type: 'error',
+                content: 'Mật khẩu không chính xác!',
+            });
+        }
+        else {
             messageApi.open({
                 type: 'error',
                 content: 'Đăng nhập thất bại!',
