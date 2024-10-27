@@ -22,8 +22,8 @@ const FooterComponent: React.FC = () => {
                     <div className="footer-section">
                         <Title level={4}>Liên kết</Title>
                         <ul className="footer-links">
-                            <li><Link href="#"><FacebookOutlined /> Facebook</Link></li>
-                            <li><Link href="#"><InstagramOutlined /> Instagram</Link></li>
+                            <li><Link href="https://www.facebook.com/profile.php?id=61566189472699"><FacebookOutlined /> Facebook</Link></li>
+                            <li><Link href="https://www.facebook.com/profile.php?id=61566189472699"><InstagramOutlined /> Instagram</Link></li>
                         </ul>
                     </div>
                 </Col>
@@ -40,13 +40,13 @@ const FooterComponent: React.FC = () => {
                 <Col xs={24} sm={12} md={6}>
                     <div className="footer-section">
                         <Title level={4}>Liên hệ</Title>
-                        <p><MailOutlined /> <Link href="mailto:contact@example.com">contact@example.com</Link></p>
+                        <p><MailOutlined /> <Link href="mailto:nhatdm9a7@gmail.com">nhatdm9a7@gmail.com</Link></p>
                         <p><PhoneOutlined /> <Text>+123 456 789</Text></p>
                     </div>
                 </Col>
             </Row>
             <div className="footer-bottom">
-                <Text>© {new Date().getFullYear()} Your Company. All rights reserved.</Text>
+                <Text>© {new Date().getFullYear()} Merci Company. All rights reserved.</Text>
             </div>
         </Footer>
     );

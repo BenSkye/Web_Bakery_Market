@@ -8,13 +8,13 @@ import { ShoppingOutlined } from '@ant-design/icons';
 const { Text } = Typography;
 
 interface CakeCardProps {
-    cake: {
-        _id: string;
-        id: string;
-        name: string;
-        price: string;
-        image: string[];
-    };
+  cake: {
+    _id: string;
+    id: string;
+    name: string;
+    price: string;
+    image: string[];
+  };
 }
 
 const StyledCard = styled(Card)`
@@ -23,16 +23,22 @@ const StyledCard = styled(Card)`
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
   background-color: #fff;
+  cursor: pointer;
 
   &:hover {
     transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
   }
 
-  .ant-card-cover img {
-    height: 250px;
-    object-fit: cover;
-    transition: transform 0.3s ease;
+  .ant-card-cover {
+    position: relative;
+    img {
+      height: 250px;
+      width: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+      border-radius: 15px 15px 0 0;
+    }
   }
 
   &:hover .ant-card-cover img {
@@ -40,35 +46,31 @@ const StyledCard = styled(Card)`
   }
 
   .ant-card-body {
-    padding: 16px;
+    padding: 20px;
+    text-align: center;
   }
 
   .ant-card-meta-title {
-    font-size: 18px;
-    margin-bottom: 8px;
+    font-size: 20px;
+    font-weight: 600;
     color: #333;
+    margin-bottom: 8px;
   }
 
   .price {
-    font-size: 20px;
+    font-size: 24px;
     color: #c2185b;
     font-weight: bold;
-    display: flex;
-    align-items: center;
   }
 
   .currency {
-    font-size: 16px; // Kích thước nhỏ hơn cho chữ "VNĐ"
-    color: #666;     // Màu sắc nhẹ hơn cho chữ "VNĐ"
-    margin-left: 5px; // Khoảng cách giữa giá và VNĐ
-  }
-
-  &:hover .ant-card-meta-title {
-    color: #c2185b;
+    font-size: 16px;
+    color: #666;
+    margin-left: 5px;
   }
 `;
 
-const ViewDetailButton = styled(Button)`
+const StyledButton = styled(Button)`
   width: 100%;
   margin-top: 16px;
   height: 45px;
@@ -77,42 +79,41 @@ const ViewDetailButton = styled(Button)`
   display: flex;
   align-items: center;
   justify-content: center;
+  color: #fff;
+  background-color: #c2185b;
+  border: none;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #a9154b;
+    color: #fff;
+  }
 
   svg {
     margin-right: 8px;
   }
-
-  &:hover {
-    background-color: #f06292;
-    border-color: #f06292;
-  }
 `;
 
 const CakeCard: React.FC<CakeCardProps> = ({ cake }) => {
-    return (
-        <StyledCard
-            hoverable
-            cover={<img src={cake.image[0]} alt={cake.name} />}
-        >
-            <Card.Meta
-                title={cake.name}
-                description={
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <Text className="price">
-                            {`${formatCurrency(Number(cake.price))}`}
-                        </Text>
-                        <Text className="currency">VNĐ</Text>
-                    </div>
-                }
-            />
-            <Link to={`/product/${cake._id}`}>
-                <ViewDetailButton type="primary" className='button-hover'>
-                    <ShoppingOutlined />
-                    Xem chi tiết
-                </ViewDetailButton>
-            </Link>
-        </StyledCard>
-    );
+  return (
+    <StyledCard hoverable cover={<img src={cake.image[0]} alt={cake.name} />}>
+      <Card.Meta
+        title={cake.name}
+        description={
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <Text className="price">{formatCurrency(Number(cake.price))}</Text>
+            <Text className="currency">VNĐ</Text>
+          </div>
+        }
+      />
+      <Link to={`/product/${cake._id}`}>
+        <StyledButton>
+          <ShoppingOutlined />
+          Xem chi tiết
+        </StyledButton>
+      </Link>
+    </StyledCard>
+  );
 };
 
 export default CakeCard;

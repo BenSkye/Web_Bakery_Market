@@ -33,6 +33,7 @@ interface BakeryWithDetails extends Bakery {
     }
     description: string;
     image: string[];
+    customCake: boolean;
 }
 
 
@@ -122,7 +123,7 @@ const Detail: React.FC = () => {
                     </motion.div>
                 </Col>
 
-                <Col span={24}>
+                {bakery.customCake && (<Col span={24}>
                     <motion.div variants={itemVariants} className="design-section">
                         <Card className="design-card card-hover"
                             style={{
@@ -187,7 +188,8 @@ const Detail: React.FC = () => {
                             </div>
                         </Card>
                     </motion.div>
-                </Col>
+                </Col>)}
+
 
                 <Col span={24}>
                     <motion.div variants={itemVariants}>
