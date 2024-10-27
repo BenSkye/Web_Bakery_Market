@@ -140,7 +140,7 @@ class AccessService {
       await newUser.save();
 
       // Step 8: Send verification email
-      const verificationUrl = `http://localhost:2709/verify-email?token=${verificationToken}`;
+      const verificationUrl = `https://web-bakery-market.vercel.app/verify-email?token=${verificationToken}`;
       const transporter = nodemailer.createTransport({
         service: 'Gmail',
         auth: {
@@ -245,7 +245,7 @@ class AccessService {
     );
 
 
-    const resetUrl = `http://localhost:2709/reset-password?token=${token}`;
+    const resetUrl = `https://web-bakery-market.vercel.app/reset-password?token=${token}`;
     console.log('resetUrllllll', resetUrl);
     try {
 
@@ -315,7 +315,7 @@ class AccessService {
     );
 
 
-    const resetUrl = `http://localhost:3000/reset-password?token=${token}`;
+    const resetUrl = `https://web-bakery-market-manager.vercel.app/reset-password?token=${token}`;
     console.log('resetUrllllll', resetUrl);
     try {
 
