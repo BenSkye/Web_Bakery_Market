@@ -14,6 +14,8 @@ import BakeryManagement from '../pages/manageBakery/BakeryManagement';
 import ManageProfileManager from '../pages/profile/ManageProfileManager';
 import ReportsPage from '../pages/reports/ReportsPage';
 import { useAuth } from '../stores/authContex';
+import ForgotPassword from '../pages/login/ForgotPassword';
+import ResetPassword from '../pages/login/ResetPassword';
 
 const AppRoutes: React.FC = () => {
     const { user } = useAuth();
@@ -21,6 +23,8 @@ const AppRoutes: React.FC = () => {
         <Routes>
             <Route path="/signup" element={<SignUp />} />
             <Route path="/login" element={<LoginManager />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route element={<ProtectedRoute />}>
                 <Route element={<MainLayout />}>
                     <Route path="/home" element={<HomePage />} />

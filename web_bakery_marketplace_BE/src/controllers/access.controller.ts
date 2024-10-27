@@ -53,6 +53,13 @@ class AccessController {
     }).send(res);
   });
 
+  forgotPasswordManager = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+    new SuccessResponse({
+      message: 'Forgot password successfully',
+      metadata: await AccessService.forgotPasswordManager(req.body.email),
+    }).send(res);
+  });
+
   resetPassword = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     const { token } = req.params;
     const { newPassword } = req.body;
