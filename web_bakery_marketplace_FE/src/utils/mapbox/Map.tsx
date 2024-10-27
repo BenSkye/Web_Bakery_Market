@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import ReactMapGL, { GeolocateControl, NavigationControl, Marker, Popup } from 'react-map-gl';
-import { FaMapMarkerAlt } from 'react-icons/fa';
+import { FaShoppingCart } from 'react-icons/fa';
+import { Button } from 'antd';
+import { Link } from 'react-router-dom';
 
 interface Bakery {
     _id: string;
@@ -84,15 +86,14 @@ const Map: React.FC<MapProps> = ({ bakeries }) => {
                         onClick={() => setSelectedBakery(bakery)}
                     >
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                            <FaMapMarkerAlt style={{ color: 'red', fontSize: '24px' }} />
+                            <FaShoppingCart style={{ color: 'red', fontSize: '24px' }} />
                             <div style={{
-                                backgroundColor: 'white',
+                                backgroundColor: 'HighlightText',
                                 padding: '2px 4px',
                                 borderRadius: '4px',
                                 fontSize: '12px',
                                 fontWeight: 'bold',
                                 boxShadow: '0 1px 3px rgba(0,0,0,0.3)',
-                                marginTop: '2px'
                             }}>
                                 {bakery.name}
                             </div>
