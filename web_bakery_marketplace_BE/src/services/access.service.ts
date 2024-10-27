@@ -49,13 +49,20 @@ class AccessService {
     return delKey;
   }
 
-  
+
   static login = async (email: string, password: string, refreshToken = null) => {
     //1 check email in dbs
+
+
     const foundUser = await findByEmail(email);
+    console.log('foundUserrrrr', foundUser);
     if (!foundUser) {
-      throw new BadRequestError('User not Registered');
+      throw new BadRequestError('User not Registered ');
     }
+    if (foundUser.verify === false) {
+      throw new BadRequestError('User not verify email yet');
+    }
+
     //2- match password
     const match = await bcrypt.compare(password, foundUser.password);
     if (!match) {
@@ -77,7 +84,7 @@ class AccessService {
       throw new NotFoundError('API Key not found');
     }
     return {
-      user: getInfoData({ fields: ['_id', 'name', 'email','roles'], object: foundUser }),
+      user: getInfoData({ fields: ['_id', 'name', 'email', 'roles'], object: foundUser }),
       tokens,
       apiKey: apiKey.key
     }
@@ -133,7 +140,7 @@ class AccessService {
       await newUser.save();
 
       // Step 8: Send verification email
-      const verificationUrl = `http://localhost:2709/verify-email?token=${verificationToken}`;
+      const verificationUrl = `https://web-bakery-market.vercel.app/verify-email?token=${verificationToken}`;
       const transporter = nodemailer.createTransport({
         service: 'Gmail',
         auth: {
@@ -238,7 +245,77 @@ class AccessService {
     );
 
 
-    const resetUrl = `http://localhost:2709/reset-password?token=${token}`;
+    const resetUrl = `https://web-bakery-market.vercel.app/reset-password?token=${token}`;
+    console.log('resetUrllllll', resetUrl);
+    try {
+
+      const transporter = nodemailer.createTransport({
+
+
+        service: 'Gmail',
+        auth: {
+          user: 'khanhhgse173474@fpt.edu.vn',
+          pass: 'zkoawauogcjlccfg',
+        },
+      });
+      console.log('transporter', transporter);
+
+      const mailOptions = {
+        from: 'khanhhgse173474@fpt.edu.vn',
+        to: email,
+        subject: 'Password Reset Request',
+        html: `
+                <p>You requested to reset your password. Click the link below to reset your password:</p>
+                <a href="${resetUrl}" target="_blank">Reset Password</a>
+                <p>This link will expire in 10 minutes.</p>
+            `
+      };
+      console.log('mailOptions', mailOptions);
+      // Send the email
+      await transporter.sendMail(mailOptions);
+
+      return {
+        message: "Forgot password email sent successfully",
+        status: 200,
+        metadata: {
+          resetPasswordToken: token,
+          resetPasswordExpire
+        }
+      };
+    } catch (error) {
+      console.error('Error sending reset email:', error);
+      throw new Error('Error sending the reset email');
+    }
+  }
+
+  static forgotPasswordManager = async (email: string) => {
+    console.log('forgotPassword', email);
+
+    const foundUser = await userModel.findOne({ email });
+    if (!foundUser) {
+      throw new NotFoundError('User not found');
+    }
+
+    const token = crypto.randomBytes(32).toString('hex');
+
+
+    const resetPasswordTokenHash = crypto.createHash('sha256').update(token).digest('hex');
+
+
+    const resetPasswordExpire = new Date(Date.now() + 10 * 60 * 1000);
+
+
+    await userModel.findOneAndUpdate(
+      { email },
+      {
+        passwordResetToken: resetPasswordTokenHash,
+        passwordResetExpire: resetPasswordExpire
+      },
+      { new: true }
+    );
+
+
+    const resetUrl = `https://web-bakery-market-manager.vercel.app/reset-password?token=${token}`;
     console.log('resetUrllllll', resetUrl);
     try {
 

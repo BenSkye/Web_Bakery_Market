@@ -2,13 +2,13 @@ import apiClient from "./apiClient";
 import Cookies from 'js-cookie';
 
 interface UserData {
-  email: string;
-  password: string;
-  
+    email: string;
+    password: string;
+
 }
 
 interface ErrorResponse {
-  message: string;
+    message: string;
 }
 
 export const signup = async (data: UserData) => {
@@ -26,9 +26,10 @@ export const signup = async (data: UserData) => {
 export const login = async (data: unknown) => {
     try {
         const response = await apiClient.post('/user/login', data);
-        
-       console.log('response:', response.data);
-        
+
+        console.log('response:', response.data);
+
+
         // Kiểm tra vai trò của người dùng
         const userRoles = response.data.metadata.user.roles;
         if (!userRoles.includes('shop')) {
@@ -43,7 +44,7 @@ export const login = async (data: unknown) => {
         Cookies.set('x-refresh-token', response.data.metadata.tokens.refreshToken);
         return response.data;
     } catch (error: unknown) {
-         console.error('Error login:', error);
+        console.error('Error login:', error);
         if (error instanceof Error && error.message === 'Access denied. Only shop users are allowed.') {
             return { error: error.message };
         }
@@ -63,7 +64,7 @@ export const SignUpManager = async (data: unknown) => {
     }
 }
 
-export const forgotPassword = async (data: {email: string}) => {
+export const forgotPassword = async (data: { email: string }) => {
     try {
         const response = await apiClient.post('/user/forgot-password', data);
         console.log('response forgotpassword:', response.data);
@@ -75,6 +76,20 @@ export const forgotPassword = async (data: {email: string}) => {
         throw error;
     }
 }
+
+export const forgotPasswordManager = async (data: { email: string }) => {
+    try {
+        const response = await apiClient.post('/user/forgot-password-manager', data);
+        console.log('response forgotpassword:', response.data);
+
+        return response.data.metadata;
+    } catch (error: unknown) {
+        console.error('Error forgotPassword:', error);
+        return error.response.data;
+        throw error;
+    }
+}
+
 export const resetPassword = async (token: string, newPassword: string) => {
     try {
         const response = await apiClient.post(`/user/reset-password/${token}`, { newPassword });
