@@ -64,20 +64,14 @@
 }
 
 .button-hover {
-  transition: box-shadow 0.3s ease;
-}
-
-.button-hover {
-  transition: transform 0.3s ease, background-color 0.3s ease;
-}
-
-.button-hover {
-  transition: transform 0.3s ease, background-color 0.3s ease;
+  transition: transform 0.3s ease, background-color 0.3s ease,
+    box-shadow 0.3s ease; /* Kết hợp các thuộc tính transition */
 }
 
 .button-hover:hover {
-  transform: rotate(5deg) translateY(-5px); /* Xoay và di chuyển lên trên khi hover */
+  transform: scale(1.1); /* Tăng kích thước mà không bị lệch */
   background-color: #ff1493; /* Thay đổi màu nền khi hover */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5); /* Thêm bóng cho button khi hover */
 }
 
 @keyframes fadeIn {
