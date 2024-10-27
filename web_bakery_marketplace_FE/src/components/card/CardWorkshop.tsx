@@ -15,7 +15,7 @@ const WorkShopCard: React.FC<WorkshopCardProps> = ({ workshop }) => {
     const coverImage = workshop.image.length > 0 ? workshop.image : NoImg;
 
     return (
-        <Link to={`/detail/${workshop._id}`}>
+        <Link to={'/workshop'}>
             <div className="card-wrapper">
                 <Card
                     className="card-hover"

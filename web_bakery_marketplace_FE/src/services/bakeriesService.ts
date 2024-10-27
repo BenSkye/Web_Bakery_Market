@@ -16,6 +16,7 @@ export interface Bakery {
     facebook: string,
     instagram: string,
   }
+  customCake:boolean,
 }
 
 export const getBakeries = async () => {
