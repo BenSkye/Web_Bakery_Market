@@ -96,9 +96,9 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ bakeryId, onSuccess }
                     <Option value="unavailable">Không có sẵn</Option>
                 </Select>
             </Form.Item>
-            <Form.Item name="quantity" label="Số lượng" rules={[{ required: true }]}>
+            {/* <Form.Item name="quantity" label="Số lượng" rules={[{ required: true }]}>
                 <InputNumber min={0} style={{ width: '100%' }} />
-            </Form.Item>
+            </Form.Item> */}
             <Form.Item label="Hình ảnh" required>
                 <ImageUploader
                     onUploadSuccess={handleImageUploadSuccess}
