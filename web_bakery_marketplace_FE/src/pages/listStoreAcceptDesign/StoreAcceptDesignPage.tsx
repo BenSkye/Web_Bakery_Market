@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import StoreCard from '../../components/card/CardStore';
 import { getBakeries, Bakery } from "../../services/bakeriesService";
 import SpinLoading from '../../components/loading/SpinLoading';
+import { log } from 'console';
 
 const { Search } = Input;
 const { Title } = Typography;
@@ -83,9 +84,15 @@ const ListStoreAcceptDesignPage: React.FC = () => {
             try {
                 setLoading(true);
                 const data = await getBakeries();
+                console.log('test', data.metadata);
 
                 if (Array.isArray(data.metadata)) {
-                    setBakeries(data.metadata);
+                    console.log('test', (data.metadata.filter((bakery: Bakery) =>
+                        bakery.status === 'active' && bakery.customCake === true
+                    )));
+                    setBakeries(data.metadata.filter((bakery: Bakery) =>
+                        bakery.status === 'active' && bakery.customCake === true
+                    ));
                 } else {
                     console.error("Fetched data is not an array:", data.metadata);
                     setBakeries([]);

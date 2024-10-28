@@ -38,9 +38,8 @@ class BakeryService {
     }
 
     static getBakeries = async () => {
-        const select = ['name', 'user_id', 'address', 'status', 'image', 'rating'];
+        const select = ['name', 'user_id', 'address', 'status', 'image', 'rating','customCake'];
         const bakeries = await bakeryRepo.getBakeries(select);
-
         return bakeries;
     }
 
