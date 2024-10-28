@@ -17,6 +17,7 @@ export interface Bakery {
     instagram: string,
   }
   customCake:boolean,
+  status: string,
 }
 
 export const getBakeries = async () => {

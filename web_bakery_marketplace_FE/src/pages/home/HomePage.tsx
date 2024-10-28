@@ -1,4 +1,4 @@
-// /pages/Home.tsx
+
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from 'react-router-dom';
 import { Carousel, Card, Button, Row, Col } from "antd";
@@ -10,11 +10,9 @@ import {
   LeftOutlined,
   RightOutlined,
   BulbOutlined,
-  ClockCircleOutlined,
   EnvironmentOutlined,
   TeamOutlined,
 } from "@ant-design/icons";
-import imgIntro from "../../assets/pexels-jill-wellington-1638660-433527.jpg";
 import { getBakeries, Bakery } from "../../services/bakeriesService";
 import { getWorkshops, Workshop } from "../../services/workshopsService";
 import SpinLoading from "../../components/loading/SpinLoading";
@@ -33,7 +31,8 @@ const HomePage: React.FC = () => {
       try {
         setLoading(true);
         const data = await getBakeries();
-        setBakeries(data.metadata);
+        console.log(data.metadata);
+        setBakeries(data.metadata.filter((bakery: Bakery) => bakery.status === 'active'));
       } catch (error) {
         console.error("Failed to fetch bakeries:", error);
       } finally {

@@ -32,7 +32,7 @@ const Map: React.FC<MapProps> = ({ bakeries }) => {
         const accessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
         const url = `${endpoint}?access_token=${accessToken}`;
 
-        console.log('url', url);
+        // console.log('url', url);
 
         try {
             const response = await fetch(url);
