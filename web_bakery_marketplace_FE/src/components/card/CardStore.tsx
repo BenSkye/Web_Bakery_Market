@@ -113,7 +113,7 @@ const StoreCard: React.FC<StoreCardProps> = ({ bakery, className }) => {
           <Tooltip title={bakery.address} placement="topLeft">
             <StoreAddress>
               <EnvironmentOutlined style={{ marginRight: 8 }} />
-              {truncateText(bakery.address, 35)}
+              {truncateText(bakery.address, 32)}
             </StoreAddress>
           </Tooltip>
           <RatingContainer>
