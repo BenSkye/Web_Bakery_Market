@@ -133,10 +133,10 @@ const OrderStatistics: React.FC<{ orderStats: OrderStats }> = ({ orderStats }) =
     return (
         <>
             <Row gutter={16} style={{ marginBottom: '24px' }}>
-                <Col span={6}>
+                <Col span={4}>
                     <Statistic title="Đơn hàng tuần này" value={orderStats.weeklyStats.totalOrders} prefix={<ShoppingOutlined />} />
                 </Col>
-                <Col span={6}>
+                <Col span={4}>
                     <Statistic
                         title="Doanh thu tuần này"
                         value={orderStats.weeklyStats.totalRevenue}
@@ -145,7 +145,16 @@ const OrderStatistics: React.FC<{ orderStats: OrderStats }> = ({ orderStats }) =
                         formatter={(value) => `${value.toLocaleString('vi-VN')}`}
                     />
                 </Col>
-                <Col span={6}>
+                <Col span={4}>
+                    <Statistic
+                        title="Lợi nhuận tuần này"
+                        value={orderStats.weeklyStats.totalRevenue * 0.75}
+                        prefix={<DollarOutlined />}
+                        suffix="₫"
+                        formatter={(value) => `${value.toLocaleString('vi-VN')}`}
+                    />
+                </Col>
+                <Col span={4}>
                     <Statistic
                         title="Giá trị đơn hàng trung bình"
                         value={orderStats.averageOrderValue.avgValue}
