@@ -203,7 +203,7 @@ const HomePage: React.FC = () => {
         </animated.h1>
         <Row gutter={[16, 16]} justify="center">
           <div className="scroll-container" ref={scrollRef}>
-            {loading ? (
+            {loading || bakeries.length === 0 ? (
               <SpinLoading />
             ) : (
               bakeries?.map((bakery, index) => (
