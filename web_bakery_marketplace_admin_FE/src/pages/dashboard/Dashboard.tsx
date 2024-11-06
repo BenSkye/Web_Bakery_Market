@@ -105,7 +105,7 @@ const Dashboard: React.FC = () => {
             </Card>
 
             <Card>
-                <Title level={3}>Thống kê đơn hàng</Title>
+                <Title level={3}>Thống kê đơn hàng tuần này</Title>
                 <OrderStatistics orderStats={orderStats} />
             </Card>
         </div>
@@ -134,11 +134,11 @@ const OrderStatistics: React.FC<{ orderStats: OrderStats }> = ({ orderStats }) =
         <>
             <Row gutter={16} style={{ marginBottom: '24px' }}>
                 <Col span={4}>
-                    <Statistic title="Đơn hàng tuần này" value={orderStats.weeklyStats.totalOrders} prefix={<ShoppingOutlined />} />
+                    <Statistic title="Đơn hàng" value={orderStats.weeklyStats.totalOrders} prefix={<ShoppingOutlined />} />
                 </Col>
                 <Col span={4}>
                     <Statistic
-                        title="Doanh thu tuần này"
+                        title="Doanh thu các shop"
                         value={orderStats.weeklyStats.totalRevenue}
                         prefix={<DollarOutlined />}
                         suffix="₫"
@@ -147,8 +147,8 @@ const OrderStatistics: React.FC<{ orderStats: OrderStats }> = ({ orderStats }) =
                 </Col>
                 <Col span={4}>
                     <Statistic
-                        title="Lợi nhuận tuần này"
-                        value={orderStats.weeklyStats.totalRevenue * 0.75}
+                        title="Lợi nhuận của bạn"
+                        value={orderStats.weeklyStats.totalRevenue * 0.25}
                         prefix={<DollarOutlined />}
                         suffix="₫"
                         formatter={(value) => `${value.toLocaleString('vi-VN')}`}
@@ -161,11 +161,11 @@ const OrderStatistics: React.FC<{ orderStats: OrderStats }> = ({ orderStats }) =
                         prefix={<DollarOutlined />}
                         suffix="₫"
                         precision={2}
-                        formatter={(value) => `${value.toLocaleString('vi-VN')}`}
+                        formatter={(value) => `${Math.round(value).toLocaleString('vi-VN')}`}
                     />
                 </Col>
                 <Col span={6}>
-                    <Statistic title="Tổng số khách hàng" value={orderStats.totalCustomers.totalCustomers} prefix={<UserOutlined />} />
+                    <Statistic title="Số khách hàng giao dịch" value={orderStats.totalCustomers.totalCustomers} prefix={<UserOutlined />} />
                 </Col>
             </Row>
 
