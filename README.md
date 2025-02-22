@@ -1,59 +1,59 @@
-# 🍰 Web Bakery Marketplace
+# 🍰 Web Bakery Marketplace  
 
-Web Bakery Marketplace là một nền tảng trực tuyến giúp người dùng tìm kiếm, đặt hàng và quản lý các sản phẩm bánh từ nhiều cửa hàng khác nhau.
+Web Bakery Marketplace is an online platform that helps users discover, order, and manage bakery products from various stores.  
 
-## 🌟 Tính năng chính
+## 🌟 Key Features  
 
-- 🍰 **Quản lý cửa hàng**: Đăng ký, cập nhật thông tin cửa hàng và danh sách sản phẩm.
-- 🛒 **Đặt hàng trực tuyến**: Người dùng có thể duyệt danh mục bánh và đặt hàng dễ dàng.
-- 📈 **Thống kê & Báo cáo**: Cửa hàng có thể xem doanh thu, đơn hàng và các chỉ số quan trọng.
-- 🎨 **Tự thiết kế bánh**: Công cụ cho phép khách hàng tạo kiểu bánh theo ý muốn.
+- 🍰 **Store Management**: Register, update store information, and manage product listings.  
+- 🛒 **Online Ordering**: Users can browse bakery items and place orders easily.  
+- 📈 **Statistics & Reports**: Stores can view revenue, orders, and key metrics.  
+- 🎨 **Custom Cake Design**: A tool that allows customers to create their own cake designs.  
 
-## 👨‍👩‍👦 Công nghệ sử dụng
+## 👨‍👩‍👦 Technologies Used  
 
-### Frontend (web\_bakery\_marketplace\_FE)
+### Frontend (web_bakery_marketplace_FE)  
 
-- 🤖 **React.js** (Vite)
-- 🛠️ **Ant Design** (Giao diện người dùng)
-- 🎨 **Three.js** (Tích hợp 3D)
-- 🌏 **React Router** (Điều hướng)
-- 📝 **Firebase** (Lưu trữ hình ảnh)
+- 🤖 **React.js** (Vite)  
+- 🛠️ **Ant Design** (UI components)  
+- 🎨 **Three.js** (3D integration)  
+- 🌏 **React Router** (Routing)  
+- 📝 **Firebase** (Image storage)  
 
-### Backend (web\_bakery\_marketplace\_BE)
+### Backend (web_bakery_marketplace_BE)  
 
-- 💻 **Node.js** + Express.js
-- 🌐 **MongoDB** (Cơ sở dữ liệu)
-- ⚙️ **JWT** (Xác thực)
-- 🛠️ **Mongoose** (ORM cho MongoDB)
+- 💻 **Node.js** + Express.js  
+- 🌐 **MongoDB** (Database)  
+- ⚙️ **JWT** (Authentication)  
+- 🛠️ **Mongoose** (ORM for MongoDB)  
 
-## 🛠️ Cài đặt
+## 🛠️ Installation  
 
-### 1. Clone repository
+### 1. Clone the repository  
 
 ```sh
 git clone https://github.com/BenSkye/Web_Bakery_Market.git
 cd Web_Bakery_Market
 ```
 
-### 2. Cài đặt dependencies
+### 2. Install dependencies  
 
-#### Backend
+#### Backend  
 
 ```sh
 cd web_bakery_marketplace_BE
 npm install
 ```
 
-#### Frontend
+#### Frontend  
 
 ```sh
 cd web_bakery_marketplace_FE
 npm install
 ```
 
-### 3. Cấu hình môi trường
+### 3. Configure environment variables  
 
-Tạo file `.env` trong thư mục `web_bakery_marketplace_BE` và thêm thông tin:
+Create a `.env` file in the `web_bakery_marketplace_BE` directory and add the following details:  
 
 ```env
 PORT=5000
@@ -61,23 +61,23 @@ DATABASE_URL=mongodb+srv://your-db-url
 JWT_SECRET=your-secret-key
 ```
 
-### 4. Chạy dự án
+### 4. Run the project  
 
-#### Chạy backend
+#### Start the backend  
 
 ```sh
 cd web_bakery_marketplace_BE
 npm run dev
 ```
 
-#### Chạy frontend
+#### Start the frontend  
 
 ```sh
 cd web_bakery_marketplace_FE
 npm run dev
 ```
 
-## 🌟 Cấu trúc thư mục
+## 🌟 Project Structure  
 
 ```
 web_bakery_marketplace/
@@ -97,22 +97,21 @@ web_bakery_marketplace/
 └── README.md
 ```
 
-## 🚀 Link Deploy
+## 🚀 Deployment Links  
 
-- **User Site**: [Web Bakery Marketplace](https://web-bakery-market.vercel.app/)
-- **Admin Site**: [Web Bakery Marketplace Admin](https://web-bakery-market-admin.vercel.app/)
-- **Manager Site**: [Web Bakery Marketplace Manager](https://web-bakery-market-manager.vercel.app/login)
+- **User Site**: [Web Bakery Marketplace](https://web-bakery-market.vercel.app/)  
+- **Admin Site**: [Web Bakery Marketplace Admin](https://web-bakery-market-admin.vercel.app/)  
+- **Manager Site**: [Web Bakery Marketplace Manager](https://web-bakery-market-manager.vercel.app/login)  
 
-## 👤 Đóng góp
+## 👤 Contributing  
 
-Nếu bạn muốn đóng góp, vui lòng fork repository, tạo nhánh mới và gửi pull request!
+If you would like to contribute, please fork the repository, create a new branch, and submit a pull request!  
 
-## 👤 Liên hệ
+## 👤 Contact  
 
-- **Email:** [your.email@example.com](mailto\:nhatdm9a7@gmail.com)
-- **GitHub:** [BenSkye](https://github.com/BenSkye)
+- **Email:** [your.email@example.com](mailto:nhatdm9a7@gmail.com)  
+- **GitHub:** [BenSkye](https://github.com/BenSkye)  
 
 ---
 
-Cảm ơn bạn đã quan tâm đến dự án! 🚀
-
+Thank you for your interest in this project! 🚀
