@@ -1,4 +1,4 @@
-# 🍰 Web Bakery Marketplace  
+# 🍰 Web Bakery Marketplace   
 
 Web Bakery Marketplace is an online platform that helps users discover, order, and manage bakery products from various stores.  
 
