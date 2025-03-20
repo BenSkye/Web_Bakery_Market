@@ -11,163 +11,17 @@ import { getCakeOptionByBakeryId } from '../../services/cakeoptionService';
 import { useAuth } from '../../stores/authContex';
 import { EditOutlined, EnvironmentOutlined } from '@ant-design/icons';
 import { createOrderCakeDesign } from '../../services/checkoutService';
+import { FBXModel, SceneInteraction } from '../../components/cakeCustomization/ThreeDModel';
+import AddressSection from '../../components/cakeCustomization/AddressSection';
+import { OrderButton } from '../../components/cakeCustomization/OrderButton';
+import { DecorationCheckboxGroup } from '../../components/cakeCustomization/DecorationCheckboxGroup';
+import { DripSauceSelect } from '../../components/cakeCustomization/DripSauceSelect';
+import { FrostingColorPicker } from '../../components/cakeCustomization/FrostingColorPicker';
+import { FillingSelector } from '../../components/cakeCustomization/FillingSelector';
+import { PriceSummary } from '../../components/cakeCustomization/PriceSummary';
 type CheckboxValueType = string | number | boolean;
 
 const { Title, Text } = Typography;
-
-const FBXModel = ({ url, onClick,
-  position = [0, 0, 0],
-  rotation = [0, 0, 0],
-  scale = [1, 1, 1],
-  frostingColor,
-  modelColor,
-  DripSauce }:
-  {
-    url: string,
-    onClick: (object: Object3D) => void,
-    position?: [number, number, number],
-    rotation?: [number, number, number],
-    scale?: [number, number, number],
-    modelColor?: string,
-    frostingColor?: any,
-    DripSauce?: any
-  }) => {
-  const fbx = useLoader(FBXLoader, url);
-  const modelRef = useRef<Object3D>();
-  const { camera, gl, scene } = useThree();
-  const raycaster = new Raycaster();
-  const mouse = new Vector2();
-
-
-
-  useEffect(() => {
-    console.log('fbx:', fbx);
-    console.log('frostingColor', frostingColor);
-    console.log(DripSauce)
-    if (fbx && modelColor) {
-      fbx.traverse((child) => {
-        if (child instanceof Mesh && child.material) {
-          if (child.material instanceof MeshStandardMaterial ||
-            child.material instanceof MeshPhongMaterial ||
-            child.material instanceof MeshLambertMaterial) {
-            child.material.color.set(modelColor);
-            child.material.needsUpdate = true;
-          }
-        }
-      });
-    }
-
-    fbx.traverse((child) => {
-      if (child instanceof Mesh && child.material) {
-        child.name = child.name || `Mesh_${child.id}`;
-
-        if (child.name.includes("Cylinder") && child.name !== 'Cylinder002') {
-          const color = new Color(frostingColor?.hex);
-          child.material.color = color;
-          child.material.needsUpdate = true;
-        }
-        if (child.name.includes("Circle")) {
-          const color = new Color(DripSauce?.color);
-          child.material.color = color;
-          child.material.needsUpdate = true;
-        }
-      }
-    });
-
-    modelRef.current = fbx;
-  }, [fbx, frostingColor, DripSauce, modelColor]);
-
-  const rotateModel = (degrees: number) => {
-    const radians = degrees * (Math.PI / 180)
-    return radians;
-  };
-
-
-  useFrame(() => {
-    if (modelRef.current) {
-      modelRef.current.rotation.x = rotateModel(rotation[0]);
-      modelRef.current.rotation.y = rotateModel(rotation[1]);
-      modelRef.current.rotation.z = rotateModel(rotation[2]);
-      modelRef.current.scale.set(scale[0], scale[1], scale[2]);
-    }
-  });
-
-  const handleClick = (event: MouseEvent) => {
-    event.preventDefault();
-
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-    raycaster.setFromCamera(mouse, camera);
-
-    const intersects = raycaster.intersectObjects(fbx.children, true);
-
-    if (intersects.length > 0) {
-      const clickedObject = intersects[0].object;
-      console.log('Clicked object:', clickedObject);
-      clickedObject.traverse((child) => {
-        if (child instanceof Mesh && child.material) {
-          console.log('modelColor:', child.material.color);
-        }
-      });
-      onClick(clickedObject);
-    }
-  };
-
-  useEffect(() => {
-    const canvas = gl.domElement;
-    canvas.addEventListener('click', handleClick);
-
-    return () => {
-      canvas.removeEventListener('click', handleClick);
-    };
-  }, [gl, camera, fbx, onClick]);
-  //   if (modelRef.current) {
-  //     modelRef.current.rotation.y += 0.01;
-  //   }
-  // });
-
-  return (
-    <primitive
-      ref={modelRef}
-      object={fbx}
-      scale={scale}
-      position={position}
-      onClick={(event: React.MouseEvent<Element, MouseEvent>) => onClick((event as unknown as { object: Object3D }).object)} />
-  );
-};
-
-const SceneInteraction = ({ onSelect }: { onSelect: (object: Object3D) => void }) => {
-  const { camera, scene } = useThree();
-  const raycaster = new Raycaster();
-  const mouse = new Vector2();
-
-  const handleMouseClick = (event: MouseEvent) => {
-    // Convert mouse coordinates to normalized device coordinates (NDC)
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-    // Update the picking ray with the camera and mouse position
-    raycaster.setFromCamera(mouse, camera);
-
-    // Calculate objects intersecting the picking ray
-    const intersects: Intersection<Object3D>[] = raycaster.intersectObjects(scene.children, true);
-
-    if (intersects.length > 0) {
-      const firstIntersect = intersects[0].object;
-      onSelect(firstIntersect);
-    }
-  };
-
-  useEffect(() => {
-    window.addEventListener('click', handleMouseClick);
-    return () => {
-      window.removeEventListener('click', handleMouseClick);
-    };
-  }, []);
-
-  return null;
-};
 
 const CakeModel = ({ bakeryId }: { bakeryId: string }) => {
   const [selectedObject, setSelectedObject] = useState<Object3D | null>(null);
@@ -193,6 +47,7 @@ const CakeModel = ({ bakeryId }: { bakeryId: string }) => {
   const [decorationOptions, setDecorationsOptions] = useState<any[]>([]);
   const [basePrice, setBasePrice] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
+  const [userAddress, setUserAddress] = useState<any>({});
 
   const sceneRef = useRef<Scene | null>(null);
 
@@ -335,10 +190,12 @@ const CakeModel = ({ bakeryId }: { bakeryId: string }) => {
         bakery_id: bakeryId,
         quantity: 1,
         price: totalPrice,
-        customCake: { selectedFilling, frostingColor, selectedDripSauce, selectedDecorations }
+        customCake: { selectedFilling, frostingColor, selectedDripSauce, selectedDecorations },
+        user_address: userAddress
       };
+      console.log('newOrder:', newOrder);
 
-      if (!newOrder.user_address) {
+      if (!newOrder.user_address?.address) {
         message.error('Vui lòng nhập địa chỉ nhận hàng');
       } else {
         console.log('order:', newOrder);
@@ -377,7 +234,10 @@ const CakeModel = ({ bakeryId }: { bakeryId: string }) => {
           <OrbitControls />
           <ambientLight intensity={0.5} />
           <directionalLight position={[5, 5, 5]} />
-          <FBXModel url="/Cake2.fbx" position={[0, -100, 0]} onClick={handleObjectClick} frostingColor={frostingColor} DripSauce={selectedDripSauce} />
+          <FBXModel url="/Cake2.fbx" position={[0, -100, 0]}
+            onClick={handleObjectClick}
+            frostingColor={frostingColor}
+            DripSauce={selectedDripSauce} />
           {isCandle && <FBXModel url="/Candle.fbx" position={[0, -50, 0]} scale={[0.5, 1.4, 0.5]} onClick={(object) => setSelectedObject(object)} />}
           {isWafer && <FBXModel url="/Wafer.fbx" position={[-20, -100, -15]} rotation={[0, 0, 0]} scale={[1.1, 1.1, 1.1]} modelColor='#f8c471' onClick={(object) => setSelectedObject(object)} />}
           {isMacaron && <FBXModel url="/Macaron.fbx" position={[0, 85, 0]} rotation={[0, 0, 0]} scale={[0.5, 0.5, 0.5]} onClick={(object) => setSelectedObject(object)} />}
@@ -391,182 +251,54 @@ const CakeModel = ({ bakeryId }: { bakeryId: string }) => {
 
 
       <Col span={8} style={{ background: '#f1948a', borderRadius: '10px', padding: '10px' }}>
-        <Card
-          title={<Title level={3}>Tùy chỉnh bánh</Title>}
-          style={{ height: '80vh', overflowY: 'auto' }}
-        >
+        <Card title={<Title level={3}>Tùy chỉnh bánh</Title>} style={{ height: '80vh', overflowY: 'auto' }}>
           <Row gutter={[0, 16]}>
-            <Col span={24} >
-              <Text strong>Nhân bánh:</Text>
-              <TreeSelect
-                style={{ width: '100%', marginTop: 8 }}
-                // value={selectedFilling}
-                dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                placeholder="Chọn nhân bánh"
-                treeDefaultExpandAll
-                onChange={handleFillingChange}
-              >
-                {cakeFillings?.map((branch) => (
-                  <TreeNode value={branch.branch} title={branch.branch} key={branch.branch} selectable={false}>
-                    {branch?.fillings?.map((filling: any) => (
-                      <TreeNode
-                        value={filling.name}
-                        title={`${filling.name} - ${convertToVND(filling.price)}`}
-                        key={filling.name}
-                        description={filling.description as string}
-                      >
-
-                      </TreeNode>
-                    ))}
-                  </TreeNode>
-                ))}
-              </TreeSelect>
-            </Col>
             <Col span={24}>
-              <Text strong>Màu kem phủ:</Text>
-              <Radio.Group onChange={handleFrostingColorChange}
-                value={frostingColor}
-                style={{ width: '100%', marginTop: 8 }}>
-                {frostingColors?.map((color) => (
-                  <Tooltip title={`${color?.name}-${convertToVND(color?.price)}`} key={color.hex}>
-                    <Radio.Button
-                      value={color.hex}
-                      style={{
-                        backgroundColor: color.hex,
-                        width: '30px',
-                        height: '30px',
-                        border: `2px solid ${frostingColor === color?.hex ? '#1890ff' : '#d9d9d9'}`,
-                        marginRight: '10px',
-                        marginBottom: '10px',
-                        borderRadius: '50%',
-                        padding: 0,
-                        overflow: 'hidden',
-                      }}
-                    />
-                  </Tooltip>
-                ))}
-              </Radio.Group>
-            </Col>
-
-            <Col span={24}>
-              <Text strong>Sốt phủ:</Text>
-              <Select
-                style={{ width: '100%', marginTop: 8 }}
-                placeholder="Chọn sốt phủ"
-                onChange={handleDripSauceChange}
-                value={selectedDripSauce?.name}
-              >
-                {dripSauces?.map((sauce) => (
-                  <Select.Option key={sauce.name} value={sauce.color}>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <div
-                        style={{
-                          width: '20px',
-                          height: '20px',
-                          borderRadius: '50%',
-                          backgroundColor: sauce.color,
-                          marginRight: '8px',
-                        }}
-                      />
-                      {sauce.name} - {convertToVND(sauce.price)}
-                    </div>
-                  </Select.Option>
-                ))}
-              </Select>
-            </Col>
-            <Col span={24} >
-              <Text strong>Trang trí:</Text>
-              <Checkbox.Group
-                options={optionsWithDisabled?.map(option => ({
-                  ...option,
-                  label: `${option.label} - ${convertToVND(option.price)}`
-                }))}
-                value={selectedDecorations?.map(d => d.value)}
-                onChange={handleDecorationChange}
-                style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: 8 }}
+              <FillingSelector
+                cakeFillings={cakeFillings}
+                handleFillingChange={handleFillingChange}
               />
             </Col>
 
+            <Col span={24}>
+              <FrostingColorPicker
+                frostingColors={frostingColors}
+                frostingColor={frostingColor}
+                handleFrostingColorChange={handleFrostingColorChange}
+              />
+            </Col>
 
+            <Col span={24}>
+              <DripSauceSelect
+                dripSauces={dripSauces}
+                selectedDripSauce={selectedDripSauce}
+                handleDripSauceChange={handleDripSauceChange}
+              />
+            </Col>
+
+            <Col span={24}>
+              <DecorationCheckboxGroup
+                decorationOptions={optionsWithDisabled}
+                selectedDecorations={selectedDecorations}
+                handleDecorationChange={handleDecorationChange}
+              />
+            </Col>
           </Row>
         </Card>
-        <Divider />
 
+        <PriceSummary totalPrice={totalPrice} />
 
-        <Row justify="space-between" align="middle">
-          <Col>
-            <Title level={4}>Tổng giá:</Title>
-          </Col>
-          <Col>
-            <Title level={3} type="danger">{convertToVND(totalPrice)}</Title>
-          </Col>
-        </Row>
-        <Row justify="space-between" align="middle">
-          <Card style={{ width: '100%' }}>
-            <Row>
-              <Col>
-                <h3>
-                  <EnvironmentOutlined /> Địa Chỉ Nhận Hàng
-                </h3>
-              </Col>
-            </Row>
-            <Row align="middle" style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'nowrap' }}>
-              <Col>
-                <span style={{ marginRight: '10px' }}>{newAddress?.name} (+{newAddress?.phone})</span>
-                <span>{newAddress?.address}</span>
-              </Col>
-              <Col>
-                <Button type="link" onClick={() => setNewAddressVisible(true)} style={{ paddingLeft: '10px' }}>
-                  <EditOutlined /> Thay Đổi
-                </Button>
-              </Col>
-            </Row>
-          </Card>
-          <Modal
-            title="Thay Đổi Địa Chỉ"
-            visible={newAddressVisible}
-            onOk={handleOk}
-            onCancel={handleCancel}
-            okText="Lưu"
-            cancelText="Hủy"
-          >
-            <Form form={form} layout="vertical">
-              <Form.Item
-                label="Họ và Tên"
-                name="name"
-                rules={[{ required: true, message: 'Vui lòng nhập họ và tên' }]}
-              >
-                <Input placeholder="Nhập họ và tên" />
-              </Form.Item>
-              <Form.Item
-                label="Số điện thoại"
-                name="phone"
-                rules={[{ required: true, message: 'Vui lòng nhập số điện thoại' }]}
-              >
-                <Input placeholder="Nhập số điện thoại" />
-              </Form.Item>
-              <Form.Item
-                label="Địa chỉ"
-                name="address"
-                rules={[{ required: true, message: 'Vui lòng nhập địa chỉ' }]}
-              >
-                <Input placeholder="Nhập địa chỉ" />
-              </Form.Item>
-            </Form>
-          </Modal>
-        </Row>
-        <Row justify="end" align="middle">
-          <Col>
-            <Button type="primary" onClick={handleSubmitRequest}>Gửi yêu cầu</Button>
-          </Col>
-        </Row>
-
+        <AddressSection
+          onAddressChange={(address) => {
+            setUserAddress(address);
+            // setOrder(prev => ({ ...prev, user_address: address }));
+          }}
+          initialAddress={userAddress}
+        />
+        <OrderButton handleSubmitRequest={handleSubmitRequest} />
       </Col>
     </Row>
   );
 };
 
 export default CakeModel;
-
-
-
